@@ -1,0 +1,32 @@
+{
+  "projects": [
+    {
+      "name": "特殊文字 <b>&\"' のP",
+      "milestones": [],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "<script>alert(1)</script> & \"引用\" 'と'",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "タグ <b>太字</b> & 記号",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "<X&Y>",
+              "plan": {
+                "start": "2026-06-05",
+                "end": "2026-06-09"
+              },
+              "actual": {
+                "start": "2026-06-05",
+                "end": "2026-06-09"
+              },
+              "note": "備考に \"引用符\" と <タグ> と & を含む"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

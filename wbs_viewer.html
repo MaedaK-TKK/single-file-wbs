@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WBS Viewer</title>
+<style>
+  :root{
+    --day-w:22px; --row-h:30px; --header-h:48px;
+    --border:#d7dbe0; --grid:#eceef1; --weekend:#f4f5f7;
+    --text:#1f2430; --muted:#6b7280;
+    --plan:#bcd0f7; --actual:#2f6fed; --pplan:#d9cdf5; --pactual:#7c3aed;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:-apple-system,"Segoe UI","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;
+       color:var(--text);background:#f7f8fa;display:flex;flex-direction:column;font-size:12px}
+  #topbar{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;
+          background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  #topbar .title{font-weight:700;font-size:14px;margin-right:4px}
+  #topbar button{font:inherit;padding:5px 10px;border:1px solid var(--border);background:#fff;border-radius:6px;cursor:pointer}
+  #topbar button.primary{background:#2563eb;color:#fff;border-color:#2563eb}
+  #drop{padding:5px 10px;border:1px dashed #aab;border-radius:6px;color:var(--muted)}
+  #drop.over{background:#eef4ff;border-color:#2563eb;color:#2563eb}
+  #stat{margin-left:auto;color:var(--muted);text-align:right;line-height:1.4}
+  #stat b{color:var(--text)}
+  #main{flex:1 1 auto;display:flex;min-height:0;background:#fff}
+  #left{flex:0 0 auto;overflow-y:auto;overflow-x:hidden;border-right:2px solid var(--border)}
+  #left::-webkit-scrollbar{display:none} #left{scrollbar-width:none}
+  #right{flex:1 1 auto;overflow:auto;position:relative}
+  .head{height:var(--header-h);position:sticky;top:0;z-index:4;background:#eef0f3;border-bottom:2px solid var(--border)}
+  #leftHead{display:flex}
+  #leftHead .h{padding:4px 5px;border-right:1px solid var(--border);font-weight:600;
+               display:flex;align-items:center;justify-content:center;height:var(--header-h);white-space:nowrap}
+  .lrow{display:flex;height:var(--row-h);border-bottom:1px solid var(--grid)}
+  .lrow .c{padding:0 5px;border-right:1px solid var(--grid);display:flex;align-items:center;
+           overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .lrow .c.r{justify-content:flex-end;font-variant-numeric:tabular-nums}
+  .lrow .c.num{justify-content:flex-end;color:var(--muted)}
+  .lrow .c.note{color:var(--muted)}
+  .prow{background:#93acdf!important;font-weight:700;border-top:3px solid #3a5694;border-bottom:2px solid #3a5694}
+  .lvl0{background:#b9cdf2} .lvl1{background:#e3ebfb} .lvl2{background:#fff}
+  .lrow.lvl0{font-weight:700} .lrow.lvl1{font-weight:600}
+  .lrow.done{background:#d4dae1;color:#5f6772}
+  .lrow.done .nm{text-decoration:line-through}
+  .caret{display:inline-block;width:15px;color:#3b4654;user-select:none;text-align:center}
+  .caret-sp{display:inline-block;width:15px}
+  .clk{cursor:pointer}
+  #rightHead{position:sticky;top:0;z-index:4;background:#eef0f3;border-bottom:2px solid var(--border)}
+  #ym{display:flex;height:18px;border-bottom:1px solid var(--border)}
+  #ym .seg{border-right:1px solid #c8ccd2;font-size:11px;color:var(--muted);white-space:nowrap;
+           display:flex;align-items:center;justify-content:center;background:#e9ebef;overflow:hidden}
+  #dates{display:flex;height:30px}
+  #dates .d{width:var(--day-w);border-right:1px solid var(--grid);text-align:center;line-height:1.05;padding-top:3px;font-size:10px}
+  #dates .d.sat{background:#eef3fb}#dates .d.sun{background:#fbeef0}
+  #dates .d .dow{font-size:9px;color:var(--muted)}
+  #dates .d.sat .dow{color:#2563eb}#dates .d.sun .dow{color:#dc2626}
+  #rightBody{position:relative}
+  #ganttBg{position:absolute;top:0;left:0;z-index:0}
+  #ganttBg .we{position:absolute;top:0;bottom:0;background:var(--weekend)}
+  #ganttBg .mline{position:absolute;top:0;bottom:0;width:1px;background:#dfe2e6}
+  #grows{position:relative;z-index:1}
+  .grow{height:var(--row-h);border-bottom:1px solid var(--grid);position:relative}
+  .grow.prow{background:#93acdf;border-top:3px solid #3a5694;border-bottom:2px solid #3a5694}
+  .grow.lvl0{background:#b9cdf2} .grow.lvl1{background:#e3ebfb}
+  .grow.done{background:#d4dae1}
+  .bar{position:absolute;height:8px;border-radius:3px}
+  .bar.plan{top:5px;background:var(--plan)} .bar.actual{top:15px;background:var(--actual)}
+  .grow.parent .bar.plan{background:var(--pplan)} .grow.parent .bar.actual{background:var(--pactual)}
+  .grow.done .bar.actual{opacity:.55}
+  .pspan{position:absolute;top:12px;height:6px;border-radius:3px;background:#5b78bd}
+  #overlay{position:absolute;top:0;left:0;z-index:2;pointer-events:none}
+  #empty{padding:40px;color:var(--muted);text-align:center;width:100%}
+</style>
+</head>
+<body>
+  <div id="topbar">
+    <span class="title">WBS Viewer</span>
+    <button id="openBtn" class="primary">ファイルを開く</button>
+    <span id="drop">ここに wbs.json を D&amp;D</span>
+    <button id="refreshBtn">更新</button>
+    <button id="expandAll">全展開</button>
+    <button id="collapseAll">全たたみ</button>
+    <input id="fallbackInput" type="file" accept=".json,application/json" hidden>
+    <span id="stat">未読み込み</span>
+  </div>
+  <div id="main">
+    <div id="empty">「ファイルを開く」または D&amp;D で <b>wbs.json</b> を読み込んでください（Chrome）。</div>
+    <div id="left" style="display:none"><div id="leftHead" class="head"></div><div id="leftRows"></div></div>
+    <div id="right" style="display:none"><div id="rightHead"></div><div id="rightBody"></div></div>
+  </div>
+
+<script>
+"use strict";
+(function(){
+  const DAY_W=22, ROW_H=30, DAY_MS=86400000;
+  const WD=["日","月","火","水","木","金","土"];
+  const COLS=[
+    {key:"no",label:"No.",w:48,cls:"num"},
+    {key:"name",label:"作業項目",w:200,cls:"name"},
+    {key:"qty",label:"数量",w:40,cls:"r"},
+    {key:"hrs",label:"時間",w:44,cls:"r"},
+    {key:"work",label:"工数(人日)",w:76,cls:"r"},
+    {key:"asg",label:"担当",w:64,cls:""},
+    {key:"ps",label:"予定開始",w:64,cls:""},
+    {key:"pe",label:"予定終了",w:64,cls:""},
+    {key:"as",label:"実績開始",w:64,cls:""},
+    {key:"ae",label:"実績終了",w:64,cls:""},
+    {key:"prog",label:"進捗",w:48,cls:"r"},
+    {key:"note",label:"備考",w:200,cls:"note"},
+  ];
+  const INFO_W=COLS.reduce((s,c)=>s+c.w,0);
+  let fileHandle=null, lock=false, lastData=null, pendingCenter=true;
+  const collapsed=new Set();   // 折りたたみ状態（キー）
+
+  const parse=s=>new Date(s+"T00:00:00Z");
+  const diff=(a,b)=>Math.round((parse(b)-parse(a))/DAY_MS);
+  const isDate=s=>typeof s==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(parse(s).getTime());
+  const addStr=(s,d)=>new Date(parse(s).getTime()+d*DAY_MS).toISOString().slice(0,10);
+  const minStr=a=>{a=a.filter(Boolean);return a.length?a.slice().sort()[0]:null;};
+  const maxStr=a=>{a=a.filter(Boolean);return a.length?a.slice().sort()[a.length-1]:null;};
+  const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+  const mdSlash=s=>s?(parse(s).getUTCMonth()+1)+"/"+parse(s).getUTCDate():"";
+  const fmtLoad=v=>{const r=Math.round(v*10)/10;return Number.isInteger(r)?String(r):r.toFixed(1);};
+  const esc=s=>(s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+  const todayStr=()=>{const n=new Date();return new Date(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())).toISOString().slice(0,10);};
+
+  const isColor=s=>typeof s==="string"&&/^#[0-9a-fA-F]{3,8}$/.test(s);
+  function normalizeProjects(d){
+    if(!d||typeof d!=="object")return [];                         // null等の非オブジェクト→空
+    if(Array.isArray(d.projects))return d.projects.filter(p=>p&&typeof p==="object");
+    return [{name:d.project||"WBS",milestones:d.milestones||[],tasks:d.tasks||[]}];
+  }
+  function leavesOf(tasks){const out=[];(function c(ns){for(const n of ns){if(n._leaf)out.push(n);else c(n.children);}})(tasks||[]);return out;}
+  function computeNode(n,TODAY){
+    if(n.children&&n.children.length){
+      const cs=n.children.map(c=>computeNode(c,TODAY));
+      const load=cs.reduce((s,c)=>s+c.load,0);
+      const progress=load?cs.reduce((s,c)=>s+c.progress*c.load,0)/load:0;
+      const calc={load,progress,isLeaf:false,allDone:cs.every(c=>c.allDone),  // 全子が実完了
+        planStart:minStr(cs.map(c=>c.planStart)),planEnd:maxStr(cs.map(c=>c.planEnd)),
+        actualStart:minStr(cs.map(c=>c.actualStart)),actualEnd:maxStr(cs.map(c=>c.actualEnd)),
+        actualEndEff:maxStr(cs.map(c=>c.actualEndEff))};
+      n._calc=calc;n._leaf=false;return calc;
+    }
+    const p=n.plan||{},a=n.actual||{};
+    const ps=isDate(p.start)?p.start:null, pe=isDate(p.end)?p.end:null;     // 不正日付は無視
+    const as=isDate(a.start)?a.start:null, ae=isDate(a.end)?a.end:null;
+    const load=(Number(n.qty)||0)*(Number(n.hours)||0)/8;
+    let progress=0,actualEndEff=null;
+    if(as){actualEndEff=ae||TODAY;
+      if(ae)progress=100;
+      else if(ps&&pe){let dur=diff(ps,pe);if(!(dur>=1))dur=1;progress=clamp(diff(as,TODAY)/dur*100,0,100);}
+      else progress=0;}                                                      // plan欠損の進行中→0%（NaN回避）
+    const calc={load,progress,isLeaf:true,allDone:!!ae,planStart:ps,planEnd:pe,  // 実績終了あり=完了
+      actualStart:as,actualEnd:ae,actualEndEff};
+    n._calc=calc;n._leaf=true;return calc;
+  }
+
+  function render(data){
+    const scrollKeep={left:document.getElementById("right").scrollLeft,
+                      top:document.getElementById("right").scrollTop};   // スクロール位置を保持
+    const TODAY=todayStr();
+    const projects=normalizeProjects(data);
+    const ms=[], rows=[];
+    projects.forEach(proj=>{
+      (proj.tasks||[]).forEach(n=>computeNode(n,TODAY));
+      const lv=leavesOf(proj.tasks);
+      const load=lv.reduce((s,n)=>s+n._calc.load,0);
+      const prog=load?lv.reduce((s,n)=>s+n._calc.progress*n._calc.load,0)/load:0;
+      const pkey="P|"+proj.name, pcol=collapsed.has(pkey);
+      rows.push({kind:"proj",name:proj.name,load,prog,key:pkey,collapsible:true,collapsed:pcol,terminal:pcol,
+        planStart:minStr(lv.map(n=>n._calc.planStart)),planEnd:maxStr(lv.map(n=>n._calc.planEnd))});
+      (proj.milestones||[]).forEach(m=>ms.push(m));
+      if(pcol)return;
+      (function walk(ns,depth){for(const n of ns){
+        const hasCh=!!(n.children&&n.children.length), key="T|"+proj.name+"|"+n.id, col=hasCh&&collapsed.has(key);
+        rows.push({kind:"task",node:n,depth,key,collapsible:hasCh,collapsed:col,terminal:!hasCh||col});
+        if(hasCh&&!col)walk(n.children,depth+1);
+      }})(proj.tasks||[],0);
+    });
+
+    // レンジ
+    const ds=[];
+    rows.forEach(r=>{const c=r.kind==="task"?r.node._calc:r;
+      [c.planStart,c.planEnd].forEach(d=>d&&ds.push(d));
+      if(r.kind==="task"){[c.actualStart,c.actualEndEff].forEach(d=>d&&ds.push(d));}});
+    ms.forEach(m=>isDate(m.date)&&ds.push(m.date)); ds.push(TODAY);
+    const rangeStart=minStr(ds)||TODAY, rangeEnd=maxStr(ds)||TODAY;
+    const totalDays=diff(rangeStart,rangeEnd)+1, ganttW=totalDays*DAY_W;
+    const xOf=d=>diff(rangeStart,d)*DAY_W, centerOf=d=>xOf(d)+DAY_W/2, barW=(s,e)=>(diff(s,e)+1)*DAY_W;
+    const xToday=centerOf(TODAY);
+
+    const allLeaves=[]; projects.forEach(p=>allLeaves.push(...leavesOf(p.tasks)));
+    const totalLoad=allLeaves.reduce((s,n)=>s+n._calc.load,0);
+    const overall=totalLoad?Math.round(allLeaves.reduce((s,n)=>s+n._calc.progress*n._calc.load,0)/totalLoad):0;
+
+    let lh=""; COLS.forEach(c=>lh+=`<div class="h" style="width:${c.w}px">${esc(c.label)}</div>`);
+    let ym="",i=0;
+    while(i<totalDays){const key=addStr(rangeStart,i).slice(0,7);let j=i;
+      while(j<totalDays&&addStr(rangeStart,j).slice(0,7)===key)j++;
+      ym+=`<div class="seg" style="width:${(j-i)*DAY_W}px">${key.slice(0,4)}年${parseInt(key.slice(5,7),10)}月</div>`;i=j;}
+    let dc="";
+    for(let k=0;k<totalDays;k++){const dsx=addStr(rangeStart,k),dow=parse(dsx).getUTCDay();
+      const cls=dow===0?"sun":dow===6?"sat":"";
+      dc+=`<div class="d ${cls}"><div>${parse(dsx).getUTCDate()}</div><div class="dow">${WD[dow]}</div></div>`;}
+    let bg="";
+    for(let k=0;k<totalDays;k++){const dsx=addStr(rangeStart,k),dow=parse(dsx).getUTCDay();
+      if(dow===0||dow===6)bg+=`<div class="we" style="left:${k*DAY_W}px;width:${DAY_W}px"></div>`;
+      if(dsx.slice(8,10)==="01"&&k>0)bg+=`<div class="mline" style="left:${k*DAY_W}px"></div>`;}
+
+    const sym=(r)=>r.collapsible
+      ?`<span class="caret">${r.collapsed?"▶":"▼"}</span>`:`<span class="caret-sp"></span>`;
+
+    let lrows="",grows="",pts=[[xToday,0]];
+    rows.forEach((r,idx)=>{
+      if(r.kind==="proj"){
+        let info="";
+        COLS.forEach(col=>{let v="";
+          if(col.key==="no")v="◆";
+          else if(col.key==="name")v=`<span class="clk" data-collapse="${esc(r.key)}">${sym(r)}<b>${esc(r.name)}</b></span>`;
+          else if(col.key==="work")v=esc(fmtLoad(r.load));
+          else if(col.key==="prog")v=Math.round(r.prog)+"%";
+          else if(col.key==="ps")v=esc(mdSlash(r.planStart));
+          else if(col.key==="pe")v=esc(mdSlash(r.planEnd));
+          info+=`<div class="c ${col.cls}" style="width:${col.w}px">${v}</div>`;});
+        lrows+=`<div class="lrow prow">${info}</div>`;
+        const span=r.planStart&&r.planEnd?`<div class="pspan" style="left:${xOf(r.planStart)}px;width:${barW(r.planStart,r.planEnd)}px"></div>`:"";
+        grows+=`<div class="grow prow">${span}</div>`;
+      }else{
+        const n=r.node,c=n._calc,leaf=n._leaf;
+        const inProg=leaf&&c.actualStart&&!c.actualEnd, done=c.allDone;  // 完了=実績終了あり（集計は全子完了）
+        let info="";
+        COLS.forEach(col=>{let v="";
+          switch(col.key){
+            case"no":v=esc(n.id);break;
+            case"name":{const body=`${sym(r)}${done?"✓ ":""}<span class="nm">${esc(n.name)}</span>`;
+              v=r.collapsible
+                ?`<span style="padding-left:${r.depth*15}px"><span class="clk" data-collapse="${esc(r.key)}">${body}</span></span>`
+                :`<span style="padding-left:${r.depth*15}px">${body}</span>`;break;}
+            case"qty":v=leaf?esc(n.qty):"";break;
+            case"hrs":v=leaf?esc(n.hours):"";break;
+            case"work":v=c.load?esc(fmtLoad(c.load)):"";break;
+            case"asg":v=leaf?esc(n.assignee||""):"";break;
+            case"ps":v=esc(mdSlash(c.planStart));break;
+            case"pe":v=esc(mdSlash(c.planEnd));break;
+            case"as":v=esc(c.actualStart?mdSlash(c.actualStart):"—");break;
+            case"ae":v=esc(c.actualEnd?mdSlash(c.actualEnd):(inProg?"進行中":"—"));break;
+            case"prog":v=Math.round(c.progress)+"%";break;
+            case"note":v=leaf?esc(n.note||""):"";break;
+          }
+          let tip="";
+          if(col.key==="name")tip=` title="${esc(n.name)}"`;
+          else if(col.key==="note"&&leaf&&n.note)tip=` title="${esc(n.note)}"`;
+          info+=`<div class="c ${col.cls}" style="width:${col.w}px"${tip}>${v}</div>`;});
+        const lvl=`lvl${Math.min(r.depth,2)}`;
+        lrows+=`<div class="lrow ${leaf?"leaf":"parent"} ${lvl} ${done?"done":""}">${info}</div>`;
+        let bars="";
+        if(c.planStart&&c.planEnd)bars+=`<div class="bar plan" style="left:${xOf(c.planStart)}px;width:${barW(c.planStart,c.planEnd)}px"></div>`;
+        if(c.actualStart&&c.actualEndEff)bars+=`<div class="bar actual" style="left:${xOf(c.actualStart)}px;width:${barW(c.actualStart,c.actualEndEff)}px"></div>`;
+        grows+=`<div class="grow ${leaf?"leaf":"parent"} ${lvl} ${done?"done":""}">${bars}</div>`;
+      }
+      // イナズマ点：terminal行（リーフ or 折りたたみ済ノード）。進行中=進捗位置 / 完了・未着手=本日線
+      if(r.terminal){
+        const c=r.kind==="task"?r.node._calc:r, prog=r.kind==="task"?c.progress:r.prog;
+        let px=xToday;
+        if(prog>0&&prog<100&&c.planStart&&c.planEnd){
+          const dur=Math.max(diff(c.planStart,c.planEnd),1);
+          px=(diff(rangeStart,c.planStart)+dur*(prog/100))*DAY_W+DAY_W/2;
+        }
+        pts.push([clamp(px,0,ganttW),idx*ROW_H+ROW_H/2]);
+      }
+    });
+    const rowsH=rows.length*ROW_H;
+    pts.push([xToday,rowsH]);
+
+    let svg="";
+    ms.forEach(m=>{if(!isDate(m.date)||m.date<rangeStart||m.date>rangeEnd)return;
+      const x=centerOf(m.date),col=isColor(m.color)?m.color:"#a855f7";   // 色は#hexのみ許可（注入防止）
+      svg+=`<line x1="${x}" y1="0" x2="${x}" y2="${rowsH}" stroke="${col}" stroke-width="1.5" stroke-dasharray="4 3"></line>`
+         +`<rect x="${x+2}" y="1" width="${Math.max(28,m.label.length*11)}" height="14" rx="2" fill="${col}"></rect>`
+         +`<text x="${x+5}" y="12" font-size="10" fill="#fff">${esc(m.label)}</text>`;});
+    svg+=`<polyline points="${pts.map(p=>p[0].toFixed(1)+","+p[1]).join(" ")}" fill="none" stroke="#e11d48" stroke-width="1.8" stroke-linejoin="round"></polyline>`;
+    pts.slice(1,-1).forEach(p=>svg+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1]}" r="2.5" fill="#e11d48"></circle>`);
+
+    document.getElementById("leftHead").innerHTML=lh;
+    document.getElementById("leftRows").innerHTML=lrows;
+    document.getElementById("left").style.width=INFO_W+"px";
+    const rh=document.getElementById("rightHead"); rh.className="head"; rh.style.width=ganttW+"px";
+    rh.innerHTML=`<div id="ym">${ym}</div><div id="dates">${dc}</div>`;
+    const rb=document.getElementById("rightBody"); rb.style.width=ganttW+"px"; rb.style.height=rowsH+"px";
+    rb.innerHTML=`<div id="ganttBg" style="width:${ganttW}px;height:${rowsH}px">${bg}</div>`
+      +`<div id="grows">${grows}</div>`
+      +`<svg id="overlay" width="${ganttW}" height="${rowsH}" viewBox="0 0 ${ganttW} ${rowsH}">${svg}</svg>`;
+    document.getElementById("empty").style.display="none";
+    document.getElementById("left").style.display="block";
+    document.getElementById("right").style.display="block";
+    document.getElementById("stat").innerHTML=
+      `${projects.length}プロジェクト ／ 総工数 <b>${fmtLoad(totalLoad)}人日</b> ／ 全体進捗 <b>${overall}%</b>`
+      +`<br>読込: ${new Date().toLocaleString("ja-JP")}（本日 ${TODAY}）`;
+    const rEl=document.getElementById("right"), lEl=document.getElementById("left");
+    const maxLeft=Math.max(0,ganttW-rEl.clientWidth);
+    // 初回/新規読込のみ本日へセンタリング。折りたたみ・更新ではスクロール位置を保持
+    rEl.scrollLeft=pendingCenter?clamp(xToday-rEl.clientWidth/2,0,maxLeft):Math.min(scrollKeep.left,maxLeft);
+    rEl.scrollTop=scrollKeep.top; lEl.scrollTop=rEl.scrollTop;
+    pendingCenter=false;
+  }
+  function applyData(data,isNew){
+    lastData=data;
+    if(isNew){collapsed.clear();pendingCenter=true;}   // 新規ファイルは折りたたみリセット＆センタリング
+    render(data);
+  }
+  function loadText(txt,isNew){try{applyData(JSON.parse(txt),isNew);}catch(e){alert("JSON読み込み失敗: "+e.message);}}
+  function renderData(data){applyData(data,true);}      // 直接/テスト呼び出し＝新規扱い
+  window.renderData=renderData;
+
+  const left=document.getElementById("left"), right=document.getElementById("right");
+  right.addEventListener("scroll",()=>{if(lock)return;lock=true;left.scrollTop=right.scrollTop;lock=false;});
+  left.addEventListener("scroll",()=>{if(lock)return;lock=true;right.scrollTop=left.scrollTop;lock=false;});
+  // 折りたたみ（イベント委譲）
+  document.getElementById("leftRows").addEventListener("click",e=>{
+    const t=e.target.closest("[data-collapse]"); if(!t)return;
+    const k=t.getAttribute("data-collapse");
+    collapsed.has(k)?collapsed.delete(k):collapsed.add(k);
+    if(lastData)render(lastData);
+  });
+  document.getElementById("expandAll").addEventListener("click",()=>{collapsed.clear();if(lastData)render(lastData);});
+  document.getElementById("collapseAll").addEventListener("click",()=>{
+    if(!lastData)return;
+    normalizeProjects(lastData).forEach(p=>collapsed.add("P|"+p.name));
+    render(lastData);
+  });
+
+  async function loadFromHandle(h,isNew){fileHandle=h;const f=await h.getFile();loadText(await f.text(),isNew);}
+  async function openPicker(){
+    if(window.showOpenFilePicker){
+      try{const[h]=await window.showOpenFilePicker({types:[{description:"JSON",accept:{"application/json":[".json"]}}]});await loadFromHandle(h,true);}
+      catch(e){if(e&&e.name!=="AbortError")alert("読み込み失敗: "+e.message);}
+    }else document.getElementById("fallbackInput").click();
+  }
+  async function refresh(){
+    if(fileHandle){try{await loadFromHandle(fileHandle,false);}catch(e){alert("更新失敗: "+e.message);}}  // 更新は折りたたみ/位置を維持
+    else alert("先に「ファイルを開く」または D&D で読み込んでください。");
+  }
+  document.getElementById("openBtn").addEventListener("click",openPicker);
+  document.getElementById("refreshBtn").addEventListener("click",refresh);
+  document.getElementById("fallbackInput").addEventListener("change",async e=>{
+    const f=e.target.files[0];if(f){fileHandle=null;loadText(await f.text(),true);}});
+  const drop=document.getElementById("drop");
+  ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+  ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
+  document.addEventListener("dragover",e=>e.preventDefault());
+  document.addEventListener("drop",e=>e.preventDefault());
+  drop.addEventListener("drop",async e=>{
+    const it=e.dataTransfer.items&&e.dataTransfer.items[0];
+    if(it&&it.getAsFileSystemHandle){try{const h=await it.getAsFileSystemHandle();if(h.kind==="file"){await loadFromHandle(h,true);return;}}catch(_){}}
+    const f=e.dataTransfer.files[0];if(f){fileHandle=null;loadText(await f.text(),true);}});
+})();
+</script>
+</body>
+</html>

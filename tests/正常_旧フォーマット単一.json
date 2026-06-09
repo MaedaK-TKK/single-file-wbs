@@ -1,0 +1,72 @@
+{
+  "project": "レガシ単一プロジェクト",
+  "milestones": [
+    {
+      "date": "2026-06-30",
+      "label": "納品",
+      "color": "#ef4444"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "name": "設計",
+      "children": [
+        {
+          "id": "1.1",
+          "name": "基本設計",
+          "qty": 1,
+          "hours": 40,
+          "assignee": "佐藤",
+          "plan": {
+            "start": "2026-05-25",
+            "end": "2026-06-03"
+          },
+          "actual": {
+            "start": "2026-05-25",
+            "end": "2026-06-04"
+          },
+          "note": "完了"
+        },
+        {
+          "id": "1.2",
+          "name": "詳細設計",
+          "qty": 1,
+          "hours": 32,
+          "assignee": "鈴木",
+          "plan": {
+            "start": "2026-06-04",
+            "end": "2026-06-17"
+          },
+          "actual": {
+            "start": "2026-06-04",
+            "end": null
+          },
+          "note": "進行中"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "実装",
+      "children": [
+        {
+          "id": "2.1",
+          "name": "コーディング",
+          "qty": 2,
+          "hours": 40,
+          "assignee": "佐藤",
+          "plan": {
+            "start": "2026-06-18",
+            "end": "2026-07-03"
+          },
+          "actual": {
+            "start": null,
+            "end": null
+          },
+          "note": "未着手"
+        }
+      ]
+    }
+  ]
+}

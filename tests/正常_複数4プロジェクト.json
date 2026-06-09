@@ -1,0 +1,508 @@
+{
+  "projects": [
+    {
+      "name": "プロジェクトA",
+      "milestones": [
+        {
+          "date": "2026-06-15",
+          "label": "完了",
+          "color": "#a855f7"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "フェーズ1",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "作業1-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-04-05",
+                "end": "2026-04-13"
+              },
+              "actual": {
+                "start": "2026-04-05",
+                "end": "2026-04-13"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "1.2",
+              "name": "作業1-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-04-09",
+                "end": "2026-04-17"
+              },
+              "actual": {
+                "start": "2026-04-09",
+                "end": "2026-04-17"
+              },
+              "note": "完了"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "name": "フェーズ2",
+          "children": [
+            {
+              "id": "2.1",
+              "name": "作業2-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-04-17",
+                "end": "2026-04-25"
+              },
+              "actual": {
+                "start": "2026-04-20",
+                "end": "2026-04-28"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "2.2",
+              "name": "作業2-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-04-21",
+                "end": "2026-04-29"
+              },
+              "actual": {
+                "start": "2026-04-21",
+                "end": "2026-04-29"
+              },
+              "note": "完了"
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "name": "フェーズ3",
+          "children": [
+            {
+              "id": "3.1",
+              "name": "作業3-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-04-29",
+                "end": "2026-05-07"
+              },
+              "actual": {
+                "start": "2026-04-29",
+                "end": "2026-05-07"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "3.2",
+              "name": "作業3-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-05-03",
+                "end": "2026-05-11"
+              },
+              "actual": {
+                "start": "2026-05-03",
+                "end": "2026-05-11"
+              },
+              "note": "完了"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "プロジェクトB",
+      "milestones": [
+        {
+          "date": "2026-07-10",
+          "label": "完了",
+          "color": "#f59e0b"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "フェーズ1",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "作業1-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-05-05",
+                "end": "2026-05-13"
+              },
+              "actual": {
+                "start": "2026-05-05",
+                "end": "2026-05-13"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "1.2",
+              "name": "作業1-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-05-09",
+                "end": "2026-05-17"
+              },
+              "actual": {
+                "start": "2026-05-09",
+                "end": "2026-05-17"
+              },
+              "note": "完了"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "name": "フェーズ2",
+          "children": [
+            {
+              "id": "2.1",
+              "name": "作業2-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-05-17",
+                "end": "2026-05-25"
+              },
+              "actual": {
+                "start": "2026-05-20",
+                "end": "2026-05-28"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "2.2",
+              "name": "作業2-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-05-21",
+                "end": "2026-05-29"
+              },
+              "actual": {
+                "start": "2026-05-21",
+                "end": "2026-05-29"
+              },
+              "note": "完了"
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "name": "フェーズ3",
+          "children": [
+            {
+              "id": "3.1",
+              "name": "作業3-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-05-29",
+                "end": "2026-06-06"
+              },
+              "actual": {
+                "start": "2026-05-29",
+                "end": "2026-06-06"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "3.2",
+              "name": "作業3-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-06-02",
+                "end": "2026-06-10"
+              },
+              "actual": {
+                "start": "2026-06-02",
+                "end": null
+              },
+              "note": "進行中"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "プロジェクトC",
+      "milestones": [
+        {
+          "date": "2026-08-05",
+          "label": "完了",
+          "color": "#16a34a"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "フェーズ1",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "作業1-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-06-05",
+                "end": "2026-06-13"
+              },
+              "actual": {
+                "start": "2026-06-05",
+                "end": null
+              },
+              "note": "進行中"
+            },
+            {
+              "id": "1.2",
+              "name": "作業1-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-06-09",
+                "end": "2026-06-17"
+              },
+              "actual": {
+                "start": "2026-06-09",
+                "end": null
+              },
+              "note": "進行中"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "name": "フェーズ2",
+          "children": [
+            {
+              "id": "2.1",
+              "name": "作業2-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-06-17",
+                "end": "2026-06-25"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "2.2",
+              "name": "作業2-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-06-21",
+                "end": "2026-06-29"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "name": "フェーズ3",
+          "children": [
+            {
+              "id": "3.1",
+              "name": "作業3-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-06-29",
+                "end": "2026-07-07"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "3.2",
+              "name": "作業3-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-07-03",
+                "end": "2026-07-11"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "プロジェクトD",
+      "milestones": [
+        {
+          "date": "2026-09-01",
+          "label": "完了",
+          "color": "#ef4444"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "フェーズ1",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "作業1-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-07-05",
+                "end": "2026-07-13"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "1.2",
+              "name": "作業1-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-07-09",
+                "end": "2026-07-17"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "name": "フェーズ2",
+          "children": [
+            {
+              "id": "2.1",
+              "name": "作業2-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-07-17",
+                "end": "2026-07-25"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "2.2",
+              "name": "作業2-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-07-21",
+                "end": "2026-07-29"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "name": "フェーズ3",
+          "children": [
+            {
+              "id": "3.1",
+              "name": "作業3-1",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "担当X",
+              "plan": {
+                "start": "2026-07-29",
+                "end": "2026-08-06"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "3.2",
+              "name": "作業3-2",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "担当Y",
+              "plan": {
+                "start": "2026-08-02",
+                "end": "2026-08-10"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

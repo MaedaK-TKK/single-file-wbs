@@ -1,0 +1,63 @@
+{
+  "projects": [
+    {
+      "name": "壊れMS・重複ID",
+      "milestones": [
+        {
+          "date": "2030-01-01",
+          "label": "範囲外(描画されない)",
+          "color": "#ef4444"
+        },
+        {
+          "date": "2026-06-10",
+          "label": "色なしMS"
+        },
+        {
+          "date": "範囲",
+          "label": "不正日付MS(無視)",
+          "color": "#000"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "重複IDテスト",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "重複ID その1",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "A",
+              "plan": {
+                "start": "2026-06-03",
+                "end": "2026-06-07"
+              },
+              "actual": {
+                "start": "2026-06-03",
+                "end": "2026-06-07"
+              },
+              "note": "同じid=1.1"
+            },
+            {
+              "id": "1.1",
+              "name": "重複ID その2",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "B",
+              "plan": {
+                "start": "2026-06-08",
+                "end": "2026-06-12"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "折りたたみキー衝突"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

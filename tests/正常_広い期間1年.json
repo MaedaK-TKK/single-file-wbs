@@ -1,0 +1,229 @@
+{
+  "projects": [
+    {
+      "name": "通年プロジェクト",
+      "milestones": [
+        {
+          "date": "2026-03-31",
+          "label": "Q1",
+          "color": "#a855f7"
+        },
+        {
+          "date": "2026-06-30",
+          "label": "Q2",
+          "color": "#16a34a"
+        },
+        {
+          "date": "2026-09-30",
+          "label": "Q3",
+          "color": "#f59e0b"
+        },
+        {
+          "date": "2026-12-25",
+          "label": "Q4",
+          "color": "#ef4444"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "0",
+          "name": "年間タスク",
+          "children": [
+            {
+              "id": "1",
+              "name": "1月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-01-03",
+                "end": "2026-01-20"
+              },
+              "actual": {
+                "start": "2026-01-03",
+                "end": "2026-01-20"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "2",
+              "name": "2月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-02-03",
+                "end": "2026-02-20"
+              },
+              "actual": {
+                "start": "2026-02-03",
+                "end": "2026-02-20"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "3",
+              "name": "3月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-03-03",
+                "end": "2026-03-20"
+              },
+              "actual": {
+                "start": "2026-03-03",
+                "end": "2026-03-20"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "4",
+              "name": "4月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-04-03",
+                "end": "2026-04-20"
+              },
+              "actual": {
+                "start": "2026-04-03",
+                "end": "2026-04-20"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "5",
+              "name": "5月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-05-03",
+                "end": "2026-05-20"
+              },
+              "actual": {
+                "start": "2026-05-03",
+                "end": "2026-05-20"
+              },
+              "note": "完了"
+            },
+            {
+              "id": "6",
+              "name": "6月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-06-03",
+                "end": "2026-06-20"
+              },
+              "actual": {
+                "start": "2026-06-03",
+                "end": null
+              },
+              "note": "進行中"
+            },
+            {
+              "id": "7",
+              "name": "7月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-07-03",
+                "end": "2026-07-20"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "8",
+              "name": "8月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-08-03",
+                "end": "2026-08-20"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "9",
+              "name": "9月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-09-03",
+                "end": "2026-09-20"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "10",
+              "name": "10月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-10-03",
+                "end": "2026-10-20"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "11",
+              "name": "11月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-11-03",
+                "end": "2026-11-20"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            },
+            {
+              "id": "12",
+              "name": "12月の作業",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "通年",
+              "plan": {
+                "start": "2026-12-03",
+                "end": "2026-12-20"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "未着手"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

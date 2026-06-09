@@ -1,0 +1,75 @@
+{
+  "projects": [
+    {
+      "name": "欠損フィールド",
+      "milestones": [],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "欠損",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "qty/hours無し(工数空)",
+              "plan": {
+                "start": "2026-06-01",
+                "end": "2026-06-05"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              }
+            },
+            {
+              "id": "1.2",
+              "name": "plan無し(バー無し)",
+              "qty": 1,
+              "hours": 8,
+              "actual": {
+                "start": null,
+                "end": null
+              }
+            },
+            {
+              "id": "1.3",
+              "name": "plan日付null",
+              "qty": 1,
+              "hours": 8,
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              }
+            },
+            {
+              "id": "1.4",
+              "name": "進行中だがplan.end無し",
+              "qty": 1,
+              "hours": 8,
+              "plan": {
+                "start": "2026-06-01"
+              },
+              "actual": {
+                "start": "2026-06-05",
+                "end": null
+              }
+            },
+            {
+              "id": "1.5",
+              "name": "actual無し",
+              "qty": 1,
+              "hours": 8,
+              "plan": {
+                "start": "2026-06-15",
+                "end": "2026-06-20"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

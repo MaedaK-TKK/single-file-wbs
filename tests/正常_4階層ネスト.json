@@ -1,0 +1,44 @@
+{
+  "projects": [
+    {
+      "name": "4階層",
+      "milestones": [],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "L1",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "L2",
+              "children": [
+                {
+                  "id": "1.1.1",
+                  "name": "L3",
+                  "children": [
+                    {
+                      "id": "1.1.1.1",
+                      "name": "L4リーフ(色はL3扱い)",
+                      "qty": 1,
+                      "hours": 8,
+                      "assignee": "A",
+                      "plan": {
+                        "start": "2026-06-05",
+                        "end": "2026-06-10"
+                      },
+                      "actual": {
+                        "start": "2026-06-05",
+                        "end": null
+                      },
+                      "note": "4階層目"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

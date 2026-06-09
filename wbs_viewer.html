@@ -32,6 +32,13 @@
   #leftHead{display:flex}
   #leftHead .h{padding:4px 5px;border-right:1px solid var(--border);font-weight:600;
                display:flex;align-items:center;justify-content:center;height:var(--header-h);white-space:nowrap}
+  #leftHead .hg{height:var(--header-h);border-right:1px solid var(--border);display:flex;flex-direction:column}
+  #leftHead .hgt{height:50%;display:flex;align-items:center;justify-content:center;font-weight:600;
+                 border-bottom:1px solid var(--border)}
+  #leftHead .hgb{height:50%;display:flex}
+  #leftHead .hsub{display:flex;align-items:center;justify-content:center;font-weight:600;
+                  white-space:nowrap;border-right:1px solid var(--grid)}
+  #leftHead .hsub:last-child{border-right:none}
   .lrow{display:flex;height:var(--row-h);border-bottom:1px solid var(--grid)}
   .lrow .c{padding:0 5px;border-right:1px solid var(--grid);display:flex;align-items:center;
            overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
@@ -65,7 +72,7 @@
   .grow.lvl0{background:#b9cdf2} .grow.lvl1{background:#e3ebfb}
   .grow.done{background:#d4dae1}
   .bar{position:absolute;height:8px;border-radius:3px}
-  .bar.plan{top:5px;background:var(--plan)} .bar.actual{top:15px;background:var(--actual)}
+  .bar.plan{top:5px;background:var(--plan);box-shadow:inset 0 0 0 1px #6f8fd0} .bar.actual{top:15px;background:var(--actual)}
   .grow.parent .bar.plan{background:var(--pplan)} .grow.parent .bar.actual{background:var(--pactual)}
   .grow.done .bar.actual{opacity:.55}
   .pspan{position:absolute;top:12px;height:6px;border-radius:3px;background:#5b78bd}
@@ -102,11 +109,10 @@
     {key:"hrs",label:"時間",w:44,cls:"r"},
     {key:"work",label:"工数(人日)",w:76,cls:"r"},
     {key:"asg",label:"担当",w:64,cls:""},
-    {key:"ps",label:"予定開始",w:64,cls:""},
-    {key:"pe",label:"予定終了",w:64,cls:""},
-    {key:"as",label:"実績開始",w:64,cls:""},
-    {key:"ae",label:"実績終了",w:64,cls:""},
-    {key:"prog",label:"進捗",w:48,cls:"r"},
+    {key:"ps",label:"開始",group:"予定",w:64,cls:""},
+    {key:"pe",label:"終了",group:"予定",w:64,cls:""},
+    {key:"as",label:"開始",group:"実績",w:64,cls:""},
+    {key:"ae",label:"終了",group:"実績",w:64,cls:""},
     {key:"note",label:"備考",w:200,cls:"note"},
   ];
   const INFO_W=COLS.reduce((s,c)=>s+c.w,0);
@@ -170,7 +176,9 @@
       const prog=load?lv.reduce((s,n)=>s+n._calc.progress*n._calc.load,0)/load:0;
       const pkey="P|"+proj.name, pcol=collapsed.has(pkey);
       rows.push({kind:"proj",name:proj.name,load,prog,key:pkey,collapsible:true,collapsed:pcol,terminal:pcol,
-        planStart:minStr(lv.map(n=>n._calc.planStart)),planEnd:maxStr(lv.map(n=>n._calc.planEnd))});
+        planStart:minStr(lv.map(n=>n._calc.planStart)),planEnd:maxStr(lv.map(n=>n._calc.planEnd)),
+        actualStart:minStr(lv.map(n=>n._calc.actualStart)),actualEnd:maxStr(lv.map(n=>n._calc.actualEnd)),
+        allDone:lv.length>0&&lv.every(n=>n._calc.allDone)});                  // イナズマ線用（折りたたみ時の集約）
       (proj.milestones||[]).forEach(m=>ms.push(m));
       if(pcol)return;
       (function walk(ns,depth){for(const n of ns){
@@ -193,9 +201,15 @@
 
     const allLeaves=[]; projects.forEach(p=>allLeaves.push(...leavesOf(p.tasks)));
     const totalLoad=allLeaves.reduce((s,n)=>s+n._calc.load,0);
-    const overall=totalLoad?Math.round(allLeaves.reduce((s,n)=>s+n._calc.progress*n._calc.load,0)/totalLoad):0;
 
-    let lh=""; COLS.forEach(c=>lh+=`<div class="h" style="width:${c.w}px">${esc(c.label)}</div>`);
+    let lh="";                                                   // グループ列（予定/実績）は2段見出し
+    for(let i=0;i<COLS.length;i++){const c=COLS[i];
+      if(c.group){let sub="",w=0,j=i;
+        while(j<COLS.length&&COLS[j].group===c.group){sub+=`<div class="hsub" style="width:${COLS[j].w}px">${esc(COLS[j].label)}</div>`;w+=COLS[j].w;j++;}
+        lh+=`<div class="hg" style="width:${w}px"><div class="hgt">${esc(c.group)}</div><div class="hgb">${sub}</div></div>`;
+        i=j-1;
+      }else lh+=`<div class="h" style="width:${c.w}px">${esc(c.label)}</div>`;
+    }
     let ym="",i=0;
     while(i<totalDays){const key=addStr(rangeStart,i).slice(0,7);let j=i;
       while(j<totalDays&&addStr(rangeStart,j).slice(0,7)===key)j++;
@@ -220,7 +234,6 @@
           if(col.key==="no")v="◆";
           else if(col.key==="name")v=`<span class="clk" data-collapse="${esc(r.key)}">${sym(r)}<b>${esc(r.name)}</b></span>`;
           else if(col.key==="work")v=esc(fmtLoad(r.load));
-          else if(col.key==="prog")v=Math.round(r.prog)+"%";
           else if(col.key==="ps")v=esc(mdSlash(r.planStart));
           else if(col.key==="pe")v=esc(mdSlash(r.planEnd));
           info+=`<div class="c ${col.cls}" style="width:${col.w}px">${v}</div>`;});
@@ -246,7 +259,6 @@
             case"pe":v=esc(mdSlash(c.planEnd));break;
             case"as":v=esc(c.actualStart?mdSlash(c.actualStart):"—");break;
             case"ae":v=esc(c.actualEnd?mdSlash(c.actualEnd):(inProg?"進行中":"—"));break;
-            case"prog":v=Math.round(c.progress)+"%";break;
             case"note":v=leaf?esc(n.note||""):"";break;
           }
           let tip="";
@@ -260,13 +272,16 @@
         if(c.actualStart&&c.actualEndEff)bars+=`<div class="bar actual" style="left:${xOf(c.actualStart)}px;width:${barW(c.actualStart,c.actualEndEff)}px"></div>`;
         grows+=`<div class="grow ${leaf?"leaf":"parent"} ${lvl} ${done?"done":""}">${bars}</div>`;
       }
-      // イナズマ点：terminal行（リーフ or 折りたたみ済ノード）。進行中=進捗位置 / 完了・未着手=本日線
+      // イナズマ点：terminal行（リーフ or 折りたたみ済ノード）。
+      //   完了=本日線 / 未着手で予定開始超過=予定開始日(左,着手遅延) /
+      //   期限超過で未完了=予定終了日(左,終了遅延) / 進行中(期限内)=本日線
       if(r.terminal){
-        const c=r.kind==="task"?r.node._calc:r, prog=r.kind==="task"?c.progress:r.prog;
+        const c=r.kind==="task"?r.node._calc:r;
         let px=xToday;
-        if(prog>0&&prog<100&&c.planStart&&c.planEnd){
-          const dur=Math.max(diff(c.planStart,c.planEnd),1);
-          px=(diff(rangeStart,c.planStart)+dur*(prog/100))*DAY_W+DAY_W/2;
+        if(!c.allDone){
+          if(c.actualStart&&c.planEnd&&TODAY>c.planEnd)px=centerOf(c.planEnd);              // 終了遅延：期限超過で未完了
+          else if(!c.actualStart&&c.planStart&&TODAY>c.planStart)px=centerOf(c.planStart);  // 着手遅延：未着手で予定開始超過
+          // 進行中（期限内）は本日線（着手ズレは表示しない）
         }
         pts.push([clamp(px,0,ganttW),idx*ROW_H+ROW_H/2]);
       }
@@ -296,7 +311,7 @@
     document.getElementById("left").style.display="block";
     document.getElementById("right").style.display="block";
     document.getElementById("stat").innerHTML=
-      `${projects.length}プロジェクト ／ 総工数 <b>${fmtLoad(totalLoad)}人日</b> ／ 全体進捗 <b>${overall}%</b>`
+      `${projects.length}プロジェクト ／ 総工数 <b>${fmtLoad(totalLoad)}人日</b>`
       +`<br>読込: ${new Date().toLocaleString("ja-JP")}（本日 ${TODAY}）`;
     const rEl=document.getElementById("right"), lEl=document.getElementById("left");
     const maxLeft=Math.max(0,ganttW-rEl.clientWidth);

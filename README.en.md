@@ -28,7 +28,29 @@
 In day-to-day use you only touch the **actual dates**: set `actual.start` when work begins, `actual.end` when it finishes. Progress, effort, and the inazuma line are recomputed automatically.
 
 ### In-browser editing (optional)
-Besides text / AI editing, the **Edit** button lets you edit directly on screen (green = ON). It supports inline editing of every field (dates via picker), adding leaves (`＋` / the project row's `+Task`), deletion (`✕`, with confirmation), and reordering among siblings (`▲▼`). **Changes are autosaved to `wbs.json`** (save status is shown at the top right). When turning Edit ON, re-select the same `wbs.json` in the save dialog to grant write permission (once per Chrome session — follow the on-screen guidance). Drag-and-drop reordering, moving across parents, and automatic renumbering are out of scope; use JSON or AI editing for those.
+
+Besides text / AI editing, you can edit directly on screen.
+
+**⚠ Enabling edit mode requires re-selecting the file**
+
+When you press **Edit**, a **file save dialog opens immediately**. This is not a bug: for security, Chrome only grants a page write access to a file when **the user picks that file in a save dialog** (an unavoidable constraint of `file://`-based tools). Steps:
+
+1. Press the **Edit** button → a save dialog opens
+2. Select **the same `wbs.json` you currently have open** and press Save
+3. "Replace existing file?" → **Yes**
+4. When the Edit button turns **green**, you're ready
+
+You do **not** do this every time — only **once after starting Chrome** (required again after restarting Chrome). A yellow guidance bar at the top of the page walks you through it.
+
+**What you can do (while Edit is ON)**
+
+- **Edit any field in place** (task name, qty, hours, owner, notes; dates via a calendar picker)
+- **Add** tasks: row `＋` (insert below) / `+Task` on a project row
+- **Delete** tasks: `✕` (with confirmation; children included)
+- **Reorder**: `▲▼` (move up/down among siblings)
+- Changes are **autosaved to `wbs.json` ~0.4 s later**. The save status is always visible at the **top right** ("Saved 12:34:56" etc.)
+
+**Not supported** (edit the JSON directly or ask the AI): drag-and-drop reordering / moving to a different parent / automatic renumbering
 
 ![edit mode](docs/screenshot-edit.en.png)
 

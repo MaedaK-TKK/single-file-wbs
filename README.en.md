@@ -25,9 +25,15 @@
 3. Edit `wbs.json` and save → press **Reload** to reflect changes
 4. Click a project / phase name or `▼/▶` to collapse. **Expand all / Collapse all** buttons available
 
-In day-to-day use you only touch **dates**: set `actual.start` when work begins, `actual.end` when it finishes, and fix `plan.start` / `plan.end` when the plan changes. Progress, effort, and the inazuma line are recomputed automatically (never entered by hand).
+From **planning** (adding and restructuring tasks, setting and rescheduling dates) to **recording daily actuals** (`actual.start` when work begins, `actual.end` when it finishes), the whole WBS lifecycle happens in this tool. There are three ways to edit — use whichever you like:
 
-### In-browser editing (optional)
+1. **In-browser edit mode** (next section) — change things right on screen
+2. **Edit `wbs.json` directly** — any text editor, save → press **Reload**
+3. **Ask the AI (Claude Code)** — "mark X as done" (see below)
+
+Whichever way you choose, **progress, effort, and the inazuma line are never entered by hand** — they are always computed automatically. No spreadsheet-style formula or percent-complete maintenance, which is the whole point of this tool.
+
+## In-browser editing (optional)
 
 Besides text / AI editing, you can edit directly on screen.
 

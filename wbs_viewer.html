@@ -45,7 +45,7 @@
   .lrow .c.r{justify-content:flex-end;font-variant-numeric:tabular-nums}
   .lrow .c.num{justify-content:flex-end;color:var(--muted)}
   .lrow .c.note{color:var(--muted)}
-  .prow{background:#93acdf!important;font-weight:700;border-top:3px solid #3a5694;border-bottom:2px solid #3a5694}
+  .prow{background:#93acdf;font-weight:700;border-top:3px solid #3a5694;border-bottom:2px solid #3a5694}
   .lvl0{background:#b9cdf2} .lvl1{background:#e3ebfb} .lvl2{background:#fff}
   .lrow.lvl0{font-weight:700} .lrow.lvl1{font-weight:600}
   .lrow.done{background:#d4dae1;color:#5f6772}
@@ -59,7 +59,7 @@
   #leftRows .c.r input{text-align:right}
   .nmwrap{display:flex;align-items:center;gap:2px;width:100%;min-width:0;align-self:stretch}
   .nmwrap .clk.caret{align-self:stretch;display:flex;align-items:center;justify-content:center;width:20px}  /* 編集時の折りたたみは caret のみ＝行高いっぱいにヒット領域を拡大 */
-  .nm-in{flex:1 1 auto;width:auto!important}
+  #leftRows input.nm-in{flex:1 1 auto;width:auto}  /* #leftRows input{width:100%} のID詳細度に勝つためセレクタで上書き（!important回避） */
   .dn{color:#5f6772;flex:0 0 auto}
   .acts{display:inline-flex;gap:3px;flex:0 0 auto}
   .acts button{font:inherit;font-size:12px;line-height:1.3;padding:2px 6px;border:1px solid var(--border);
@@ -146,7 +146,7 @@
   const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
   const mdSlash=s=>s?(parse(s).getUTCMonth()+1)+"/"+parse(s).getUTCDate():"";
   const fmtLoad=v=>{const r=Math.round(v*10)/10;return Number.isInteger(r)?String(r):r.toFixed(1);};
-  const esc=s=>(s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+  const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
   const todayStr=()=>{const n=new Date();return new Date(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())).toISOString().slice(0,10);};
 
   const isColor=s=>typeof s==="string"&&/^#[0-9a-fA-F]{3,8}$/.test(s);
@@ -290,18 +290,18 @@
           }
           if(editMode){
             const P=esc(r.path), inp=(f,val,t)=>`<input data-path="${P}" data-field="${f}" type="${t}"${t==="number"?' step="any"':""} value="${esc(val)}">`;
-            if(col.key==="no")v=inp("id",n.id==null?"":n.id,"text");
+            if(col.key==="no")v=inp("id",n.id,"text");
             else if(col.key==="name"){
               const acts=`<span class="acts"><button data-act="up" data-path="${P}" title="上へ">▲</button>`
                 +`<button data-act="down" data-path="${P}" title="下へ">▼</button>`
                 +`<button data-act="add" data-path="${P}" title="下に作業を追加">＋</button>`
                 +`<button data-act="del" data-path="${P}" title="削除">✕</button></span>`;
               v=`<span class="nmwrap" style="padding-left:${r.depth*15}px">${sym(r,true)}${done?'<span class="dn">✓</span>':""}`
-                +`<input class="nm-in" data-path="${P}" data-field="name" type="text" value="${esc(n.name==null?'':n.name)}" title="${esc(n.name==null?'':n.name)}">${acts}</span>`;
+                +`<input class="nm-in" data-path="${P}" data-field="name" type="text" value="${esc(n.name)}" title="${esc(n.name)}">${acts}</span>`;
             }
             else if(leaf){
-              if(col.key==="qty")v=inp("qty",n.qty==null?"":n.qty,"number");
-              else if(col.key==="hrs")v=inp("hours",n.hours==null?"":n.hours,"number");
+              if(col.key==="qty")v=inp("qty",n.qty,"number");
+              else if(col.key==="hrs")v=inp("hours",n.hours,"number");
               else if(col.key==="asg")v=inp("assignee",n.assignee||"","text");
               else if(col.key==="ps")v=inp("ps",c.planStart||"","date");
               else if(col.key==="pe")v=inp("pe",c.planEnd||"","date");
@@ -339,9 +339,10 @@
     pts.push([xToday,rowsH]);
 
     let svg="";
+    // CSS変数(var(--x))はSVGのプレゼンテーション属性では解決されない → stroke/fill はリテラル色を書く
     ms.forEach(m=>{if(!isDate(m.date)||m.date<rangeStart||m.date>rangeEnd)return;
       const x=centerOf(m.date),col=isColor(m.color)?m.color:"#a855f7";   // 色は#hexのみ許可（注入防止）
-      const lbl=m.label==null?"":String(m.label);                        // label欠損でも落とさない
+      const lbl=String(m.label??"");                                     // label欠損でも落とさない
       svg+=`<line x1="${x}" y1="0" x2="${x}" y2="${rowsH}" stroke="${col}" stroke-width="1.5" stroke-dasharray="4 3"></line>`
          +`<rect x="${x+2}" y="1" width="${Math.max(28,lbl.length*11)}" height="14" rx="2" fill="${col}"></rect>`
          +`<text x="${x+5}" y="12" font-size="10" fill="#fff">${esc(lbl)}</text>`;});

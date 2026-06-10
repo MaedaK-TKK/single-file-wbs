@@ -177,5 +177,5 @@ Avoid the following when entering data (nothing crashes, but display degrades).
 - **Multi-line `note` values get flattened to one line** when touched in edit mode (inputs cannot hold line breaks).
 
 ## Notes
-- Chrome-only, file:// based (uses the File System Access API).
+- Chromium-based browsers (Chrome recommended), file:// based (uses the File System Access API).
 - If you don't want to publish real data, you may gitignore `wbs.json` (keep it local only). `wbs-archive-*.json` is ignored by default.

@@ -177,5 +177,5 @@
 - **複数行の `note` は編集モードで触ると1行に平坦化**される（input が改行を保持できない）。
 
 ## メモ
-- Chrome 専用・file:// 前提（File System Access API を使用）。
+- Chromium 系（Chrome 推奨）・file:// 前提（File System Access API を使用）。
 - 実データを公開したくない場合は `wbs.json` を gitignore してよい（中身は手元のみ）。`wbs-archive-*.json` は既定で無視。

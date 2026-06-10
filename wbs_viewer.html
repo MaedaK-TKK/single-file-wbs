@@ -95,6 +95,8 @@
   .pspan{position:absolute;top:12px;height:6px;border-radius:3px;background:var(--pspan)}
   #overlay{position:absolute;top:0;left:0;z-index:2;pointer-events:none}
   #empty{padding:40px;color:var(--muted);text-align:center;width:100%}
+  #notice{display:none;padding:6px 12px;background:#fff7d6;border-bottom:1px solid #e3d9a8;color:#6b5d1f;font-size:12px}
+  #notice.show{display:block}
 </style>
 </head>
 <body>
@@ -105,10 +107,11 @@
     <button id="refreshBtn">更新</button>
     <button id="expandAll">全展開</button>
     <button id="collapseAll">全たたみ</button>
-    <button id="editBtn" title="インライン編集（自動保存）">編集</button>
+    <button id="editBtn" title="インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します">編集</button>
     <input id="fallbackInput" type="file" accept=".json,application/json" hidden>
     <span id="stat">未読み込み</span>
   </div>
+  <div id="notice"></div>
   <div id="main">
     <div id="empty">「ファイルを開く」または D&amp;D で <b>wbs.json</b> を読み込んでください（Chrome）。</div>
     <div id="left" style="display:none"><div id="leftHead" class="head"></div><div id="leftRows"></div></div>
@@ -442,8 +445,9 @@
       }
     }
     // 保存ピッカーで選び直してもらう（選択自体が書き込み許可になる）。
-    // 注意：ジェスチャー失効を防ぐため、ここまで alert 等のダイアログは一切挟まない（#19）
+    // 注意：ジェスチャー失効を防ぐため、ここまで alert 等のダイアログは一切挟まない（#19）。案内はページ内バーで出す（#30）
     if(!window.showSaveFilePicker){alert("この環境では書き込み権限を取得できませんでした。");return false;}
+    notice("📂 保存ダイアログが開きます。いま開いている wbs.json をそのまま選んで「保存（置換）」してください（編集の書き込み許可のため・Chrome 再起動ごとに1回）。");
     try{
       const f=await fileHandle.getFile();
       const h=await window.showSaveFilePicker({suggestedName:f.name,
@@ -451,23 +455,29 @@
       try{
         if(fileHandle.isSameEntry&&!await h.isSameEntry(fileHandle)&&
            !confirm("選択されたファイルは現在開いているファイルと異なります。今後の保存先をそちらに切り替えますか？")){
+          notice("");
           alert("注意：いま選択したファイルは Chrome の仕様で空にされている可能性があります。中身を確認してください。");
           return false;
         }
       }catch(_){}
       fileHandle=h; fileMtime=0;                                             // 以後の保存先を書込可ハンドルに
       saveChain=saveChain.then(writeNow); await saveChain;                   // ピッカーの「置換」は選択時点でファイルを切り詰めるため、即書込して空のまま残さない（#29）
+      notice("");
       return true;
     }catch(e){
-      if(e&&e.name==="AbortError")return false;                              // ユーザーキャンセル
+      if(e&&e.name==="AbortError"){                                          // ユーザーキャンセル
+        notice("編集を有効にするには、もう一度「編集」を押してダイアログで wbs.json を選んでください。");
+        return false;
+      }
       if(/user gesture/i.test(e&&e.message||""))                             // ジェスチャー失効 → 再クリックで最短経路
-        alert("もう一度「編集」ボタンを押してください。\n保存ダイアログが開くので、いま開いている wbs.json を選んで「保存（置換）」してください。");
-      else alert("書き込み権限を取得できませんでした: "+e.message);
+        notice("もう一度「編集」ボタンを押してください。保存ダイアログが開くので、いま開いている wbs.json を選んで「保存（置換）」してください。");
+      else{notice("");alert("書き込み権限を取得できませんでした: "+e.message);}
       return false;
     }
   }
   // 保存キュー：dirty → デバウンス → 単一チェーンで書込（並走書込・古いスナップショット後勝ちを防ぐ）
   function setSaveMsg(m){saveMsg=m;const el=document.getElementById("saveMsg");if(el)el.textContent=m?" ／ "+m:"";}
+  function notice(m){const el=document.getElementById("notice");el.textContent=m;el.classList.toggle("show",!!m);}  // ページ内の案内バー（alertと違いジェスチャーを消費しない）
   function queueSave(){dirty=true;setSaveMsg("未保存の変更あり…");clearTimeout(saveTimer);saveTimer=setTimeout(flushSaves,SAVE_DEBOUNCE_MS);}
   function flushSaves(){clearTimeout(saveTimer);if(dirty){dirty=false;saveChain=saveChain.then(writeNow);}return saveChain;}
   async function writeNow(){
@@ -493,7 +503,7 @@
     },RENDER_DEFER_MS);
   }
   function exitEditMode(){   // 新規ファイル読込時などに編集状態を確実に解除
-    editMode=false;
+    editMode=false;notice("");
     document.getElementById("editBtn").classList.remove("on");
     document.getElementById("leftRows").classList.remove("editing");
   }

@@ -28,8 +28,9 @@ To keep the file from growing forever, **move old completed tasks out of the cur
 ---
 
 ## Requirements
-- **Google Chrome (latest) only.** No HTTP server, no external libraries / CDN.
-- Open `wbs_viewer.html` **directly via file://**.
+- **Google Chrome (latest) recommended**. **Chromium-based browsers (e.g., Edge) work too** (testing is done on Chrome). Firefox/Safari are not supported (no File System Access API).
+- On corporate-managed browsers, editing is unavailable if File System Access is disabled by policy (viewing still works).
+- No HTTP server, no external libraries / CDN. Open `wbs_viewer.html` **directly via file://**.
 
 ## Opening / reloading
 1. Open `wbs_viewer.html` in Chrome.

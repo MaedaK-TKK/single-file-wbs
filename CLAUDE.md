@@ -28,8 +28,9 @@
 ---
 
 ## 動作環境
-- **Google Chrome（最新版）専用**。HTTPサーバー不要・外部ライブラリ/CDN不要。
-- `wbs_viewer.html` を **file:// でそのまま開く**。
+- **Google Chrome（最新版）推奨**。Edge 等の **Chromium 系でも動作**（検証は Chrome で実施）。Firefox/Safari は不可（File System Access API 未対応）。
+- 会社管理ブラウザはポリシーで File System Access が無効だと編集不可（閲覧は可）。
+- HTTPサーバー不要・外部ライブラリ/CDN不要。`wbs_viewer.html` を **file:// でそのまま開く**。
 
 ## 開き方・更新
 1. Chrome で `wbs_viewer.html` を開く。

@@ -110,7 +110,11 @@ Effort, progress, and the inazuma line are **all derived automatically from qty,
 On the inazuma line, **bulging left of the today line = behind schedule**. For exact formulas and conditions, see [`CLAUDE.en.md`](CLAUDE.en.md) (single source of truth for the spec).
 
 ## Requirements
-Google Chrome (latest). Uses the File System Access API, so Chrome is assumed; works when opened directly via `file://`.
+**Google Chrome (latest) recommended**. Uses the File System Access API, so a **Chromium-based browser is required**; works when opened directly via `file://`.
+
+- **Microsoft Edge** and other Chromium-based browsers work as well (same engine; development testing is done on Chrome)
+- On corporate-managed browsers, the File System Access API may be disabled by policy — viewing still works but **editing won't** (check `edge://policy`)
+- Firefox / Safari are **not supported** (no File System Access API)
 
 ## Tests
 `tests/` contains normal-case (`正常_*.json`) and boundary / broken-input (`異常_*.json`) samples (see [`tests/INDEX.md`](tests/INDEX.md)). Design policy: graceful degradation — broken input must never crash the viewer.

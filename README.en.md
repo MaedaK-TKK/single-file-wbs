@@ -25,7 +25,7 @@
 3. Edit `wbs.json` and save → press **Reload** to reflect changes
 4. Click a project / phase name or `▼/▶` to collapse. **Expand all / Collapse all** buttons available
 
-In day-to-day use you only touch the **actual dates**: set `actual.start` when work begins, `actual.end` when it finishes. Progress, effort, and the inazuma line are recomputed automatically.
+In day-to-day use you only touch **dates**: set `actual.start` when work begins, `actual.end` when it finishes, and fix `plan.start` / `plan.end` when the plan changes. Progress, effort, and the inazuma line are recomputed automatically (never entered by hand).
 
 ### In-browser editing (optional)
 

@@ -1,5 +1,7 @@
 # WBS ツール - CLAUDE.md
 
+> English: [`CLAUDE.en.md`](CLAUDE.en.md)（本ファイルが正。**仕様を変更したら ja/en を同じコミットで更新**すること）
+
 テキスト（JSON）駆動の WBS／ガント＋イナズマ線ツール。
 `wbs.json`（データ）を single source of truth とし、JS内蔵の単一HTML `wbs_viewer.html` が描画する。
 

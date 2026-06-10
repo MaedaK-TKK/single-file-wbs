@@ -3,6 +3,8 @@
 > 単一HTMLで動く、ガントチャート＋**イナズマ線（進捗線）**の WBS ビューア。サーバー・依存ライブラリ・ビルド不要。
 > A dependency-free, single-file WBS / Gantt viewer with a Japanese *inazuma* (slip / progress) line. Just open the HTML in Chrome.
 
+**[English README](README.en.md)**
+
 ![screenshot](docs/screenshot.png)
 
 ## 特徴

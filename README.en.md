@@ -4,7 +4,7 @@
 
 **[日本語版 README はこちら / Japanese README](README.md)**
 
-![screenshot](docs/screenshot.png)
+![screenshot](docs/screenshot.en.png)
 
 ## Features
 - **Single HTML file** — just open `wbs_viewer.html` in Chrome. No server, CDN, build, or dependencies
@@ -30,7 +30,7 @@ In day-to-day use you only touch the **actual dates**: set `actual.start` when w
 ### In-browser editing (optional)
 Besides text / AI editing, the **Edit** button lets you edit directly on screen (green = ON). It supports inline editing of every field (dates via picker), adding leaves (`＋` / the project row's `+Task`), deletion (`✕`, with confirmation), and reordering among siblings (`▲▼`). **Changes are autosaved to `wbs.json`** (save status is shown at the top right). When turning Edit ON, re-select the same `wbs.json` in the save dialog to grant write permission (once per Chrome session — follow the on-screen guidance). Drag-and-drop reordering, moving across parents, and automatic renumbering are out of scope; use JSON or AI editing for those.
 
-![edit mode](docs/screenshot-edit.png)
+![edit mode](docs/screenshot-edit.en.png)
 
 ## Editing with AI (chat-based maintenance)
 The number-one reason WBS charts die is **the cost of updating them**. This tool freezes the view logic (HTML) and treats the data (`wbs.json`) as the only thing that changes — which means you can **delegate updates to Claude Code via chat**.

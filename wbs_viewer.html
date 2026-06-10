@@ -164,7 +164,7 @@
       addTask:"+Task",addTaskTip:"Add a task",up:"Move up",down:"Move down",addBelow:"Add task below",del:"Delete",
       unsaved:"Unsaved changes…",savedAt:"Saved ",saveFail:"Save failed",savePending:"Not saved (external change)",
       ym:(y,m)=>`${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]} ${y}`,
-      stat:(n,load,time,today)=>`${n} projects / total <b>${load} person-days</b><br>Loaded: ${time} (today ${today})`,
+      stat:(n,load,time,today)=>`${n} project${n===1?"":"s"} / total <b>${load} person-days</b><br>Loaded: ${time} (today ${today})`,
       confirmDel:name=>`Delete "${name}"? (children will also be deleted)`,
       fileLabel:(name,size)=>`${name}, ${size} bytes`,
       jsonFail:(label,msg)=>`Failed to load JSON${label?` (${label})`:""}: ${msg}`,

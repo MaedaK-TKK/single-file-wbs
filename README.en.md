@@ -31,7 +31,7 @@ From **planning** (adding and restructuring tasks, setting and rescheduling date
 2. **Edit `wbs.json` directly** — any text editor, save → press **Reload**
 3. **Ask the AI (Claude Code)** — "mark X as done" (see below)
 
-Whichever way you choose, **effort and the inazuma line are never entered by hand** — they are always computed automatically. No spreadsheet-style formula or percent-complete maintenance, which is the whole point of this tool.
+Whichever way you choose, **effort and the inazuma line are never entered by hand** — they are always computed automatically. No spreadsheet-style formula maintenance, which is the whole point of this tool.
 
 ## In-browser editing (optional)
 

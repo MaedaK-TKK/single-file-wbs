@@ -381,7 +381,7 @@
     if(isNew){collapsed.clear();pendingCenter=true;exitEditMode();}   // 新規ファイルは折りたたみリセット＆センタリング＆編集OFF（#10）
     render(data);
   }
-  function loadText(txt,isNew){try{applyData(JSON.parse(txt),isNew);}catch(e){alert("JSON読み込み失敗: "+e.message);}}
+  function loadText(txt,isNew,label){try{applyData(JSON.parse(txt),isNew);}catch(e){alert("JSON読み込み失敗"+(label?"（"+label+"）":"")+": "+e.message);}}
   function renderData(data){applyData(data,true);}      // 直接/テスト呼び出し＝新規扱い
   window.renderData=renderData;
 
@@ -450,9 +450,13 @@
         types:[{description:"JSON",accept:{"application/json":[".json"]}}]});
       try{
         if(fileHandle.isSameEntry&&!await h.isSameEntry(fileHandle)&&
-           !confirm("選択されたファイルは現在開いているファイルと異なります。今後の保存先をそちらに切り替えますか？"))return false;
+           !confirm("選択されたファイルは現在開いているファイルと異なります。今後の保存先をそちらに切り替えますか？")){
+          alert("注意：いま選択したファイルは Chrome の仕様で空にされている可能性があります。中身を確認してください。");
+          return false;
+        }
       }catch(_){}
-      fileHandle=h; fileMtime=(await h.getFile()).lastModified;              // 以後の保存先を書込可ハンドルに
+      fileHandle=h; fileMtime=0;                                             // 以後の保存先を書込可ハンドルに
+      saveChain=saveChain.then(writeNow); await saveChain;                   // ピッカーの「置換」は選択時点でファイルを切り詰めるため、即書込して空のまま残さない（#29）
       return true;
     }catch(e){
       if(e&&e.name==="AbortError")return false;                              // ユーザーキャンセル
@@ -550,7 +554,8 @@
 
   async function loadFromHandle(h,isNew){
     const f=await h.getFile(), txt=await f.text();
-    let data; try{data=JSON.parse(txt);}catch(e){alert("JSON読み込み失敗: "+e.message);return;}  // 失敗時はハンドルを差し替えない（#1：別ファイル上書き破壊の防止）
+    let data; try{data=JSON.parse(txt);}
+    catch(e){alert("JSON読み込み失敗（"+f.name+"・"+f.size+" byte）: "+e.message);return;}  // 失敗時はハンドルを差し替えない（#1：別ファイル上書き破壊の防止）
     fileHandle=h; fileMtime=f.lastModified; applyData(data,isNew);
   }
   async function openPicker(){
@@ -566,7 +571,7 @@
   document.getElementById("openBtn").addEventListener("click",openPicker);
   document.getElementById("refreshBtn").addEventListener("click",refresh);
   document.getElementById("fallbackInput").addEventListener("change",async e=>{
-    const f=e.target.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true);}});
+    const f=e.target.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true,f.name+"・"+f.size+" byte");}});
   const drop=document.getElementById("drop");
   ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
   ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
@@ -574,8 +579,19 @@
   document.addEventListener("drop",e=>e.preventDefault());
   drop.addEventListener("drop",async e=>{
     const it=e.dataTransfer.items&&e.dataTransfer.items[0];
-    if(it&&it.getAsFileSystemHandle){try{const h=await it.getAsFileSystemHandle();if(h.kind==="file"){await loadFromHandle(h,true);return;}}catch(_){}}
-    const f=e.dataTransfer.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true);}});
+    const fb=e.dataTransfer.files[0]||null;       // await後はdataTransferが無効化され得るため同期的に確保
+    if(it&&it.getAsFileSystemHandle){
+      try{
+        const h=await it.getAsFileSystemHandle();
+        if(h&&h.kind==="file"){
+          const f=await h.getFile();
+          if(f.size>0||!fb||fb.size===0){await loadFromHandle(h,true);return;}  // ハンドル読みが空でフォールバックに中身がある時だけ切替
+        }
+      }catch(_){}
+    }
+    if(fb){fileHandle=null;fileMtime=0;loadText(await fb.text(),true,fb.name+"・"+fb.size+" byte");}
+    else alert("ドロップされたファイルを読み取れませんでした。「ファイルを開く」をお試しください。");
+  });
 })();
 </script>
 </body>

@@ -12,7 +12,7 @@
 - **In-browser editing** — the **Edit** button enables inline editing (date pickers / add, delete, reorder tasks) with autosave back to `wbs.json`
 - **Gantt chart** — two-row bars (plan / actual), weekend shading, year-month header, horizontal scroll
 - **Inazuma line (progress line)** — start delays and deadline overruns at a glance (bulging left = behind schedule)
-- **No state stored in data** — effort = qty × hours ÷ 8 (person-days) is computed automatically; progress is derived internally from actual dates and feeds the inazuma line (not shown as a number)
+- **No state stored in data** — effort (qty × hours ÷ 8, person-days) and the inazuma line are both computed automatically. The data holds only plan and actual dates — no numbers to maintain by hand
 - **Multiple projects** on a single timeline
 - **Collapsible tree** (per project / phase), **completed tasks in gray with ✓**, milestone lines
 - **Japanese / English UI** — toggle with the "EN / 日本語" button (choice is remembered)
@@ -106,7 +106,7 @@ Editing `wbs.json` by hand is of course fine too. The rule of thumb: never touch
 - For the full spec, operations, and edge-case handling, see [`CLAUDE.en.md`](CLAUDE.en.md)
 
 ## Computation
-Effort, progress, and the inazuma line are **all derived automatically from qty, hours, and actual dates** (no derived values stored in the data).
+Effort and the inazuma line are **derived automatically from qty, hours, and actual dates** (no derived values stored in the data).
 On the inazuma line, **bulging left of the today line = behind schedule**. For exact formulas and conditions, see [`CLAUDE.en.md`](CLAUDE.en.md) (single source of truth for the spec).
 
 ## Requirements

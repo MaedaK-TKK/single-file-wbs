@@ -67,6 +67,13 @@ You do **not** do this every time — only **once after starting Chrome** (requi
 ## Editing with AI (chat-based maintenance)
 The number-one reason WBS charts die is **the cost of updating them**. This tool freezes the view logic (HTML) and treats the data (`wbs.json`) as the only thing that changes — which means you can **delegate updates to Claude Code via chat**.
 
+**What chat-based editing uniquely enables**
+
+- **No plugins or integrations** — the data is one plain JSON file, so the AI reads and edits it natively (no Excel-plugin wall)
+- **Bulk changes in one sentence** — "push every June task back a week", "reassign all of A's unstarted tasks to B"
+- **Effort and trend analysis on demand** — workload by owner, delay patterns, risk callouts — analyses the viewer itself doesn't have
+- **Scoped and cross-file aggregation** — "total effort for the design phase only", "actuals across archives and multiple wbs.json files" — any scope, across any files
+
 The repository ships with [`CLAUDE.md`](CLAUDE.md) ([English: `CLAUDE.en.md`](CLAUDE.en.md)), so the AI understands the data format, editing rules, and operating conventions before touching `wbs.json`. Examples:
 
 - "Mark the design review as completed today" → sets `actual.end` of that leaf to today

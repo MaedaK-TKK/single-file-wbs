@@ -46,7 +46,11 @@ When you press **Edit**, a **file save dialog opens immediately**. This is not a
 3. "Replace existing file?" → **Yes**
 4. When the Edit button turns **green**, you're ready
 
-You do **not** do this every time — only **once after starting Chrome** (required again after restarting Chrome). A yellow guidance bar at the top of the page walks you through it.
+What the page looks like right after pressing **Edit** (a yellow guidance bar appears; the save dialog opens on top of this):
+
+![right after pressing Edit (yellow guidance bar)](docs/guide-edit-on.en.png)
+
+You do **not** do this every time — only **once after starting Chrome** (required again after restarting Chrome).
 
 **What you can do (while Edit is ON)**
 

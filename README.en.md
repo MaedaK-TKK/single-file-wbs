@@ -16,7 +16,7 @@
 - **Multiple projects** on a single timeline
 - **Collapsible tree** (per project / phase), **completed tasks in gray with ✓**, milestone lines
 - **Japanese / English UI** — toggle with the "EN / 日本語" button (choice is remembered)
-- **AI-maintainable** — ships with `CLAUDE.md` ([English version](CLAUDE.en.md)). Ask Claude Code to "mark X as done" and it edits the JSON for you (removing the biggest weakness of WBS: the cost of keeping it updated)
+- **Maintain, bulk-edit, and analyze via AI chat** — "mark the design review as done", "push every June task back a week", "total workload by owner" — **each is one sentence** to Claude Code. Ships with `CLAUDE.md` ([English](CLAUDE.en.md)) so the AI already understands the data format (kills the #1 reason WBS charts die: update cost)
 
 ## Usage
 1. Open `wbs_viewer.html` in Chrome (plain `file://` is fine)

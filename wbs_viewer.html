@@ -52,6 +52,18 @@
   .lrow.done .nm{text-decoration:line-through}
   .caret{display:inline-block;width:15px;color:#3b4654;user-select:none;text-align:center}
   .caret-sp{display:inline-block;width:15px}
+  /* 編集モード */
+  #editBtn.on{background:#16a34a;color:#fff;border-color:#16a34a}
+  #leftRows input{font:inherit;width:100%;min-width:0;box-sizing:border-box;border:1px solid #c3c9d2;
+                  border-radius:4px;padding:1px 3px;background:#fff;color:var(--text)}
+  #leftRows .c.r input{text-align:right}
+  .nmwrap{display:flex;align-items:center;gap:2px;width:100%;min-width:0}
+  .nm-in{flex:1 1 auto;width:auto!important}
+  .dn{color:#5f6772;flex:0 0 auto}
+  .acts{display:inline-flex;gap:2px;flex:0 0 auto}
+  .acts button{font:inherit;font-size:11px;line-height:1.3;padding:0 3px;border:1px solid var(--border);
+               background:#fff;border-radius:3px;cursor:pointer;color:#445}
+  .acts button:hover{background:#eef2ff;border-color:#9db4f0}
   .clk{cursor:pointer}
   #rightHead{position:sticky;top:0;z-index:4;background:#eef0f3;border-bottom:2px solid var(--border)}
   #ym{display:flex;height:18px;border-bottom:1px solid var(--border)}
@@ -88,6 +100,7 @@
     <button id="refreshBtn">更新</button>
     <button id="expandAll">全展開</button>
     <button id="collapseAll">全たたみ</button>
+    <button id="editBtn" title="インライン編集（自動保存）">編集</button>
     <input id="fallbackInput" type="file" accept=".json,application/json" hidden>
     <span id="stat">未読み込み</span>
   </div>
@@ -115,13 +128,14 @@
     {key:"ae",label:"終了",group:"実績",w:64,cls:""},
     {key:"note",label:"備考",w:200,cls:"note"},
   ];
-  const INFO_W=COLS.reduce((s,c)=>s+c.w,0);
   let fileHandle=null, lock=false, lastData=null, pendingCenter=true;
+  let editMode=false, curProjects=null, refreshTimer=null;                 // 編集モード関連
+  let dirty=false, saveTimer=null, saveChain=Promise.resolve(), fileMtime=0;  // 保存キュー（直列化＋外部変更検知）
   const collapsed=new Set();   // 折りたたみ状態（キー）
 
   const parse=s=>new Date(s+"T00:00:00Z");
   const diff=(a,b)=>Math.round((parse(b)-parse(a))/DAY_MS);
-  const isDate=s=>typeof s==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&!isNaN(parse(s).getTime());
+  const isDate=s=>typeof s==="string"&&/^(19|20)\d{2}-\d{2}-\d{2}$/.test(s)&&!isNaN(parse(s).getTime());  // 年は1900-2099（範囲外はゴミ入力扱い・ガント爆発防止）
   const addStr=(s,d)=>new Date(parse(s).getTime()+d*DAY_MS).toISOString().slice(0,10);
   const minStr=a=>{a=a.filter(Boolean);return a.length?a.slice().sort()[0]:null;};
   const maxStr=a=>{a=a.filter(Boolean);return a.length?a.slice().sort()[a.length-1]:null;};
@@ -164,28 +178,31 @@
   }
 
   function render(data){
+    clearTimeout(refreshTimer);                                              // 保留中の遅延再描画を破棄（二重描画防止）
     const scrollKeep={left:document.getElementById("right").scrollLeft,
                       top:document.getElementById("right").scrollTop};   // スクロール位置を保持
     const TODAY=todayStr();
     const projects=normalizeProjects(data);
+    curProjects=projects;                                                    // 編集ハンドラ用に保持
+    const cw=c=>(editMode&&DATE_FIELDS[c.key])?120:c.w;                      // 編集時は日付列を広げる
     const ms=[], rows=[];
-    projects.forEach(proj=>{
+    projects.forEach((proj,pi)=>{
       (proj.tasks||[]).forEach(n=>computeNode(n,TODAY));
       const lv=leavesOf(proj.tasks);
       const load=lv.reduce((s,n)=>s+n._calc.load,0);
       const prog=load?lv.reduce((s,n)=>s+n._calc.progress*n._calc.load,0)/load:0;
       const pkey="P|"+proj.name, pcol=collapsed.has(pkey);
-      rows.push({kind:"proj",name:proj.name,load,prog,key:pkey,collapsible:true,collapsed:pcol,terminal:pcol,
+      rows.push({kind:"proj",name:proj.name,pi,load,prog,key:pkey,collapsible:true,collapsed:pcol,terminal:pcol,
         planStart:minStr(lv.map(n=>n._calc.planStart)),planEnd:maxStr(lv.map(n=>n._calc.planEnd)),
         actualStart:minStr(lv.map(n=>n._calc.actualStart)),actualEnd:maxStr(lv.map(n=>n._calc.actualEnd)),
         allDone:lv.length>0&&lv.every(n=>n._calc.allDone)});                  // イナズマ線用（折りたたみ時の集約）
       (proj.milestones||[]).forEach(m=>ms.push(m));
       if(pcol)return;
-      (function walk(ns,depth){for(const n of ns){
+      (function walk(ns,depth,prefix){for(let ci=0;ci<ns.length;ci++){const n=ns[ci];const path=prefix+"/"+ci;
         const hasCh=!!(n.children&&n.children.length), key="T|"+proj.name+"|"+n.id, col=hasCh&&collapsed.has(key);
-        rows.push({kind:"task",node:n,depth,key,collapsible:hasCh,collapsed:col,terminal:!hasCh||col});
-        if(hasCh&&!col)walk(n.children,depth+1);
-      }})(proj.tasks||[],0);
+        rows.push({kind:"task",node:n,depth,key,collapsible:hasCh,collapsed:col,terminal:!hasCh||col,path});
+        if(hasCh&&!col)walk(n.children,depth+1,path);
+      }})(proj.tasks||[],0,String(pi));
     });
 
     // レンジ
@@ -205,10 +222,10 @@
     let lh="";                                                   // グループ列（予定/実績）は2段見出し
     for(let i=0;i<COLS.length;i++){const c=COLS[i];
       if(c.group){let sub="",w=0,j=i;
-        while(j<COLS.length&&COLS[j].group===c.group){sub+=`<div class="hsub" style="width:${COLS[j].w}px">${esc(COLS[j].label)}</div>`;w+=COLS[j].w;j++;}
+        while(j<COLS.length&&COLS[j].group===c.group){sub+=`<div class="hsub" style="width:${cw(COLS[j])}px">${esc(COLS[j].label)}</div>`;w+=cw(COLS[j]);j++;}
         lh+=`<div class="hg" style="width:${w}px"><div class="hgt">${esc(c.group)}</div><div class="hgb">${sub}</div></div>`;
         i=j-1;
-      }else lh+=`<div class="h" style="width:${c.w}px">${esc(c.label)}</div>`;
+      }else lh+=`<div class="h" style="width:${cw(c)}px">${esc(c.label)}</div>`;
     }
     let ym="",i=0;
     while(i<totalDays){const key=addStr(rangeStart,i).slice(0,7);let j=i;
@@ -223,8 +240,9 @@
       if(dow===0||dow===6)bg+=`<div class="we" style="left:${k*DAY_W}px;width:${DAY_W}px"></div>`;
       if(dsx.slice(8,10)==="01"&&k>0)bg+=`<div class="mline" style="left:${k*DAY_W}px"></div>`;}
 
-    const sym=(r)=>r.collapsible
-      ?`<span class="caret">${r.collapsed?"▶":"▼"}</span>`:`<span class="caret-sp"></span>`;
+    const sym=(r,tg)=>r.collapsible                                          // tg=true: caret自体をクリック可能に
+      ?`<span class="${tg?"clk ":""}caret"${tg?` data-collapse="${esc(r.key)}"`:""}>${r.collapsed?"▶":"▼"}</span>`
+      :`<span class="caret-sp"></span>`;
 
     let lrows="",grows="",pts=[[xToday,0]];
     rows.forEach((r,idx)=>{
@@ -232,11 +250,16 @@
         let info="";
         COLS.forEach(col=>{let v="";
           if(col.key==="no")v="◆";
-          else if(col.key==="name")v=`<span class="clk" data-collapse="${esc(r.key)}">${sym(r)}<b>${esc(r.name)}</b></span>`;
+          else if(col.key==="name"){
+            if(editMode)v=`<span class="nmwrap">${sym(r,true)}`
+              +`<input class="nm-in" data-pname="${r.pi}" type="text" value="${esc(r.name)}" title="${esc(r.name)}">`
+              +`<span class="acts"><button data-act="addtask" data-proj="${r.pi}" title="タスクを追加">＋タスク</button></span></span>`;
+            else v=`<span class="clk" data-collapse="${esc(r.key)}">${sym(r)}<b>${esc(r.name)}</b></span>`;
+          }
           else if(col.key==="work")v=esc(fmtLoad(r.load));
           else if(col.key==="ps")v=esc(mdSlash(r.planStart));
           else if(col.key==="pe")v=esc(mdSlash(r.planEnd));
-          info+=`<div class="c ${col.cls}" style="width:${col.w}px">${v}</div>`;});
+          info+=`<div class="c ${col.cls}" style="width:${cw(col)}px">${v}</div>`;});
         lrows+=`<div class="lrow prow">${info}</div>`;
         const span=r.planStart&&r.planEnd?`<div class="pspan" style="left:${xOf(r.planStart)}px;width:${barW(r.planStart,r.planEnd)}px"></div>`:"";
         grows+=`<div class="grow prow">${span}</div>`;
@@ -261,10 +284,32 @@
             case"ae":v=esc(c.actualEnd?mdSlash(c.actualEnd):(inProg?"進行中":"—"));break;
             case"note":v=leaf?esc(n.note||""):"";break;
           }
+          if(editMode){
+            const P=esc(r.path), inp=(f,val,t)=>`<input data-path="${P}" data-field="${f}" type="${t}"${t==="number"?' step="any"':""} value="${esc(val)}">`;
+            if(col.key==="no")v=inp("id",n.id==null?"":n.id,"text");
+            else if(col.key==="name"){
+              const acts=`<span class="acts"><button data-act="up" data-path="${P}" title="上へ">▲</button>`
+                +`<button data-act="down" data-path="${P}" title="下へ">▼</button>`
+                +`<button data-act="add" data-path="${P}" title="下に作業を追加">＋</button>`
+                +`<button data-act="del" data-path="${P}" title="削除">✕</button></span>`;
+              v=`<span class="nmwrap" style="padding-left:${r.depth*15}px">${sym(r,true)}${done?'<span class="dn">✓</span>':""}`
+                +`<input class="nm-in" data-path="${P}" data-field="name" type="text" value="${esc(n.name==null?'':n.name)}" title="${esc(n.name==null?'':n.name)}">${acts}</span>`;
+            }
+            else if(leaf){
+              if(col.key==="qty")v=inp("qty",n.qty==null?"":n.qty,"number");
+              else if(col.key==="hrs")v=inp("hours",n.hours==null?"":n.hours,"number");
+              else if(col.key==="asg")v=inp("assignee",n.assignee||"","text");
+              else if(col.key==="ps")v=inp("ps",c.planStart||"","date");
+              else if(col.key==="pe")v=inp("pe",c.planEnd||"","date");
+              else if(col.key==="as")v=inp("as",c.actualStart||"","date");
+              else if(col.key==="ae")v=inp("ae",c.actualEnd||"","date");
+              else if(col.key==="note")v=inp("note",n.note||"","text");
+            }
+          }
           let tip="";
-          if(col.key==="name")tip=` title="${esc(n.name)}"`;
-          else if(col.key==="note"&&leaf&&n.note)tip=` title="${esc(n.note)}"`;
-          info+=`<div class="c ${col.cls}" style="width:${col.w}px"${tip}>${v}</div>`;});
+          if(col.key==="name"&&!editMode)tip=` title="${esc(n.name)}"`;
+          else if(col.key==="note"&&leaf&&n.note&&!editMode)tip=` title="${esc(n.note)}"`;
+          info+=`<div class="c ${col.cls}" style="width:${cw(col)}px"${tip}>${v}</div>`;});
         const lvl=`lvl${Math.min(r.depth,2)}`;
         lrows+=`<div class="lrow ${leaf?"leaf":"parent"} ${lvl} ${done?"done":""}">${info}</div>`;
         let bars="";
@@ -292,15 +337,16 @@
     let svg="";
     ms.forEach(m=>{if(!isDate(m.date)||m.date<rangeStart||m.date>rangeEnd)return;
       const x=centerOf(m.date),col=isColor(m.color)?m.color:"#a855f7";   // 色は#hexのみ許可（注入防止）
+      const lbl=m.label==null?"":String(m.label);                        // label欠損でも落とさない
       svg+=`<line x1="${x}" y1="0" x2="${x}" y2="${rowsH}" stroke="${col}" stroke-width="1.5" stroke-dasharray="4 3"></line>`
-         +`<rect x="${x+2}" y="1" width="${Math.max(28,m.label.length*11)}" height="14" rx="2" fill="${col}"></rect>`
-         +`<text x="${x+5}" y="12" font-size="10" fill="#fff">${esc(m.label)}</text>`;});
+         +`<rect x="${x+2}" y="1" width="${Math.max(28,lbl.length*11)}" height="14" rx="2" fill="${col}"></rect>`
+         +`<text x="${x+5}" y="12" font-size="10" fill="#fff">${esc(lbl)}</text>`;});
     svg+=`<polyline points="${pts.map(p=>p[0].toFixed(1)+","+p[1]).join(" ")}" fill="none" stroke="#e11d48" stroke-width="1.8" stroke-linejoin="round"></polyline>`;
     pts.slice(1,-1).forEach(p=>svg+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1]}" r="2.5" fill="#e11d48"></circle>`);
 
     document.getElementById("leftHead").innerHTML=lh;
     document.getElementById("leftRows").innerHTML=lrows;
-    document.getElementById("left").style.width=INFO_W+"px";
+    document.getElementById("left").style.width=COLS.reduce((s,c)=>s+cw(c),0)+"px";
     const rh=document.getElementById("rightHead"); rh.className="head"; rh.style.width=ganttW+"px";
     rh.innerHTML=`<div id="ym">${ym}</div><div id="dates">${dc}</div>`;
     const rb=document.getElementById("rightBody"); rb.style.width=ganttW+"px"; rb.style.height=rowsH+"px";
@@ -322,7 +368,7 @@
   }
   function applyData(data,isNew){
     lastData=data;
-    if(isNew){collapsed.clear();pendingCenter=true;}   // 新規ファイルは折りたたみリセット＆センタリング
+    if(isNew){collapsed.clear();pendingCenter=true;exitEditMode();}   // 新規ファイルは折りたたみリセット＆センタリング＆編集OFF（#10）
     render(data);
   }
   function loadText(txt,isNew){try{applyData(JSON.parse(txt),isNew);}catch(e){alert("JSON読み込み失敗: "+e.message);}}
@@ -346,7 +392,129 @@
     render(lastData);
   });
 
-  async function loadFromHandle(h,isNew){fileHandle=h;const f=await h.getFile();loadText(await f.text(),isNew);}
+  // ===== 編集モード（インライン編集・追加/削除/上下移動・自動保存） =====
+  // 設計：変異は同期で行い即 render（DOMのdata-pathを常に最新に保つ）。保存はデバウンス＋単一チェーンで直列化。
+  const DATE_FIELDS={ps:["plan","start"],pe:["plan","end"],as:["actual","start"],ae:["actual","end"]};
+  const newLeaf=id=>({id,name:"新規作業",qty:1,hours:8,assignee:"",plan:{start:null,end:null},actual:{start:null,end:null},note:""});
+  const mintId=(arr,prefix)=>{const ids=new Set(arr.map(x=>String(x.id)));let nn=arr.length+1;while(ids.has(prefix+nn))nn++;return prefix+nn;};
+  function resolvePath(path){
+    const parts=path.split("/").map(Number), proj=curProjects&&curProjects[parts[0]];
+    if(!proj)return {}; let arr=proj.tasks||[], node=null;
+    for(let k=1;k<parts.length;k++){node=arr[parts[k]]; if(!node)return {proj}; if(k<parts.length-1)arr=node.children||[];}
+    return {proj,parentArray:arr,index:parts[parts.length-1],node};
+  }
+  function applyField(n,f,val){
+    if(f==="qty"||f==="hours")n[f]=val===""?0:(Number(val)||0);
+    else if(DATE_FIELDS[f]){
+      if(val!==""&&!isDate(val))return;                                      // 入力途中・範囲外の日付は無視（ゴミを保存しない）
+      const[grp,key]=DATE_FIELDS[f];
+      if(!n[grp]||typeof n[grp]!=="object")n[grp]={}; n[grp][key]=val===""?null:val;
+    }else n[f]=val;   // id, name, assignee, note
+  }
+  async function ensureWritable(){   // file:// では requestPermission が使えないため段階的にフォールバック（#17）
+    try{
+      if(fileHandle.queryPermission&&await fileHandle.queryPermission({mode:"readwrite"})==="granted")return true;
+    }catch(_){}
+    try{
+      if(fileHandle.requestPermission){
+        const r=await fileHandle.requestPermission({mode:"readwrite"});
+        if(r==="granted")return true;
+        if(r==="denied"){alert("書き込み権限が許可されませんでした。");return false;}
+      }
+    }catch(_){}                                                              // file:// 等は例外 → 書込プローブで代替
+    try{
+      const w=await fileHandle.createWritable({keepExistingData:true});      // 実際に書込ストリームを開いて確認
+      await w.abort();                                                       // 中身は変更しない（swapを破棄）
+      return true;
+    }catch(e){alert("書き込み権限を取得できませんでした: "+e.message);return false;}
+  }
+  // 保存キュー：dirty → デバウンス → 単一チェーンで書込（並走書込・古いスナップショット後勝ちを防ぐ）
+  function queueSave(){dirty=true;clearTimeout(saveTimer);saveTimer=setTimeout(flushSaves,400);}
+  function flushSaves(){clearTimeout(saveTimer);if(dirty){dirty=false;saveChain=saveChain.then(writeNow);}return saveChain;}
+  async function writeNow(){
+    if(!fileHandle||!fileHandle.createWritable){alert("保存できません。『ファイルを開く』で開き直してください。");return;}
+    try{
+      const cur=await fileHandle.getFile();                                  // 外部変更（AI編集等）の検知
+      if(fileMtime&&cur.lastModified!==fileMtime&&
+         !confirm("wbs.json がツール外で変更されています。画面の内容で上書きしますか？\n（キャンセル後は「更新」で再読込できます）"))return;
+      const json=JSON.stringify(lastData,(k,v)=>(k==="_calc"||k==="_leaf")?undefined:v,2);  // 内部派生値のみ除外
+      const w=await fileHandle.createWritable(); await w.write(json); await w.close();
+      fileMtime=(await fileHandle.getFile()).lastModified;
+    }catch(e){alert("保存に失敗: "+e.message);}
+  }
+  function deferRender(){   // 入力にフォーカス中は再描画を遅らせ、フォーカス喪失を防ぐ
+    clearTimeout(refreshTimer);
+    refreshTimer=setTimeout(function tick(){
+      const a=document.activeElement;
+      if(a&&a.tagName==="INPUT"&&a.closest&&a.closest("#leftRows")){refreshTimer=setTimeout(tick,400);return;}
+      if(lastData)render(lastData);
+    },350);
+  }
+  function exitEditMode(){   // 新規ファイル読込時などに編集状態を確実に解除
+    editMode=false;
+    document.getElementById("editBtn").classList.remove("on");
+    document.getElementById("leftRows").classList.remove("editing");
+  }
+  document.getElementById("editBtn").addEventListener("click",async()=>{
+    if(!editMode){
+      if(!fileHandle||!fileHandle.createWritable){alert("編集を保存するには、先に「ファイルを開く」か D&D で wbs.json を（ハンドル付きで）開いてください。");return;}
+      if(!await ensureWritable())return;
+      if(lastData&&!Array.isArray(lastData.projects)){                       // 旧フォーマット → 変換してから編集（#3）
+        if(!confirm("旧フォーマットのファイルです。編集を有効にすると新フォーマット（projects 配列）に変換して保存されます。続行しますか？"))return;
+        lastData={projects:normalizeProjects(lastData)};
+      }
+      editMode=true;
+    }else{flushSaves();editMode=false;}
+    document.getElementById("editBtn").classList.toggle("on",editMode);
+    document.getElementById("leftRows").classList.toggle("editing",editMode);
+    if(lastData)render(lastData);
+  });
+  document.getElementById("leftRows").addEventListener("change",e=>{
+    const t=e.target; if(t.tagName!=="INPUT")return;
+    if(t.hasAttribute("data-field")){
+      const r=resolvePath(t.getAttribute("data-path")); if(!r.node)return;
+      applyField(r.node,t.getAttribute("data-field"),t.value);
+    }else if(t.hasAttribute("data-pname")){
+      const pi=+t.getAttribute("data-pname"); if(!curProjects||!curProjects[pi])return;
+      curProjects[pi].name=t.value;
+    }else return;
+    queueSave(); deferRender();
+  });
+  document.getElementById("leftRows").addEventListener("click",e=>{
+    const b=e.target.closest("button[data-act]"); if(!b)return;
+    const act=b.getAttribute("data-act");
+    if(act==="addtask"){
+      const pi=+b.getAttribute("data-proj"), proj=curProjects&&curProjects[pi]; if(!proj)return;
+      proj.tasks=proj.tasks||[]; proj.tasks.push(newLeaf(mintId(proj.tasks,"")));
+      collapsed.delete("P|"+proj.name);                                      // 折りたたみ中でも追加が見えるように展開（#11）
+      queueSave(); render(lastData); return;
+    }
+    const r=resolvePath(b.getAttribute("data-path")), arr=r.parentArray, i=r.index;
+    if(!arr||!r.node)return;
+    if(act==="up"){if(i<=0)return; const t=arr[i-1];arr[i-1]=arr[i];arr[i]=t;}
+    else if(act==="down"){if(i>=arr.length-1)return; const t=arr[i+1];arr[i+1]=arr[i];arr[i]=t;}
+    else if(act==="del"){if(!confirm("「"+(r.node.name||"")+"」を削除します。よろしいですか？（配下も削除）"))return; arr.splice(i,1);}
+    else if(act==="add"){
+      const base=String(r.node.id||""), dot=base.lastIndexOf("."), prefix=dot>=0?base.slice(0,dot+1):"";
+      arr.splice(i+1,0,newLeaf(mintId(arr,prefix)));
+    }else return;
+    queueSave(); render(lastData);                                           // 変異→即render（stale path防止 #5/#8）
+  });
+  document.getElementById("leftRows").addEventListener("wheel",e=>{
+    const t=e.target; if(t.tagName==="INPUT"&&t.type==="number")t.blur();    // ホイールでの誤変更防止（#13）
+  },{passive:true});
+  window.addEventListener("beforeunload",e=>{
+    if(!editMode)return;
+    const a=document.activeElement;
+    if(a&&a.tagName==="INPUT"&&a.closest&&a.closest("#leftRows"))a.blur();   // 未確定入力をコミット（changeが同期発火）
+    if(dirty){flushSaves();e.preventDefault();}                              // 書込完了前の離脱に警告（#15）
+  });
+
+  async function loadFromHandle(h,isNew){
+    const f=await h.getFile(), txt=await f.text();
+    let data; try{data=JSON.parse(txt);}catch(e){alert("JSON読み込み失敗: "+e.message);return;}  // 失敗時はハンドルを差し替えない（#1：別ファイル上書き破壊の防止）
+    fileHandle=h; fileMtime=f.lastModified; applyData(data,isNew);
+  }
   async function openPicker(){
     if(window.showOpenFilePicker){
       try{const[h]=await window.showOpenFilePicker({types:[{description:"JSON",accept:{"application/json":[".json"]}}]});await loadFromHandle(h,true);}
@@ -354,13 +522,13 @@
     }else document.getElementById("fallbackInput").click();
   }
   async function refresh(){
-    if(fileHandle){try{await loadFromHandle(fileHandle,false);}catch(e){alert("更新失敗: "+e.message);}}  // 更新は折りたたみ/位置を維持
+    if(fileHandle){try{await flushSaves();await loadFromHandle(fileHandle,false);}catch(e){alert("更新失敗: "+e.message);}}  // 保存を流してから再読込（#6）。折りたたみ/位置は維持
     else alert("先に「ファイルを開く」または D&D で読み込んでください。");
   }
   document.getElementById("openBtn").addEventListener("click",openPicker);
   document.getElementById("refreshBtn").addEventListener("click",refresh);
   document.getElementById("fallbackInput").addEventListener("change",async e=>{
-    const f=e.target.files[0];if(f){fileHandle=null;loadText(await f.text(),true);}});
+    const f=e.target.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true);}});
   const drop=document.getElementById("drop");
   ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
   ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
@@ -369,7 +537,7 @@
   drop.addEventListener("drop",async e=>{
     const it=e.dataTransfer.items&&e.dataTransfer.items[0];
     if(it&&it.getAsFileSystemHandle){try{const h=await it.getAsFileSystemHandle();if(h.kind==="file"){await loadFromHandle(h,true);return;}}catch(_){}}
-    const f=e.dataTransfer.files[0];if(f){fileHandle=null;loadText(await f.text(),true);}});
+    const f=e.dataTransfer.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true);}});
 })();
 </script>
 </body>

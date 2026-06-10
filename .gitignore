@@ -1,2 +1,5 @@
 # 個人データ・アーカイブは公開しない
 wbs-archive-*.json
+
+# 内部開発ルール（dev_kit由来）は非公開
+.claude/

@@ -131,6 +131,7 @@
   let fileHandle=null, lock=false, lastData=null, pendingCenter=true;
   let editMode=false, curProjects=null, refreshTimer=null;                 // 編集モード関連
   let dirty=false, saveTimer=null, saveChain=Promise.resolve(), fileMtime=0;  // 保存キュー（直列化＋外部変更検知）
+  let pickerNeeded=false;   // file://等：権限APIが使えず保存ピッカー方式が必要（セッション中記憶）
   const collapsed=new Set();   // 折りたたみ状態（キー）
 
   const parse=s=>new Date(s+"T00:00:00Z");
@@ -411,25 +412,29 @@
       if(!n[grp]||typeof n[grp]!=="object")n[grp]={}; n[grp][key]=val===""?null:val;
     }else n[f]=val;   // id, name, assignee, note
   }
-  async function ensureWritable(){   // file:// では権限プロンプトが出せないため段階的にフォールバック（#17/#18）
+  async function ensureWritable(){   // file:// では権限プロンプトが出せないため段階的にフォールバック（#17/#18/#19）
     try{
       if(fileHandle.queryPermission&&await fileHandle.queryPermission({mode:"readwrite"})==="granted")return true;
     }catch(_){}
-    try{
-      if(fileHandle.requestPermission){
-        const r=await fileHandle.requestPermission({mode:"readwrite"});
-        if(r==="granted")return true;
-        if(r==="denied"){alert("書き込み権限が許可されませんでした。");return false;}
+    if(!pickerNeeded){                                                       // 2回目以降は前処理を全スキップ（ジェスチャー温存）
+      try{
+        if(fileHandle.requestPermission){
+          const r=await fileHandle.requestPermission({mode:"readwrite"});
+          if(r==="granted")return true;
+          if(r==="denied"){alert("書き込み権限が許可されませんでした。");return false;}
+        }
+      }catch(_){pickerNeeded=true;}                                          // file:// は例外 → 以後ピッカー方式
+      if(!pickerNeeded){
+        try{
+          const w=await fileHandle.createWritable({keepExistingData:true});  // 書込ストリームを開いて確認
+          await w.abort();                                                   // 中身は変更しない（swapを破棄）
+          return true;
+        }catch(_){pickerNeeded=true;}
       }
-    }catch(_){}                                                              // file:// は例外 → 書込プローブへ
-    try{
-      const w=await fileHandle.createWritable({keepExistingData:true});      // 実際に書込ストリームを開いて確認
-      await w.abort();                                                       // 中身は変更しない（swapを破棄）
-      return true;
-    }catch(_){}                                                              // file:// はこれもブロック → 保存ピッカーへ
-    // 最終手段：保存ピッカーで選び直してもらう（ピッカーでの選択自体が書き込み許可になる）
+    }
+    // 保存ピッカーで選び直してもらう（選択自体が書き込み許可になる）。
+    // 注意：ジェスチャー失効を防ぐため、ここまで alert 等のダイアログは一切挟まない（#19）
     if(!window.showSaveFilePicker){alert("この環境では書き込み権限を取得できませんでした。");return false;}
-    alert("この環境（file://）では書き込み許可を自動取得できません。\n次のダイアログで、いま開いている wbs.json を選び直して「保存（置換）」してください。");
     try{
       const f=await fileHandle.getFile();
       const h=await window.showSaveFilePicker({suggestedName:f.name,
@@ -441,7 +446,10 @@
       fileHandle=h; fileMtime=(await h.getFile()).lastModified;              // 以後の保存先を書込可ハンドルに
       return true;
     }catch(e){
-      if(e&&e.name!=="AbortError")alert("書き込み権限を取得できませんでした: "+e.message);
+      if(e&&e.name==="AbortError")return false;                              // ユーザーキャンセル
+      if(/user gesture/i.test(e&&e.message||""))                             // ジェスチャー失効 → 再クリックで最短経路
+        alert("もう一度「編集」ボタンを押してください。\n保存ダイアログが開くので、いま開いている wbs.json を選んで「保存（置換）」してください。");
+      else alert("書き込み権限を取得できませんでした: "+e.message);
       return false;
     }
   }

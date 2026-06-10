@@ -57,13 +57,15 @@
   #leftRows input{font:inherit;width:100%;min-width:0;box-sizing:border-box;border:1px solid #c3c9d2;
                   border-radius:4px;padding:1px 3px;background:#fff;color:var(--text)}
   #leftRows .c.r input{text-align:right}
-  .nmwrap{display:flex;align-items:center;gap:2px;width:100%;min-width:0}
+  .nmwrap{display:flex;align-items:center;gap:2px;width:100%;min-width:0;align-self:stretch}
+  .nmwrap .clk.caret{align-self:stretch;display:flex;align-items:center;justify-content:center;width:20px}  /* 編集時の折りたたみは caret のみ＝行高いっぱいにヒット領域を拡大 */
   .nm-in{flex:1 1 auto;width:auto!important}
   .dn{color:#5f6772;flex:0 0 auto}
-  .acts{display:inline-flex;gap:2px;flex:0 0 auto}
-  .acts button{font:inherit;font-size:11px;line-height:1.3;padding:0 3px;border:1px solid var(--border);
+  .acts{display:inline-flex;gap:3px;flex:0 0 auto}
+  .acts button{font:inherit;font-size:12px;line-height:1.3;padding:2px 6px;border:1px solid var(--border);
                background:#fff;border-radius:3px;cursor:pointer;color:#445}
   .acts button:hover{background:#eef2ff;border-color:#9db4f0}
+  .acts button[data-act="del"]{margin-left:5px}   /* 破壊的操作の✕は少し離して誤クリック防止 */
   .clk{cursor:pointer}
   #rightHead{position:sticky;top:0;z-index:4;background:#eef0f3;border-bottom:2px solid var(--border)}
   #ym{display:flex;height:18px;border-bottom:1px solid var(--border)}
@@ -132,6 +134,7 @@
   let editMode=false, curProjects=null, refreshTimer=null;                 // 編集モード関連
   let dirty=false, saveTimer=null, saveChain=Promise.resolve(), fileMtime=0;  // 保存キュー（直列化＋外部変更検知）
   let pickerNeeded=false;   // file://等：権限APIが使えず保存ピッカー方式が必要（セッション中記憶）
+  let saveMsg="";           // 保存状態の表示文言（未保存/保存済/保存失敗）
   const collapsed=new Set();   // 折りたたみ状態（キー）
 
   const parse=s=>new Date(s+"T00:00:00Z");
@@ -185,7 +188,7 @@
     const TODAY=todayStr();
     const projects=normalizeProjects(data);
     curProjects=projects;                                                    // 編集ハンドラ用に保持
-    const cw=c=>(editMode&&DATE_FIELDS[c.key])?120:c.w;                      // 編集時は日付列を広げる
+    const cw=c=>editMode&&DATE_FIELDS[c.key]?120:editMode&&c.key==="name"?c.w+40:c.w;  // 編集時は日付列と作業項目列を広げる
     const ms=[], rows=[];
     projects.forEach((proj,pi)=>{
       (proj.tasks||[]).forEach(n=>computeNode(n,TODAY));
@@ -359,7 +362,8 @@
     document.getElementById("right").style.display="block";
     document.getElementById("stat").innerHTML=
       `${projects.length}プロジェクト ／ 総工数 <b>${fmtLoad(totalLoad)}人日</b>`
-      +`<br>読込: ${new Date().toLocaleString("ja-JP")}（本日 ${TODAY}）`;
+      +`<br>読込: ${new Date().toLocaleString("ja-JP")}（本日 ${TODAY}）`
+      +`<span id="saveMsg">${esc(saveMsg?" ／ "+saveMsg:"")}</span>`;
     const rEl=document.getElementById("right"), lEl=document.getElementById("left");
     const maxLeft=Math.max(0,ganttW-rEl.clientWidth);
     // 初回/新規読込のみ本日へセンタリング。折りたたみ・更新ではスクロール位置を保持
@@ -454,18 +458,22 @@
     }
   }
   // 保存キュー：dirty → デバウンス → 単一チェーンで書込（並走書込・古いスナップショット後勝ちを防ぐ）
-  function queueSave(){dirty=true;clearTimeout(saveTimer);saveTimer=setTimeout(flushSaves,400);}
+  function setSaveMsg(m){saveMsg=m;const el=document.getElementById("saveMsg");if(el)el.textContent=m?" ／ "+m:"";}
+  function queueSave(){dirty=true;setSaveMsg("未保存の変更あり…");clearTimeout(saveTimer);saveTimer=setTimeout(flushSaves,400);}
   function flushSaves(){clearTimeout(saveTimer);if(dirty){dirty=false;saveChain=saveChain.then(writeNow);}return saveChain;}
   async function writeNow(){
-    if(!fileHandle||!fileHandle.createWritable){alert("保存できません。『ファイルを開く』で開き直してください。");return;}
+    if(!fileHandle||!fileHandle.createWritable){setSaveMsg("保存失敗");alert("保存できません。『ファイルを開く』で開き直してください。");return;}
     try{
       const cur=await fileHandle.getFile();                                  // 外部変更（AI編集等）の検知
       if(fileMtime&&cur.lastModified!==fileMtime&&
-         !confirm("wbs.json がツール外で変更されています。画面の内容で上書きしますか？\n（キャンセル後は「更新」で再読込できます）"))return;
+         !confirm("wbs.json がツール外で変更されています。画面の内容で上書きしますか？\n（キャンセル後は「更新」で再読込できます）")){
+        setSaveMsg("未保存（外部変更のため保留）");return;
+      }
       const json=JSON.stringify(lastData,(k,v)=>(k==="_calc"||k==="_leaf")?undefined:v,2);  // 内部派生値のみ除外
       const w=await fileHandle.createWritable(); await w.write(json); await w.close();
       fileMtime=(await fileHandle.getFile()).lastModified;
-    }catch(e){alert("保存に失敗: "+e.message);}
+      setSaveMsg("保存済 "+new Date().toLocaleTimeString("ja-JP"));
+    }catch(e){setSaveMsg("保存失敗");alert("保存に失敗: "+e.message);}
   }
   function deferRender(){   // 入力にフォーカス中は再描画を遅らせ、フォーカス喪失を防ぐ
     clearTimeout(refreshTimer);

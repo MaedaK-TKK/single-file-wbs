@@ -3,3 +3,7 @@ wbs-archive-*.json
 
 # 内部開発ルール（dev_kit由来）は非公開
 .claude/
+*Zone.Identifier
+
+# 実運用データはローカルのみ（公開サンプルは wbs.json）
+wbs-local*.json

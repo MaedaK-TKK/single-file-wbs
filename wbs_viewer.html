@@ -476,6 +476,7 @@
     const t=e.target.closest("[data-collapse]"); if(!t)return;
     const k=t.getAttribute("data-collapse");
     collapsed.has(k)?collapsed.delete(k):collapsed.add(k);
+    collapseSnapshot=null;   // 個別操作後の Ctrl+Z が古い状態へ巻き戻らないよう無効化（#52）
     if(lastData)render(lastData);
   });
   // 全体caret: ▶=全展開 / ▼=全たたみ。実行前の状態をスナップショットし Ctrl+Z で復元（#52）

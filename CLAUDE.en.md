@@ -141,6 +141,7 @@ Append to the project's `milestones`:
   the actual bar sticking past the outline's right edge = deadline overrun; empty space at the outline's left = late start — both directly visible.
 - Date columns show `5/11` style. Initial view centers near today.
 - **Completed tasks**: darker gray row + strikethrough + leading `✓`.
+- **URLs inside notes are auto-linked** (`http(s)://` only, opens in a new tab). Put plain URLs in `note` to jump to issues or specs.
 - Overlay (SVG):
   - **Inazuma line** (red, **one line across all projects**). Each terminal row's point is placed as follows (**bulging left = behind schedule**):
     - Completed = on the today line

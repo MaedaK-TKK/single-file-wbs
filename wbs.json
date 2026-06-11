@@ -33,7 +33,7 @@
                 "start": "2026-06-11",
                 "end": "2026-06-11"
               },
-              "note": "Issue #53 消失スイートの復元含む"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/53 消失スイートの復元含む"
             }
           ]
         },
@@ -55,7 +55,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #16 列マッピングの一元化"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/16 列マッピングの一元化"
             }
           ]
         },
@@ -77,7 +77,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #45"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/45"
             },
             {
               "id": "3.2",
@@ -93,7 +93,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #46 全ボタン・バー・…慣習"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/46 全ボタン・バー・…慣習"
             },
             {
               "id": "3.3",
@@ -109,7 +109,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #47 論理グループ化"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/47 論理グループ化"
             },
             {
               "id": "3.4",
@@ -125,7 +125,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #49 ▲▼↔↑↓・📅統一・✕hover"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/49 ▲▼↔↑↓・📅統一・✕hover"
             },
             {
               "id": "3.5",
@@ -141,7 +141,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #50"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/50"
             },
             {
               "id": "3.6",
@@ -157,7 +157,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #51 Ctrl+F/ズーム/印刷をREADMEへ"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/51 Ctrl+F/ズーム/印刷をREADMEへ"
             }
           ]
         },
@@ -179,7 +179,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #37"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/37"
             },
             {
               "id": "4.2",
@@ -195,7 +195,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #41"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/41"
             },
             {
               "id": "4.3",
@@ -211,7 +211,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #42"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/42"
             },
             {
               "id": "4.4",
@@ -227,7 +227,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #40 ヘッダに「遅延N件」"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/40 ヘッダに「遅延N件」"
             },
             {
               "id": "4.5",
@@ -243,7 +243,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #43"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/43"
             },
             {
               "id": "4.6",
@@ -259,7 +259,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #48 操作後フェード・左右同期hover"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/48 操作後フェード・左右同期hover"
             }
           ]
         },
@@ -281,7 +281,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #36"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/36"
             },
             {
               "id": "5.2",
@@ -297,7 +297,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #38 Phase1"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/38 Phase1"
             },
             {
               "id": "5.3",
@@ -313,7 +313,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #44"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/44"
             },
             {
               "id": "5.4",
@@ -329,7 +329,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #39 OS設定に追従"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/39 OS設定に追従"
             }
           ]
         },
@@ -351,7 +351,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #35 カラーユニバーサルデザイン"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/35 カラーユニバーサルデザイン"
             },
             {
               "id": "6.2",

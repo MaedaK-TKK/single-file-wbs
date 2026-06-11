@@ -49,6 +49,7 @@
   .lrow .c.r{justify-content:flex-end;font-variant-numeric:tabular-nums}
   .lrow .c.num{justify-content:flex-end;color:var(--muted)}
   .lrow .c.note{color:var(--muted)}
+  .lrow .c.note a{color:var(--accent)}
   .prow{background:var(--proj);font-weight:700;border-top:3px solid var(--proj-line);border-bottom:2px solid var(--proj-line)}
   .lvl0{background:var(--lvl0)} .lvl1{background:var(--lvl1)} .lvl2{background:#fff}
   .lrow.lvl0{font-weight:700} .lrow.lvl1{font-weight:600}
@@ -228,6 +229,11 @@
   const mdSlash=s=>s?(parse(s).getUTCMonth()+1)+"/"+parse(s).getUTCDate():"";
   const fmtLoad=v=>{const r=Math.round(v*10)/10;return Number.isInteger(r)?String(r):r.toFixed(1);};
   const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+  // note内の http(s) URL のみリンク化（表示はURLのまま）。URL検出は生文字列・出力は全片esc()で
+  // javascript:/HTML注入は構造的に不可（^https?:固定・<>はURLに含めない・テキスト片は全てエスケープ）
+  const linkify=s=>String(s??"").split(/(https?:\/\/[^\s"<>]+)/g)
+    .map((part,i)=>i%2?`<a href="${esc(part)}" target="_blank" rel="noopener noreferrer">${esc(part)}</a>`:esc(part))
+    .join("");
   const todayStr=()=>{const n=new Date();return new Date(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())).toISOString().slice(0,10);};
 
   const isColor=s=>typeof s==="string"&&/^#[0-9a-fA-F]{3,8}$/.test(s);
@@ -370,7 +376,7 @@
             case"pe":v=esc(mdSlash(c.planEnd));break;
             case"as":v=esc(c.actualStart?mdSlash(c.actualStart):"—");break;
             case"ae":v=esc(c.actualEnd?mdSlash(c.actualEnd):(inProg?t("active"):"—"));break;
-            case"note":v=leaf?esc(n.note||""):"";break;
+            case"note":v=leaf?linkify(n.note||""):"";break;
           }
           if(editMode){
             const P=esc(r.path), inp=(f,val,type)=>type==="date"

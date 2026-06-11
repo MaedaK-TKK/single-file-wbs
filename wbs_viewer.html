@@ -96,7 +96,7 @@
   .grow.done{background:var(--done-bg)}
   .bar{position:absolute;border-radius:3px}
   /* 予定=点線の枠のみ(前面)・実績=塗りバー(背面)を同一レーンに重ねる。実績の枠からのはみ出し/不足で予実差が見える */
-  .bar.plan{top:5px;height:20px;background:transparent;border:1.5px dashed var(--plan-line);border-radius:4px;z-index:2}
+  .bar.plan{top:5px;height:20px;background:transparent;border:2px dashed var(--plan-line);border-radius:4px;z-index:2}
   .bar.actual{top:8px;height:14px;background:var(--actual);z-index:1}
   .grow.parent .bar.plan{border-color:var(--pplan-line)} .grow.parent .bar.actual{background:var(--pactual)}
   .grow.done .bar.actual{opacity:.55}

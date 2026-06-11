@@ -260,6 +260,22 @@
                 "end": null
               },
               "note": "https://github.com/piguo45/single-file-wbs/issues/48 操作後フェード・左右同期hover"
+            },
+            {
+              "id": "4.7",
+              "name": "備考URLリンク化",
+              "qty": 1,
+              "hours": 1.5,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "actual": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/54 飛び込み対応・実績1.5h（設計議論/実装/手戻り/テスト込み）"
             }
           ]
         },

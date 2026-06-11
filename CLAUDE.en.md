@@ -91,7 +91,9 @@ Progress, effort, and the inazuma line are **computed automatically**. You only 
 - **Plan changed** → fix `plan.start` / `plan.end`
 
 ### ② Adding a task
-Append a leaf to a summary node's `children`:
+Append a leaf to a summary node's `children`.
+**Keep `name` a concise label (guideline: ~14 full-width chars; put details and context in `note`)** —
+long names don't break anything but get truncated in the task column (full text on hover).
 ```json
 { "id": "2.1.3", "name": "New task", "qty": 1, "hours": 16, "assignee": "piguo",
   "plan":   { "start": "2026-07-01", "end": "2026-07-05" },

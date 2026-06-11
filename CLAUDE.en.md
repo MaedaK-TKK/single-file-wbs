@@ -42,7 +42,7 @@ To keep the file from growing forever, **move old completed tasks out of the cur
 ## In-browser editing (edit mode)
 In addition to text / AI editing, `wbs.json` can be **edited directly on screen** (optional feature).
 - The **Edit button** toggles ON/OFF (green = ON). When ON, the left table becomes inputs + action buttons.
-- Supported: **inline editing of every field** (No.=id / task name / qty / hours / assignee / plan & actual dates via picker / notes),
+- Supported: **inline editing of every field** (No.=id / task name / qty / hours / assignee / plan & actual dates / notes),
   **adding leaves** (row `＋` = sibling below; project row `+Task`; ids are minted collision-free; adding to a collapsed project auto-expands it),
   **deletion** (`✕`, with confirmation, including children), **reordering among siblings** (`▲▼`).
 - **Autosave**: changes are written back to `wbs.json` after a ~0.4 s debounce (File System Access API).
@@ -57,6 +57,8 @@ In addition to text / AI editing, `wbs.json` can be **edited directly on screen*
   The permission is **session-scoped** (after restarting Chrome, re-select once per Edit ON).
   **Loading a new file automatically turns edit mode OFF** (turn it ON again to grant permission for the new file). On a failed load the handle is not replaced (prevents overwriting the wrong file).
 - **Legacy format** (`{project,tasks}`): on Edit ON, after confirmation it is **converted to the `projects[]` format** before editing.
+- **Date cells are `YYYY-MM-DD` text inputs plus a 📅 calendar button**. `2026/07/01`-style input is accepted and normalized to `-`.
+  (The display format of `input type=date` follows the browser UI language and cannot be controlled, so the display is fixed to ISO — #33.)
 - Input guards: dates are **valid only within 1900–2099** (out-of-range / partial input is ignored, not saved). Qty / hours accept decimals (`step="any"`).
   Mouse-wheel changes on number inputs are disabled (prevents accidental edits). Closing the tab with unsaved changes prompts for confirmation.
 - Out of scope (by design): drag-and-drop reordering / moving across parents / automatic renumbering / leaf↔summary conversion / adding projects. Use JSON or AI editing for those.

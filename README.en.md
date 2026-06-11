@@ -54,7 +54,7 @@ You do **not** do this every time — only **once after starting Chrome** (requi
 
 **What you can do (while Edit is ON)**
 
-- **Edit any field in place** (task name, qty, hours, owner, notes; dates via a calendar picker)
+- **Edit any field in place** (task name, qty, hours, owner, notes; dates typed as `YYYY-MM-DD` or picked via the 📅 calendar button)
 - **Add** tasks: row `＋` (insert below) / `+Task` on a project row
 - **Delete** tasks: `✕` (with confirmation; children included)
 - **Reorder**: `▲▼` (move up/down among siblings)

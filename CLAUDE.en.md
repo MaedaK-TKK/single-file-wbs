@@ -132,7 +132,9 @@ Append to the project's `milestones`:
 - Column headers are centered. The left info table (No.–Notes) is fixed; **only the Gantt scrolls horizontally**.
 - **Plan/Actual date columns have a two-level header**: "Plan" / "Actual" on top, "Start / End" beneath (adjacent columns grouped by the `group` property in `COLS`).
 - Row layer colors: **◆project (with separators) > L1 > L2 > L3**.
-- Gantt: date + weekday (year-month header), weekends shaded, top bar = plan (pale) / bottom = actual (dark); active tasks extend the actual bar to today.
+- Gantt: date + weekday (year-month header), weekends shaded; active tasks extend the actual bar to today.
+  **Plan = dashed outline (front, no fill) / actual = filled bar (behind), overlaid in the same lane**:
+  the actual bar sticking past the outline's right edge = deadline overrun; empty space at the outline's left = late start — both directly visible.
 - Date columns show `5/11` style. Initial view centers near today.
 - **Completed tasks**: darker gray row + strikethrough + leading `✓`.
 - Overlay (SVG):

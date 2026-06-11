@@ -10,7 +10,7 @@
 - **Single HTML file** — just open `wbs_viewer.html` in Chrome. No server, CDN, build, or dependencies
 - **Data is one JSON file** — edit `wbs.json` → press **Reload** to re-render (File System Access API)
 - **In-browser editing** — the **Edit** button enables inline editing (date pickers / add, delete, reorder tasks) with autosave back to `wbs.json`
-- **Gantt chart** — **plan-vs-actual overlay**: the actual bar is drawn inside a dashed plan outline, so overruns stick out visibly. Weekend shading, year-month header, horizontal scroll
+- **Gantt chart** — **plan-vs-actual overlay**: the actual bar is drawn inside a plan outline, so overruns stick out visibly. Weekend shading, year-month header, horizontal scroll
 - **Inazuma line (progress line)** — start delays and deadline overruns at a glance (bulging left = behind schedule)
 - **No state stored in data** — effort (qty × hours ÷ 8, person-days) and the inazuma line are both computed automatically. The data holds only plan and actual dates — no numbers to maintain by hand
 - **Multiple projects** on a single timeline

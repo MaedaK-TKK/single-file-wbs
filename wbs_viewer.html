@@ -13,7 +13,7 @@
     --proj:#93acdf; --proj-line:#3a5694; --lvl0:#b9cdf2; --lvl1:#e3ebfb;
     --done-bg:#d4dae1; --done-fg:#5f6772; --accent:#2563eb; --edit-on:#16a34a;
     --plan-edge:#6f8fd0; --pspan:#5b78bd; --head-bg:#eef0f3;
-    --plan-line:#27416e; --pplan-line:#5b21b6;  /* 予定枠（点線）の色: リーフ/親。実績塗りの上でも見えるよう濃いめ */
+    --plan-line:rgba(39,65,110,.55); --pplan-line:rgba(91,33,182,.55);  /* 予定枠の色: リーフ/親（半透明で枠を主張させない） */
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
@@ -95,8 +95,8 @@
   .grow.lvl0{background:var(--lvl0)} .grow.lvl1{background:var(--lvl1)}
   .grow.done{background:var(--done-bg)}
   .bar{position:absolute;border-radius:3px}
-  /* 予定=点線の枠のみ(前面)・実績=塗りバー(背面)を同一レーンに重ねる。実績の枠からのはみ出し/不足で予実差が見える */
-  .bar.plan{top:5px;height:20px;background:transparent;border:2px dashed var(--plan-line);border-radius:4px;z-index:2}
+  /* 予定=半透明の実線枠のみ(前面)・実績=塗りバー(背面)を同一レーンに重ねる。実績の枠からのはみ出し/不足で予実差が見える */
+  .bar.plan{top:5px;height:20px;background:transparent;border:2px solid var(--plan-line);border-radius:4px;z-index:2}
   .bar.actual{top:8px;height:14px;background:var(--actual);z-index:1}
   .grow.parent .bar.plan{border-color:var(--pplan-line)} .grow.parent .bar.actual{background:var(--pactual)}
   .grow.done .bar.actual{opacity:.55}

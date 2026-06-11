@@ -19,6 +19,7 @@
 - **Maintain, bulk-edit, and analyze via AI chat** — "mark the design review as done", "push every June task back a week", "total workload by owner" — **each is one sentence** to Claude Code. Ships with `CLAUDE.md` ([English](CLAUDE.en.md)) so the AI already understands the data format (kills the #1 reason WBS charts die: update cost)
 
 ## Usage
+0. **Download `wbs_viewer.html` from [Releases](https://github.com/piguo45/single-file-wbs/releases/latest)** (updating = overwrite the same file; your `wbs.json` data is never touched)
 1. Open `wbs_viewer.html` in Chrome (plain `file://` is fine)
 2. Pick `wbs.json` via **Open file** (or drag & drop onto the toolbar)
    — the bundled `wbs.json` is **fictional sample data** (all people and projects are made up); open it as-is to try the tool

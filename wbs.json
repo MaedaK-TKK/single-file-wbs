@@ -21,7 +21,7 @@
           "children": [
             {
               "id": "1.1",
-              "name": "E2Eテストの公開と消失スイート復元",
+              "name": "E2Eテスト公開・復元",
               "qty": 1,
               "hours": 8,
               "assignee": "Claude",
@@ -33,7 +33,7 @@
                 "start": "2026-06-11",
                 "end": "2026-06-11"
               },
-              "note": "Issue #53"
+              "note": "Issue #53 消失スイートの復元含む"
             }
           ]
         },
@@ -43,7 +43,7 @@
           "children": [
             {
               "id": "2.1",
-              "name": "列マッピングのCOLSメタデータ駆動化",
+              "name": "COLSメタデータ駆動化",
               "qty": 1,
               "hours": 8,
               "assignee": "Claude",
@@ -55,7 +55,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #16"
+              "note": "Issue #16 列マッピングの一元化"
             }
           ]
         },
@@ -65,7 +65,7 @@
           "children": [
             {
               "id": "3.1",
-              "name": "エラーメッセージに回復手順",
+              "name": "エラー文言に回復手順",
               "qty": 1,
               "hours": 2,
               "assignee": "Claude",
@@ -81,7 +81,7 @@
             },
             {
               "id": "3.2",
-              "name": "ツールチップ整備（全ボタン・バー・…慣習）",
+              "name": "ツールチップ整備",
               "qty": 1,
               "hours": 3,
               "assignee": "Claude",
@@ -93,11 +93,11 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #46"
+              "note": "Issue #46 全ボタン・バー・…慣習"
             },
             {
               "id": "3.3",
-              "name": "ツールバーの論理グループ化",
+              "name": "ツールバー区切り",
               "qty": 1,
               "hours": 1,
               "assignee": "Claude",
@@ -109,11 +109,11 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #47"
+              "note": "Issue #47 論理グループ化"
             },
             {
               "id": "3.4",
-              "name": "アイコン整理（▲▼↔↑↓・📅統一・✕hover）",
+              "name": "アイコン整理",
               "qty": 1,
               "hours": 2,
               "assignee": "Claude",
@@ -125,7 +125,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #49"
+              "note": "Issue #49 ▲▼↔↑↓・📅統一・✕hover"
             },
             {
               "id": "3.5",
@@ -145,7 +145,7 @@
             },
             {
               "id": "3.6",
-              "name": "ブラウザ標準機能の活用ガイド（README）",
+              "name": "標準機能ガイド追記",
               "qty": 1,
               "hours": 1,
               "assignee": "Claude",
@@ -157,7 +157,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #51"
+              "note": "Issue #51 Ctrl+F/ズーム/印刷をREADMEへ"
             }
           ]
         },
@@ -167,7 +167,7 @@
           "children": [
             {
               "id": "4.1",
-              "name": "「今日着手」「今日完了」ボタン",
+              "name": "今日着手/完了ボタン",
               "qty": 1,
               "hours": 4,
               "assignee": "Claude",
@@ -215,7 +215,7 @@
             },
             {
               "id": "4.4",
-              "name": "凡例＋ヘッダサマリ「遅延N件」",
+              "name": "凡例＋遅延サマリ",
               "qty": 1,
               "hours": 6,
               "assignee": "Claude",
@@ -227,7 +227,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #40"
+              "note": "Issue #40 ヘッダに「遅延N件」"
             },
             {
               "id": "4.5",
@@ -259,7 +259,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #48"
+              "note": "Issue #48 操作後フェード・左右同期hover"
             }
           ]
         },
@@ -269,7 +269,7 @@
           "children": [
             {
               "id": "5.1",
-              "name": "編集のUndo/Redo（Ctrl+Z）",
+              "name": "Undo/Redo (Ctrl+Z)",
               "qty": 1,
               "hours": 12,
               "assignee": "Claude",
@@ -285,7 +285,7 @@
             },
             {
               "id": "5.2",
-              "name": "検索・ジャンプ（Phase1）",
+              "name": "検索・ジャンプ",
               "qty": 1,
               "hours": 6,
               "assignee": "Claude",
@@ -297,11 +297,11 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #38"
+              "note": "Issue #38 Phase1"
             },
             {
               "id": "5.3",
-              "name": "文字サイズ追従（px→rem）",
+              "name": "文字サイズ追従(rem)",
               "qty": 1,
               "hours": 8,
               "assignee": "Claude",
@@ -329,7 +329,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #39"
+              "note": "Issue #39 OS設定に追従"
             }
           ]
         },
@@ -339,7 +339,7 @@
           "children": [
             {
               "id": "6.1",
-              "name": "カラーユニバーサルデザイン検証",
+              "name": "CUD検証（配色）",
               "qty": 1,
               "hours": 6,
               "assignee": "ぴぐお",
@@ -351,11 +351,11 @@
                 "start": null,
                 "end": null
               },
-              "note": "Issue #35"
+              "note": "Issue #35 カラーユニバーサルデザイン"
             },
             {
               "id": "6.2",
-              "name": "v1.1 リリース（ノート・スクショ・タグ）",
+              "name": "v1.1リリース作業",
               "qty": 1,
               "hours": 3,
               "assignee": "ぴぐお",
@@ -367,7 +367,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "Releases"
+              "note": "ノート・スクショ・タグ・Releases"
             }
           ]
         }

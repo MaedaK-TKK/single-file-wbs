@@ -13,6 +13,7 @@
     --proj:#93acdf; --proj-line:#3a5694; --lvl0:#b9cdf2; --lvl1:#e3ebfb;
     --done-bg:#d4dae1; --done-fg:#5f6772; --accent:#2563eb; --edit-on:#16a34a;
     --plan-edge:#6f8fd0; --pspan:#5b78bd; --head-bg:#eef0f3;
+    --plan-line:rgba(39,65,110,.55); --pplan-line:rgba(91,33,182,.55);  /* 予定枠の色: リーフ/親（半透明で枠を主張させない） */
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
@@ -93,9 +94,11 @@
   .grow.prow{background:var(--proj);border-top:3px solid var(--proj-line);border-bottom:2px solid var(--proj-line)}
   .grow.lvl0{background:var(--lvl0)} .grow.lvl1{background:var(--lvl1)}
   .grow.done{background:var(--done-bg)}
-  .bar{position:absolute;height:8px;border-radius:3px}
-  .bar.plan{top:5px;background:var(--plan);box-shadow:inset 0 0 0 1px var(--plan-edge)} .bar.actual{top:15px;background:var(--actual)}
-  .grow.parent .bar.plan{background:var(--pplan)} .grow.parent .bar.actual{background:var(--pactual)}
+  .bar{position:absolute;border-radius:3px}
+  /* 予定=半透明の実線枠のみ(前面)・実績=塗りバー(背面)を同一レーンに重ねる。実績の枠からのはみ出し/不足で予実差が見える */
+  .bar.plan{top:5px;height:20px;background:transparent;border:2px solid var(--plan-line);border-radius:4px;z-index:2}
+  .bar.actual{top:8px;height:14px;background:var(--actual);z-index:1}
+  .grow.parent .bar.plan{border-color:var(--pplan-line)} .grow.parent .bar.actual{background:var(--pactual)}
   .grow.done .bar.actual{opacity:.55}
   .pspan{position:absolute;top:12px;height:6px;border-radius:3px;background:var(--pspan)}
   #overlay{position:absolute;top:0;left:0;z-index:2;pointer-events:none}

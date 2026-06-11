@@ -361,8 +361,8 @@
           "hours": 8,
           "assignee": "",
           "plan": {
-            "start": null,
-            "end": null
+            "start": "2026-06-24",
+            "end": "2026-06-26"
           },
           "actual": {
             "start": null,

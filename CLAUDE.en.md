@@ -36,7 +36,9 @@ To keep the file from growing forever, **move old completed tasks out of the cur
 1. Open `wbs_viewer.html` in Chrome.
 2. Pick `wbs.json` via **Open file** (or **drag & drop** onto the toolbar).
 3. Edit `wbs.json` and save → press **Reload** to re-read and re-render (no re-selection needed / File System Access API).
-4. **Expand all / Collapse all** buttons, or click a **◆project / L1 / L2 `▼/▶`–name** to collapse.
+4. Collapsing: click a **◆project / L1 / L2 `▼/▶`–name**.
+   The **`▼/▶` in the Task column header** expands/collapses everything (▼ = all open → click collapses all; ▶ = something closed → click expands all).
+   An accidental header action can be **restored with Ctrl+Z** (inactive while an input has focus).
 5. Scroll position is **preserved across collapsing and reloads**; **only loading a new file re-centers on today and resets collapse state**.
 
 ## In-browser editing (edit mode)

@@ -23,7 +23,7 @@
 2. Pick `wbs.json` via **Open file** (or drag & drop onto the toolbar)
    — the bundled `wbs.json` is **fictional sample data** (all people and projects are made up); open it as-is to try the tool
 3. Edit `wbs.json` and save → press **Reload** to reflect changes
-4. Click a project / phase name or `▼/▶` to collapse. **Expand all / Collapse all** buttons available
+4. Click a project / phase name or `▼/▶` to collapse. The **`▼/▶` in the Task column header** expands / collapses everything (**Ctrl+Z** restores the previous view after a slip)
 
 From **planning** (adding and restructuring tasks, setting and rescheduling dates) to **recording daily actuals** (`actual.start` when work begins, `actual.end` when it finishes), the whole WBS lifecycle happens in this tool. There are three ways to edit — use whichever you like:
 

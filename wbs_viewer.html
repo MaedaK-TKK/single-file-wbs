@@ -113,8 +113,6 @@
     <button id="openBtn" class="primary">ファイルを開く</button>
     <span id="drop">ここに wbs.json を D&amp;D</span>
     <button id="refreshBtn">更新</button>
-    <button id="expandAll">全展開</button>
-    <button id="collapseAll">全たたみ</button>
     <button id="editBtn" title="インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します">編集</button>
     <button id="langBtn" title="Switch language">EN</button>
     <input id="fallbackInput" type="file" accept=".json,application/json" hidden>
@@ -135,7 +133,8 @@
   // ===== i18n（UI文言の単一ソース。データ(wbs.json)は翻訳しない） =====
   const I18N={
     ja:{
-      open:"ファイルを開く",drop:"ここに wbs.json を D&D",reload:"更新",expand:"全展開",collapse:"全たたみ",edit:"編集",langBtn:"EN",
+      open:"ファイルを開く",drop:"ここに wbs.json を D&D",reload:"更新",edit:"編集",langBtn:"EN",
+      allTip:"全て開く / 全て閉じる（Ctrl+Z で直前の表示に戻せます）",
       editTitle:"インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します",
       notLoaded:"未読み込み",empty:"「ファイルを開く」または D&D で <b>wbs.json</b> を読み込んでください（Chrome）。",
       colNo:"No.",colTask:"作業項目",colQty:"数量",colHrs:"時間",colWork:"工数(人日)",colAsg:"担当",
@@ -164,7 +163,8 @@
       dropFail:"ドロップされたファイルを読み取れませんでした。「ファイルを開く」をお試しください。",
     },
     en:{
-      open:"Open file",drop:"Drop wbs.json here",reload:"Reload",expand:"Expand all",collapse:"Collapse all",edit:"Edit",langBtn:"日本語",
+      open:"Open file",drop:"Drop wbs.json here",reload:"Reload",edit:"Edit",langBtn:"日本語",
+      allTip:"Expand or collapse all (Ctrl+Z restores the previous view)",
       editTitle:"Inline editing (autosave). When turning ON, re-select wbs.json in the save dialog to grant write permission",
       notLoaded:"No file loaded",empty:"Load <b>wbs.json</b> via \"Open file\" or drag &amp; drop (Chrome).",
       colNo:"No.",colTask:"Task",colQty:"Qty",colHrs:"Hrs",colWork:"Effort(pd)",colAsg:"Owner",
@@ -214,6 +214,7 @@
   let pickerNeeded=false;   // file://等：権限APIが使えず保存ピッカー方式が必要（セッション中記憶）
   let saveMsg="";           // 保存状態の表示文言（未保存/保存済/保存失敗）
   const collapsed=new Set();   // 折りたたみ状態（キー）
+  let collapseSnapshot=null;   // 全体caret実行前の折りたたみ状態（Ctrl+Zで復元・#52）
 
   const parse=s=>new Date(s+"T00:00:00Z");
   const diff=(a,b)=>Math.round((parse(b)-parse(a))/DAY_MS);
@@ -307,6 +308,9 @@
         while(j<COLS.length&&COLS[j].group===c.group){sub+=`<div class="hsub" style="width:${cw(COLS[j])}px">${esc(t(COLS[j].label))}</div>`;w+=cw(COLS[j]);j++;}
         lh+=`<div class="hg" style="width:${w}px"><div class="hgt">${esc(t(c.group))}</div><div class="hgb">${sub}</div></div>`;
         i=j-1;
+      }else if(c.key==="name"){                                            // 作業項目ヘッダに全体caret（#52）
+        const anyCol=rows.some(r=>r.collapsed);
+        lh+=`<div class="h" style="width:${cw(c)}px"><span id="allCaret" class="clk caret" title="${esc(t("allTip"))}">${anyCol?"▶":"▼"}</span>${esc(t(c.label))}</div>`;
       }else lh+=`<div class="h" style="width:${cw(c)}px">${esc(t(c.label))}</div>`;
     }
     let ym="",i=0;
@@ -455,7 +459,7 @@
   }
   function applyData(data,isNew){
     lastData=data;
-    if(isNew){collapsed.clear();pendingCenter=true;exitEditMode();}   // 新規ファイルは折りたたみリセット＆センタリング＆編集OFF（#10）
+    if(isNew){collapsed.clear();collapseSnapshot=null;pendingCenter=true;exitEditMode();}   // 新規ファイルは折りたたみリセット＆センタリング＆編集OFF（#10）
     render(data);
   }
   function loadText(txt,isNew,label){try{applyData(JSON.parse(txt),isNew);}catch(e){alert(t("jsonFail")(label,e.message));}}
@@ -472,11 +476,22 @@
     collapsed.has(k)?collapsed.delete(k):collapsed.add(k);
     if(lastData)render(lastData);
   });
-  document.getElementById("expandAll").addEventListener("click",()=>{collapsed.clear();if(lastData)render(lastData);});
-  document.getElementById("collapseAll").addEventListener("click",()=>{
-    if(!lastData)return;
-    normalizeProjects(lastData).forEach(p=>collapsed.add("P|"+p.name));
+  // 全体caret: ▶=全展開 / ▼=全たたみ。実行前の状態をスナップショットし Ctrl+Z で復元（#52）
+  document.getElementById("leftHead").addEventListener("click",e=>{
+    if(e.target.id!=="allCaret"||!lastData)return;
+    collapseSnapshot=new Set(collapsed);
+    if(collapsed.size)collapsed.clear();                                     // どこか閉じている → 全展開
+    else normalizeProjects(lastData).forEach(p=>collapsed.add("P|"+p.name)); // 全部開いている → 全たたみ
     render(lastData);
+  });
+  window.addEventListener("keydown",e=>{
+    if(!(e.ctrlKey||e.metaKey)||e.key!=="z"||collapseSnapshot===null)return;
+    const a=document.activeElement;
+    if(a&&a.tagName==="INPUT")return;                                        // テキストundoを妨げない（#36導入時に統合）
+    e.preventDefault();
+    collapsed.clear();collapseSnapshot.forEach(k=>collapsed.add(k));
+    collapseSnapshot=null;
+    if(lastData)render(lastData);
   });
 
   // ===== 編集モード（インライン編集・追加/削除/上下移動・自動保存） =====
@@ -693,7 +708,7 @@
   // ===== 言語切替（既定:日本語。選択は localStorage に記憶） =====
   function applyLang(){
     document.documentElement.lang=lang;
-    [["openBtn","open"],["refreshBtn","reload"],["expandAll","expand"],["collapseAll","collapse"],
+    [["openBtn","open"],["refreshBtn","reload"],
      ["editBtn","edit"],["langBtn","langBtn"],["drop","drop"]].forEach(([id,k])=>{document.getElementById(id).textContent=t(k);});
     document.getElementById("editBtn").title=t("editTitle");
     document.getElementById("empty").innerHTML=t("empty");

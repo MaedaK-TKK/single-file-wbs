@@ -134,7 +134,8 @@
   const I18N={
     ja:{
       open:"ファイルを開く",drop:"ここに wbs.json を D&D",reload:"更新",edit:"編集",langBtn:"EN",
-      allTip:"全て開く / 全て閉じる（Ctrl+Z で直前の表示に戻せます）",
+      allTipExpand:"ツリーが全部展開されます ※Ctrl+Z でクリック前の状態に戻ります",
+      allTipCollapse:"ツリーが全部折りたたまれます ※Ctrl+Z でクリック前の状態に戻ります",
       editTitle:"インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します",
       notLoaded:"未読み込み",empty:"「ファイルを開く」または D&D で <b>wbs.json</b> を読み込んでください（Chrome）。",
       colNo:"No.",colTask:"作業項目",colQty:"数量",colHrs:"時間",colWork:"工数(人日)",colAsg:"担当",
@@ -164,7 +165,8 @@
     },
     en:{
       open:"Open file",drop:"Drop wbs.json here",reload:"Reload",edit:"Edit",langBtn:"日本語",
-      allTip:"Expand or collapse all (Ctrl+Z restores the previous view)",
+      allTipExpand:"Expands the whole tree (Ctrl+Z restores the view before the click)",
+      allTipCollapse:"Collapses the whole tree (Ctrl+Z restores the view before the click)",
       editTitle:"Inline editing (autosave). When turning ON, re-select wbs.json in the save dialog to grant write permission",
       notLoaded:"No file loaded",empty:"Load <b>wbs.json</b> via \"Open file\" or drag &amp; drop (Chrome).",
       colNo:"No.",colTask:"Task",colQty:"Qty",colHrs:"Hrs",colWork:"Effort(pd)",colAsg:"Owner",
@@ -310,7 +312,7 @@
         i=j-1;
       }else if(c.key==="name"){                                            // 作業項目ヘッダに全体caret（#52）
         const anyCol=rows.some(r=>r.collapsed);
-        lh+=`<div class="h" style="width:${cw(c)}px"><span id="allCaret" class="clk caret" title="${esc(t("allTip"))}">${anyCol?"▶":"▼"}</span>${esc(t(c.label))}</div>`;
+        lh+=`<div class="h" style="width:${cw(c)}px"><span id="allCaret" class="clk caret" title="${esc(t(anyCol?"allTipExpand":"allTipCollapse"))}">${anyCol?"▶":"▼"}</span>${esc(t(c.label))}</div>`;
       }else lh+=`<div class="h" style="width:${cw(c)}px">${esc(t(c.label))}</div>`;
     }
     let ym="",i=0;

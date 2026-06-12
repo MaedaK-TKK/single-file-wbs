@@ -622,9 +622,10 @@
   });
   document.getElementById("leftRows").addEventListener("change",e=>{
     const t=e.target; if(t.tagName!=="INPUT")return;
-    if(t.classList.contains("cal-proxy")){                                   // 📅で選んだ日付をテキスト入力へ反映（#33）
+    if(t.classList.contains("cal-proxy")){                                   // 📅の選択/クリアをテキスト入力へ反映（#33/#56）
       const txt=t.closest(".date-wrap").querySelector("input[data-field]");
-      if(t.value){txt.value=t.value;txt.dispatchEvent(new Event("change",{bubbles:true}));}
+      txt.value=t.value;                                                     // 空＝カレンダーの「クリア」もそのまま反映（→null保存）
+      txt.dispatchEvent(new Event("change",{bubbles:true}));
       return;
     }
     if(t.hasAttribute("data-field")){

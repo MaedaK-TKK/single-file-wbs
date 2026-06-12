@@ -90,10 +90,10 @@
                 "end": "2026-06-15"
               },
               "actual": {
-                "start": null,
+                "start": "2026-06-12",
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/46 全ボタン・バー・…慣習"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/46 全ボタン・バー・…慣習 バーの予定/実績titleは先行実装済み。残り=ボタンの動詞title・…慣習"
             },
             {
               "id": "3.3",
@@ -106,10 +106,16 @@
                 "end": "2026-06-15"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-12",
+                "end": "2026-06-12"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/47 論理グループ化"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/47 論理グループ化 前倒し完了（開く+D&D統合・区切り線2本・EN右端化として実装）",
+              "_ai": {
+                "tokens": 60000,
+                "model": "fable-5",
+                "minutes": 20,
+                "memo": "概算・モック比較込み"
+              }
             },
             {
               "id": "3.4",
@@ -297,6 +303,50 @@
                 "model": "fable-5",
                 "memo": "概算・再現/修正/テスト/実機確認待ち込み",
                 "minutes": 25
+              }
+            },
+            {
+              "id": "4.9",
+              "name": "ロゴ・ファビコン",
+              "qty": 1,
+              "hours": 1.5,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "actual": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "note": "飛び込み。円形バッジ（ガントバー+イナズマ）を候補比較で選定→タイトル/ファビコン/バージョン表示",
+              "_ai": {
+                "tokens": 150000,
+                "model": "fable-5",
+                "minutes": 50,
+                "memo": "概算・アイコン候補13案の比較シート生成込み"
+              }
+            },
+            {
+              "id": "4.10",
+              "name": "表示磨き込み一式",
+              "qty": 1,
+              "hours": 2.5,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "actual": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "note": "飛び込み。寄せ規律（値は右）・表の線統一・年月トーン・列見出し高さ・時間(h)2行・更新ラベル・日付列ハイライト",
+              "_ai": {
+                "tokens": 300000,
+                "model": "fable-5",
+                "minutes": 90,
+                "memo": "概算・スクショ往復のモック比較を多数含む"
               }
             }
           ]

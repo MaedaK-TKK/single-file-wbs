@@ -78,6 +78,8 @@ In addition to text / AI editing, `wbs.json` can be **edited directly on screen*
   note
   ```
 - **Effort and progress are not stored in the data** (all derived; computed by the JS in the HTML).
+- **Keys starting with `_` may be added freely** (ignored by the viewer, preserved by edit-mode saves).
+  Use them for metadata (e.g., `_ai` in the bundled roadmap = recorded AI effort in tokens; entirely optional).
 - `milestones: [{ date, label, color }]` is optional per project.
 
 ## Adding / updating data (how-to)

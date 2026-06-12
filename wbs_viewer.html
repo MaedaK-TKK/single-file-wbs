@@ -323,7 +323,9 @@
         lh+=`<div class="h" style="width:${cw(c)}px"><span id="allCaret" class="clk caret" title="${esc(t(anyCol?"allTipExpand":"allTipCollapse"))}">${anyCol?"▶":"▼"}</span>${esc(t(c.label))}</div>`;
       }else if(c.sub){                                                       // 単位付き見出し：短い単位は同一行・長い単位は2行（いずれも小さく薄く）。tipは計算式等のhover表示
         const tip=c.tip?` title="${esc(t(c.tip))}"`:"";
-        lh+=`<div class="h ${c.inline?"":"h2l"}" style="width:${cw(c)}px"${tip}>${esc(t(c.label))}<span class="unit">${esc(t(c.sub))}</span></div>`;
+        lh+=c.inline
+          ?`<div class="h" style="width:${cw(c)}px"${tip}><span>${esc(t(c.label))}<span class="unit">${esc(t(c.sub))}</span></span></div>`
+          :`<div class="h h2l" style="width:${cw(c)}px"${tip}>${esc(t(c.label))}<span class="unit">${esc(t(c.sub))}</span></div>`;
       }else lh+=`<div class="h" style="width:${cw(c)}px">${esc(t(c.label))}</div>`;
     }
     let ym="",i=0;

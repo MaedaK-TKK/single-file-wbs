@@ -22,7 +22,7 @@
 0. **Download `wbs_viewer.html` from [Releases](https://github.com/piguo45/single-file-wbs/releases/latest)** (updating = overwrite the same file; your `wbs.json` data is never touched)
 1. Open `wbs_viewer.html` in Chrome (plain `file://` is fine)
 2. Pick `wbs.json` via **Open file** (or drag & drop onto the toolbar)
-   — two data files are bundled: **`wbs_sample.json`** (fictional sample, format reference) and **`wbs_roadmap.json`** (this tool's own v1.1 development plan — real data, linked to the GitHub issues and maintained by Claude Code; also demonstrates optional custom keys like `_ai`).
+   — two data files are bundled: **`wbs_sample.json`** (fictional sample, format reference) and **`wbs_roadmap.json`** (this tool's own v1.1 development plan — real data, linked to the GitHub issues and maintained by Claude Code).
    Name your own data file anything you like (e.g. `wbs.json`)
 3. Edit `wbs.json` and save → press **Reload** to reflect changes
 4. Click a project / phase name or `▼/▶` to collapse. The **`▼/▶` in the Task column header** expands / collapses everything (**Ctrl+Z** restores the previous view after a slip)

@@ -24,7 +24,11 @@
   #topbar .title{font-weight:700;font-size:14px;margin-right:4px}
   #topbar button{font:inherit;padding:5px 10px;border:1px solid var(--border);background:#fff;border-radius:6px;cursor:pointer}
   #topbar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  #openBtn{display:flex;flex-direction:column;align-items:center;line-height:1.2;padding:3px 12px}
+  #openBtn .sub{font-size:9px;opacity:.8}
   #openBtn.over{background:#eef4ff!important;border:1px dashed var(--accent)!important;color:var(--accent)!important} /* ドラッグ中だけ「落とせる」点線合図 */
+  #topbar #langBtn{border-color:transparent;background:transparent;color:var(--muted)} /* 表示設定＝データ操作より弱く・右端 */
+  #topbar #langBtn:hover{border-color:var(--border);background:#fff}
   #stat{margin-left:auto;color:var(--muted);text-align:right;line-height:1.4}
   #stat b{color:var(--text)}
   #main{flex:1 1 auto;display:flex;min-height:0;background:#fff}
@@ -112,12 +116,12 @@
 <body>
   <div id="topbar">
     <span class="title">WBS Viewer</span>
-    <button id="openBtn" class="primary">ファイルを開く（D&amp;D可）</button>
+    <button id="openBtn" class="primary">ファイルを開く<span class="sub">（ドラッグ&amp;ドロップ）</span></button>
     <button id="refreshBtn">更新</button>
     <button id="editBtn" title="インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します">編集</button>
-    <button id="langBtn" title="Switch language">EN</button>
     <input id="fallbackInput" type="file" accept=".json,application/json" hidden>
     <span id="stat">未読み込み</span>
+    <button id="langBtn" title="Switch language">EN</button>
   </div>
   <div id="notice"></div>
   <div id="main">
@@ -134,7 +138,7 @@
   // ===== i18n（UI文言の単一ソース。データ(wbs.json)は翻訳しない） =====
   const I18N={
     ja:{
-      open:"ファイルを開く（D&D可）",reload:"更新",edit:"編集",langBtn:"EN",
+      open:"ファイルを開く",openSub:"（ドラッグ&ドロップ）",reload:"更新",edit:"編集",langBtn:"EN",
       allTipExpand:"ツリーが全部展開されます ※Ctrl+Z でクリック前の状態に戻ります",
       allTipCollapse:"ツリーが全部折りたたまれます ※Ctrl+Z でクリック前の状態に戻ります",
       editTitle:"インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します",
@@ -165,7 +169,7 @@
       dropFail:"ドロップされたファイルを読み取れませんでした。「ファイルを開く」をお試しください。",
     },
     en:{
-      open:"Open file (or drop)",reload:"Reload",edit:"Edit",langBtn:"日本語",
+      open:"Open file",openSub:"(drag & drop)",reload:"Reload",edit:"Edit",langBtn:"日本語",
       allTipExpand:"Expands the whole tree (Ctrl+Z restores the view before the click)",
       allTipCollapse:"Collapses the whole tree (Ctrl+Z restores the view before the click)",
       editTitle:"Inline editing (autosave). When turning ON, re-select wbs.json in the save dialog to grant write permission",
@@ -723,7 +727,8 @@
   // ===== 言語切替（既定:日本語。選択は localStorage に記憶） =====
   function applyLang(){
     document.documentElement.lang=lang;
-    [["openBtn","open"],["refreshBtn","reload"],
+    document.getElementById("openBtn").innerHTML=`${esc(t("open"))}<span class="sub">${esc(t("openSub"))}</span>`;
+    [["refreshBtn","reload"],
      ["editBtn","edit"],["langBtn","langBtn"]].forEach(([id,k])=>{document.getElementById(id).textContent=t(k);});
     document.getElementById("editBtn").title=t("editTitle");
     document.getElementById("empty").innerHTML=t("empty");

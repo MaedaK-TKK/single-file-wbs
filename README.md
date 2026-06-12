@@ -22,7 +22,7 @@
 ## 使い方
 0. **[Releases](https://github.com/piguo45/single-file-wbs/releases/latest) から `wbs_viewer.html` をダウンロード**（アップデートも新しいファイルを上書きするだけ。`wbs.json` のデータには触れません）
 1. Chrome で `wbs_viewer.html` を開く（`file://` のままでOK）
-2. **「ファイルを開く（D&D可）」** で `wbs.json` を選ぶ（同じボタンへドラッグ&ドロップでも読み込める）
+2. **「ファイルを開く」** で `wbs.json` を選ぶ（同じボタンへのドラッグ&ドロップでも読み込める）
    ※ 同梱データは2つ：**`wbs_sample.json`**（架空のサンプル・フォーマットのお手本）と **`wbs_roadmap.json`**（本ツール自身の v1.1 開発計画・実データ。Issue と連動し Claude Code が保守 — 開けば「ツールが自分自身を管理している」様子が見られます）
    自分のデータは `wbs.json` 等の好きな名前で作ってください（ファイル名は自由です）
 3. `wbs.json` を編集して保存 → **「更新」** で反映

@@ -4,6 +4,8 @@
 
 **[日本語版 README はこちら / Japanese README](README.md)**
 
+The on-screen application name is **WBS Viewer** (`single-file-wbs` is the distribution name = this repository).
+
 ![screenshot](docs/screenshot.en.png)
 
 ## Features

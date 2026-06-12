@@ -5,6 +5,8 @@
 
 **[English README](README.en.md)**
 
+画面上のアプリ名は **WBS Viewer**（`single-file-wbs` は配布名＝このリポジトリ）。
+
 ![screenshot](docs/screenshot.png)
 
 ## 特徴

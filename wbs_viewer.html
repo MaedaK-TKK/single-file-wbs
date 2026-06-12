@@ -38,9 +38,8 @@
   #right{flex:1 1 auto;overflow:auto;position:relative}
   .head{height:var(--header-h);position:sticky;top:0;z-index:4;background:var(--head-bg);border-bottom:2px solid var(--border)}
   #leftHead{display:flex}
-  #leftHead .h{padding:11px 5px 0;border-right:1px solid var(--border);font-weight:600;
-               display:flex;align-items:flex-start;justify-content:center;height:var(--header-h);white-space:nowrap;
-               line-height:1.25} /* 上揃えの基準線=「工数(人日)」2行ブロックが中央に来る高さ（(48px−2行分26px)/2≒11px）。全列の1行目をここに揃える */
+  #leftHead .h{padding:4px 5px;border-right:1px solid var(--border);font-weight:600;
+               display:flex;align-items:center;justify-content:center;height:var(--header-h);white-space:nowrap}
   #leftHead .hg{height:var(--header-h);border-right:1px solid var(--border);display:flex;flex-direction:column}
   #leftHead .hgt{height:50%;display:flex;align-items:center;justify-content:center;font-weight:600;
                  border-bottom:1px solid var(--border)}
@@ -48,7 +47,8 @@
   #leftHead .hsub{display:flex;align-items:center;justify-content:center;font-weight:600;
                   white-space:nowrap;border-right:1px solid var(--border)}
   #leftHead .hsub:last-child{border-right:none}
-  #leftHead .h.h2l{flex-direction:column;align-items:center;justify-content:flex-start}
+  #leftHead .h.h2l{flex-direction:column;justify-content:flex-start;line-height:1.25;
+                   padding-top:calc(var(--header-h)/2 - .625em)} /* 1行目の中心=他の単行列名と同じ中央線（.625em=行高1.25の半分） */
   #leftHead .h .unit{font-size:9px;color:var(--muted);margin-left:1px}
   .lrow{display:flex;height:var(--row-h);border-bottom:1px solid var(--grid)}
   .lrow .c{padding:0 5px;border-right:1px solid var(--grid);display:flex;align-items:center;

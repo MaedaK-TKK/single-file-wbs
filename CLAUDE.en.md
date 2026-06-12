@@ -76,6 +76,7 @@ In addition to text / AI editing, `wbs.json` can be **edited directly on screen*
   plan:   { start, end }        planned, "YYYY-MM-DD"
   actual: { start, end }        actual (null if undecided)
   note
+  _anyName                      "_"-prefixed = custom key (optional, ignored by viewer, preserved on save)
   ```
 - **Effort and progress are not stored in the data** (all derived; computed by the JS in the HTML).
 - **Keys starting with `_` may be added freely** (ignored by the viewer, preserved by edit-mode saves).

@@ -96,7 +96,8 @@ Editing `wbs.json` by hand is of course fine too. The rule of thumb: never touch
         { "id": "1", "name": "Phase 1", "children": [
           { "id": "1.1", "name": "Task", "qty": 1, "hours": 16, "assignee": "Owner",
             "plan":   { "start": "2026-07-01", "end": "2026-07-05" },
-            "actual": { "start": null, "end": null }, "note": "" }
+            "actual": { "start": null, "end": null }, "note": "",
+            "_ai":    { "tokens": 70000, "minutes": 25 } }
         ] }
       ]
     }
@@ -104,6 +105,7 @@ Editing `wbs.json` by hand is of course fine too. The rule of thumb: never touch
 }
 ```
 - Tasks nest up to 3 levels. A node with `children` is a summary node; without it, a leaf (carries effort)
+- **Keys starting with `_` are custom keys** you can add freely (like `_ai` above). The viewer ignores them and in-browser editing preserves them — use them for any metadata such as AI effort or memos (optional)
 - The legacy single-project format `{ "project", "milestones", "tasks" }` is still readable (backward compatible)
 - For the full spec, operations, and edge-case handling, see [`CLAUDE.en.md`](CLAUDE.en.md)
 

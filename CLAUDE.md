@@ -79,7 +79,7 @@
   ```
 - **工数・進捗率はデータに持たせない**（すべて派生値。HTML側のJSが算出）。
 - **`_` 始まりのキーは自由に追加してよい**（ビューアは無視・編集モードの保存でも保持される）。
-  メタ情報の置き場に使う（例：同梱ロードマップの `_ai` ＝ AI作業の実績トークン記録。必須ではない）。
+  メタ情報の置き場に使う（例：`wbs_roadmap.json` の `_ai` ＝ AI作業の実績トークン記録。必須ではない。`wbs_sample.json` はカスタムキーなしの最小実例）。
 - `milestones: [{ date, label, color }]` は各プロジェクト内に任意。
 
 ## データの追加・更新（やり方）
@@ -189,4 +189,4 @@
 
 ## メモ
 - Chromium 系（Chrome 推奨）・file:// 前提（File System Access API を使用）。
-- 実データを公開したくない場合は `wbs.json` を gitignore してよい（中身は手元のみ）。`wbs-archive-*.json` は既定で無視。
+- 自分の実データ `wbs.json` は**既定で gitignore 済み**（誤コミット防止）。`wbs-archive-*.json` も既定で無視。サンプル＝`wbs_sample.json`／開発計画＝`wbs_roadmap.json`。

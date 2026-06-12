@@ -79,7 +79,7 @@ In addition to text / AI editing, `wbs.json` can be **edited directly on screen*
   ```
 - **Effort and progress are not stored in the data** (all derived; computed by the JS in the HTML).
 - **Keys starting with `_` may be added freely** (ignored by the viewer, preserved by edit-mode saves).
-  Use them for metadata (e.g., `_ai` in the bundled roadmap = recorded AI effort in tokens; entirely optional).
+  Use them for metadata (e.g., `_ai` in `wbs_roadmap.json` = recorded AI effort in tokens; entirely optional. `wbs_sample.json` is the minimal example without custom keys).
 - `milestones: [{ date, label, color }]` is optional per project.
 
 ## Adding / updating data (how-to)
@@ -189,4 +189,4 @@ Avoid the following when entering data (nothing crashes, but display degrades).
 
 ## Notes
 - Chromium-based browsers (Chrome recommended), file:// based (uses the File System Access API).
-- If you don't want to publish real data, you may gitignore `wbs.json` (keep it local only). `wbs-archive-*.json` is ignored by default.
+- Your own `wbs.json` is **gitignored by default** (prevents accidental commits). `wbs-archive-*.json` is ignored too. Sample = `wbs_sample.json`; development plan = `wbs_roadmap.json`.

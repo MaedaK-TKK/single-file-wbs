@@ -7,3 +7,5 @@ wbs-archive-*.json
 
 # 実運用データはローカルのみ（公開サンプルは wbs.json）
 wbs-local*.json
+# 自分の実データ（慣用名）。サンプルは wbs_sample.json / 開発計画は wbs_roadmap.json
+wbs.json

@@ -9,7 +9,7 @@
   :root{
     --day-w:22px; --row-h:30px; --header-h:48px;
     --border:#d7dbe0; --btn-border:#9aa2ad; --grid:#eceef1; --weekend:#f4f5f7;  /* btn-border=操作物の輪郭（罫線より濃く・WCAG非テキスト3:1寄り） */
-    --text:#1f2430; --muted:#6b7280;
+    --text:#1f2430; --muted:#6b7280; --ym-fg:#4b5563;  /* 年月ラベル: mutedとtextの中間（日付より締まり・見出しほど主張しない） */
     --plan:#bcd0f7; --actual:#2f6fed; --pplan:#d9cdf5; --pactual:#7c3aed;
     --proj:#93acdf; --proj-line:#3a5694; --lvl0:#b9cdf2; --lvl1:#e3ebfb;
     --done-bg:#d4dae1; --done-fg:#5f6772; --accent:#2563eb; --edit-on:#16a34a;
@@ -89,8 +89,8 @@
   .clk{cursor:pointer}
   #rightHead{position:sticky;top:0;z-index:4;background:var(--head-bg);border-bottom:2px solid var(--border)}
   #ym{display:flex;height:18px;border-bottom:1px solid var(--border)}
-  #ym .seg{border-right:1px solid #c8ccd2;font-size:11px;color:var(--muted);white-space:nowrap;
-           display:flex;align-items:center;justify-content:center;background:#e9ebef;overflow:hidden}
+  #ym .seg{border-right:1px solid #c8ccd2;font-size:11px;white-space:nowrap;
+           display:flex;align-items:center;justify-content:center;background:#e9ebef;overflow:hidden;color:var(--ym-fg)}
   #dates{display:flex;height:30px}
   #dates .d{width:var(--day-w);border-right:1px solid var(--grid);text-align:center;line-height:1.05;padding-top:3px;font-size:10px}
   #dates .d.sat{background:#eef3fb}#dates .d.sun{background:#fbeef0}
@@ -216,10 +216,10 @@
     {key:"hrs",label:"colHrs",sub:"colHrsUnit",inline:true,w:50,cls:"r"},
     {key:"work",label:"colWork",sub:"colWorkUnit",tip:"colWorkTip",w:56,cls:"r"},
     {key:"asg",label:"colAsg",w:64,cls:""},
-    {key:"ps",label:"colStart",group:"grpPlan",w:64,cls:""},
-    {key:"pe",label:"colEnd",group:"grpPlan",w:64,cls:""},
-    {key:"as",label:"colStart",group:"grpActual",w:64,cls:""},
-    {key:"ae",label:"colEnd",group:"grpActual",w:64,cls:""},
+    {key:"ps",label:"colStart",group:"grpPlan",w:64,cls:"r"},
+    {key:"pe",label:"colEnd",group:"grpPlan",w:64,cls:"r"},
+    {key:"as",label:"colStart",group:"grpActual",w:64,cls:"r"},
+    {key:"ae",label:"colEnd",group:"grpActual",w:64,cls:"r"},
     {key:"note",label:"colNote",w:200,cls:"note"},
   ];
   let fileHandle=null, lock=false, lastData=null, pendingCenter=true;

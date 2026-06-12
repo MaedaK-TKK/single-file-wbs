@@ -8,8 +8,8 @@
 <style>
   :root{
     --day-w:22px; --row-h:30px; --header-h:48px;
-    --border:#d7dbe0; --btn-border:#9aa2ad; --grid:#eceef1; --weekend:#f4f5f7;  /* btn-border=操作物の輪郭（罫線より濃く・WCAG非テキスト3:1寄り） */
-    --text:#1f2430; --muted:#6b7280; --ym-fg:#4b5563;  /* 年月ラベル: mutedとtextの中間（日付より締まり・見出しほど主張しない） */
+    --border:#d7dbe0; --btn-border:#9aa2ad; --grid:#eceef1; --col-line:#bfc9d9; --weekend:#f4f5f7;  /* col-line=左表の縦区切り（青帯の行でも見える濃さ） */  /* btn-border=操作物の輪郭（罫線より濃く・WCAG非テキスト3:1寄り） */
+    --text:#1f2430; --muted:#6b7280; --ym-fg:#11161f;  /* 年月ラベル: 日付の数字(--text)より一段濃い=月>日の階層 */
     --plan:#bcd0f7; --actual:#2f6fed; --pplan:#d9cdf5; --pactual:#7c3aed;
     --proj:#93acdf; --proj-line:#3a5694; --lvl0:#b9cdf2; --lvl1:#e3ebfb;
     --done-bg:#d4dae1; --done-fg:#5f6772; --accent:#2563eb; --edit-on:#16a34a;
@@ -54,7 +54,7 @@
                    padding-top:calc(var(--header-h)/2 - .625em)} /* 1行目の中心=他の単行列名と同じ中央線（.625em=行高1.25の半分） */
   #leftHead .h .unit{font-size:9px;color:var(--muted);margin-left:1px}
   .lrow{display:flex;height:var(--row-h);border-bottom:1px solid var(--grid)}
-  .lrow .c{padding:0 5px;border-right:1px solid var(--grid);display:flex;align-items:center;
+  .lrow .c{padding:0 5px;border-right:1px solid var(--col-line);display:flex;align-items:center;
            overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
   .lrow .c.r{justify-content:flex-end;font-variant-numeric:tabular-nums}
   .lrow .c.num{justify-content:flex-end;color:var(--muted)}

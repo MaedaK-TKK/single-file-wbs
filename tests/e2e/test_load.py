@@ -16,7 +16,7 @@ with sync_playwright() as p:
     drop = lambda txt, name: pg.evaluate("""(a)=>{
       const dt = new DataTransfer();
       dt.items.add(new File([a.txt], a.name, {type:'application/json'}));
-      document.getElementById('drop').dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:dt}));
+      document.getElementById('openBtn').dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:dt}));
     }""", {"txt": txt, "name": name})
 
     drop(DATA, "wbs.json"); pg.wait_for_timeout(250)
@@ -33,7 +33,7 @@ with sync_playwright() as p:
       };
       const dt = new DataTransfer();
       dt.items.add(new File([txt],'wbs.json',{type:'application/json'}));
-      document.getElementById('drop').dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:dt}));
+      document.getElementById('openBtn').dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:dt}));
     }""", DATA)
     pg.wait_for_timeout(250)
     check(len(pg.query_selector_all("#leftRows .lrow")) > 0 and not dialogs,

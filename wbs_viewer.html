@@ -24,8 +24,7 @@
   #topbar .title{font-weight:700;font-size:14px;margin-right:4px}
   #topbar button{font:inherit;padding:5px 10px;border:1px solid var(--border);background:#fff;border-radius:6px;cursor:pointer}
   #topbar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-  #drop{padding:5px 10px;border:1px dashed #aab;border-radius:6px;color:var(--muted)}
-  #drop.over{background:#eef4ff;border-color:var(--accent);color:var(--accent)}
+  #openBtn.over{background:#eef4ff!important;border:1px dashed var(--accent)!important;color:var(--accent)!important} /* ドラッグ中だけ「落とせる」点線合図 */
   #stat{margin-left:auto;color:var(--muted);text-align:right;line-height:1.4}
   #stat b{color:var(--text)}
   #main{flex:1 1 auto;display:flex;min-height:0;background:#fff}
@@ -113,8 +112,7 @@
 <body>
   <div id="topbar">
     <span class="title">WBS Viewer</span>
-    <button id="openBtn" class="primary">ファイルを開く</button>
-    <span id="drop">ここに wbs.json を D&amp;D</span>
+    <button id="openBtn" class="primary">ファイルを開く（D&amp;D可）</button>
     <button id="refreshBtn">更新</button>
     <button id="editBtn" title="インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します">編集</button>
     <button id="langBtn" title="Switch language">EN</button>
@@ -136,7 +134,7 @@
   // ===== i18n（UI文言の単一ソース。データ(wbs.json)は翻訳しない） =====
   const I18N={
     ja:{
-      open:"ファイルを開く",drop:"ここに wbs.json を D&D",reload:"更新",edit:"編集",langBtn:"EN",
+      open:"ファイルを開く（D&D可）",reload:"更新",edit:"編集",langBtn:"EN",
       allTipExpand:"ツリーが全部展開されます ※Ctrl+Z でクリック前の状態に戻ります",
       allTipCollapse:"ツリーが全部折りたたまれます ※Ctrl+Z でクリック前の状態に戻ります",
       editTitle:"インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します",
@@ -167,7 +165,7 @@
       dropFail:"ドロップされたファイルを読み取れませんでした。「ファイルを開く」をお試しください。",
     },
     en:{
-      open:"Open file",drop:"Drop wbs.json here",reload:"Reload",edit:"Edit",langBtn:"日本語",
+      open:"Open file (or drop)",reload:"Reload",edit:"Edit",langBtn:"日本語",
       allTipExpand:"Expands the whole tree (Ctrl+Z restores the view before the click)",
       allTipCollapse:"Collapses the whole tree (Ctrl+Z restores the view before the click)",
       editTitle:"Inline editing (autosave). When turning ON, re-select wbs.json in the save dialog to grant write permission",
@@ -701,7 +699,7 @@
   document.getElementById("refreshBtn").addEventListener("click",refresh);
   document.getElementById("fallbackInput").addEventListener("change",async e=>{
     const f=e.target.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true,t("fileLabel")(f.name,f.size));}});
-  const drop=document.getElementById("drop");
+  const drop=document.getElementById("openBtn");   // 開くボタン自体がD&D受け口（クリック=ピッカー／ドロップ=読込）
   ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
   ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
   document.addEventListener("dragover",e=>e.preventDefault());
@@ -726,7 +724,7 @@
   function applyLang(){
     document.documentElement.lang=lang;
     [["openBtn","open"],["refreshBtn","reload"],
-     ["editBtn","edit"],["langBtn","langBtn"],["drop","drop"]].forEach(([id,k])=>{document.getElementById(id).textContent=t(k);});
+     ["editBtn","edit"],["langBtn","langBtn"]].forEach(([id,k])=>{document.getElementById(id).textContent=t(k);});
     document.getElementById("editBtn").title=t("editTitle");
     document.getElementById("empty").innerHTML=t("empty");
     if(!lastData)document.getElementById("stat").textContent=t("notLoaded");

@@ -41,6 +41,15 @@ with sync_playwright() as p:
     pg.wait_for_timeout(600)
     check(saved()["actual"]["start"] == "2026-06-03", "📅で選んだ日付がテキスト経由で保存")
 
+    pg.evaluate("""()=>{
+      const w = document.querySelector('input[data-field="as"]').closest('.date-wrap');
+      const px = w.querySelector('.cal-proxy');
+      px.value='';                       // カレンダーの「クリア」押下を模擬
+      px.dispatchEvent(new Event('change',{bubbles:true}));
+    }""")
+    pg.wait_for_timeout(600)
+    check(saved()["actual"]["start"] is None, "📅のクリアで日付が消える（null保存）")
+
     pg.fill('input[data-field="ps"]', "0002/07/15")
     pg.dispatch_event('input[data-field="ps"]', "change")
     pg.wait_for_timeout(600)

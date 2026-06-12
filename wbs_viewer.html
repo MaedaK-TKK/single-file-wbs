@@ -141,7 +141,7 @@
       allTipCollapse:"ツリーが全部折りたたまれます ※Ctrl+Z でクリック前の状態に戻ります",
       editTitle:"インライン編集（自動保存）。ONにする時、書き込み許可のため保存ダイアログで wbs.json を選び直します",
       notLoaded:"未読み込み",empty:"「ファイルを開く」または D&D で <b>wbs.json</b> を読み込んでください（Chrome）。",
-      colNo:"No.",colTask:"作業項目",colQty:"数量",colHrs:"時間",colHrsUnit:"(h)",colWork:"工数",colWorkUnit:"(人日)",colAsg:"担当",
+      colNo:"No.",colTask:"作業項目",colQty:"数量",colHrs:"時間(h)",colWork:"工数",colWorkUnit:"(人日)",colWorkTip:"数量 × 時間(h) ÷ 8（8時間＝1人日）。親行は配下の合計",colAsg:"担当",
       colStart:"開始",colEnd:"終了",colNote:"備考",grpPlan:"予定",grpActual:"実績",
       wd:["日","月","火","水","木","金","土"],locale:"ja-JP",active:"進行中",newTask:"新規作業",
       addTask:"＋タスク",addTaskTip:"タスクを追加",up:"上へ",down:"下へ",addBelow:"下に作業を追加",del:"削除",
@@ -172,7 +172,7 @@
       allTipCollapse:"Collapses the whole tree (Ctrl+Z restores the view before the click)",
       editTitle:"Inline editing (autosave). When turning ON, re-select wbs.json in the save dialog to grant write permission",
       notLoaded:"No file loaded",empty:"Load <b>wbs.json</b> via \"Open file\" or drag &amp; drop (Chrome).",
-      colNo:"No.",colTask:"Task",colQty:"Qty",colHrs:"Time",colHrsUnit:"(h)",colWork:"Effort",colWorkUnit:"(p-d)",colAsg:"Owner",
+      colNo:"No.",colTask:"Task",colQty:"Qty",colHrs:"Time(h)",colWork:"Effort",colWorkUnit:"(p-d)",colWorkTip:"qty × time(h) ÷ 8 (8h = 1 person-day). Parent rows sum their children",colAsg:"Owner",
       colStart:"Start",colEnd:"End",colNote:"Notes",grpPlan:"Plan",grpActual:"Actual",
       wd:["Su","Mo","Tu","We","Th","Fr","Sa"],locale:"en-US",active:"active",newTask:"New task",
       addTask:"+Task",addTaskTip:"Add a task",up:"Move up",down:"Move down",addBelow:"Add task below",del:"Delete",
@@ -204,8 +204,8 @@
     {key:"no",label:"colNo",w:48,cls:"num"},
     {key:"name",label:"colTask",w:200,cls:"name"},
     {key:"qty",label:"colQty",w:40,cls:"r"},
-    {key:"hrs",label:"colHrs",sub:"colHrsUnit",w:44,cls:"r"},
-    {key:"work",label:"colWork",sub:"colWorkUnit",w:56,cls:"r"},
+    {key:"hrs",label:"colHrs",w:52,cls:"r"},
+    {key:"work",label:"colWork",sub:"colWorkUnit",tip:"colWorkTip",w:56,cls:"r"},
     {key:"asg",label:"colAsg",w:64,cls:""},
     {key:"ps",label:"colStart",group:"grpPlan",w:64,cls:""},
     {key:"pe",label:"colEnd",group:"grpPlan",w:64,cls:""},
@@ -321,8 +321,9 @@
       }else if(c.key==="name"){                                            // 作業項目ヘッダに全体caret（#52）
         const anyCol=rows.some(r=>r.collapsed);
         lh+=`<div class="h" style="width:${cw(c)}px"><span id="allCaret" class="clk caret" title="${esc(t(anyCol?"allTipExpand":"allTipCollapse"))}">${anyCol?"▶":"▼"}</span>${esc(t(c.label))}</div>`;
-      }else if(c.sub){                                                       // 単位付き見出しは2行（単位は小さく）
-        lh+=`<div class="h h2l" style="width:${cw(c)}px">${esc(t(c.label))}<span class="unit">${esc(t(c.sub))}</span></div>`;
+      }else if(c.sub){                                                       // 単位付き見出しは2行（単位は小さく）。tipがあれば計算式等をhover表示
+        const tip=c.tip?` title="${esc(t(c.tip))}"`:"";
+        lh+=`<div class="h h2l" style="width:${cw(c)}px"${tip}>${esc(t(c.label))}<span class="unit">${esc(t(c.sub))}</span></div>`;
       }else lh+=`<div class="h" style="width:${cw(c)}px">${esc(t(c.label))}</div>`;
     }
     let ym="",i=0;

@@ -1,49 +1,48 @@
-# single-file-wbs
+# <img src="docs/logo.svg" width="26"> single-file-wbs
 
 > A dependency-free, single-file WBS / Gantt viewer with a Japanese *inazuma* (slip / progress) line. Just open the HTML in Chrome — no server, no libraries, no build step.
+> The on-screen application name is **WBS Viewer** (`single-file-wbs` is the distribution name = this repository).
 
 **[日本語版 README はこちら / Japanese README](README.md)**
 
-The on-screen application name is **WBS Viewer** (`single-file-wbs` is the distribution name = this repository).
-
 ![screenshot](docs/screenshot.en.png)
 
+## Start in 30 seconds
+
+1. Download `wbs_viewer.html` from [Releases](https://github.com/piguo45/single-file-wbs/releases/latest)
+2. Open it in Chrome (plain `file://` is fine)
+3. Load a bundled data file via **Open file** (or drag & drop onto that same button)
+   - **`wbs_sample.json`** — fictional sample, format reference
+   - **`wbs_roadmap.json`** — this tool's own development plan (real data, linked to GitHub issues and maintained by Claude Code)
+
+For your own WBS, copy `wbs_sample.json` as a template (name the file anything you like). Edit and save → press **Reload**.
+Updating the tool = overwriting `wbs_viewer.html`; your `wbs.json` data is never touched.
+
 ## Features
-- **Single HTML file** — just open `wbs_viewer.html` in Chrome. No server, CDN, build, or dependencies
-- **Data is one JSON file** — edit `wbs.json` → press **Reload** to re-render (File System Access API)
-- **In-browser editing** — the **Edit** button enables inline editing (date pickers / add, delete, reorder tasks) with autosave back to `wbs.json`
-- **Gantt chart** — **plan-vs-actual overlay**: the actual bar is drawn inside a plan outline, so overruns stick out visibly. Weekend shading, year-month header, horizontal scroll
-- **Inazuma line (progress line)** — start delays and deadline overruns at a glance (bulging left = behind schedule)
-- **No state stored in data** — effort (qty × hours ÷ 8, person-days) and the inazuma line are both computed automatically. The data holds only plan and actual dates — no numbers to maintain by hand
-- **Multiple projects** on a single timeline
-- **Collapsible tree** (per project / phase), **completed tasks in gray with ✓**, milestone lines
-- **Japanese / English UI** — toggle with the "EN / 日本語" button (choice is remembered)
-- **Maintain, bulk-edit, and analyze via AI chat** — "mark the design review as done", "push every June task back a week", "total workload by owner" — **each is one sentence** to Claude Code. Ships with `CLAUDE.md` ([English](CLAUDE.en.md)) so the AI already understands the data format (kills the #1 reason WBS charts die: update cost)
 
-## Usage
-0. **Download `wbs_viewer.html` from [Releases](https://github.com/piguo45/single-file-wbs/releases/latest)** (updating = overwrite the same file; your `wbs.json` data is never touched)
-1. Open `wbs_viewer.html` in Chrome (plain `file://` is fine)
-2. Pick `wbs.json` via **Open file** (or drag & drop onto that same button)
-   — two data files are bundled: **`wbs_sample.json`** (fictional sample, format reference) and **`wbs_roadmap.json`** (this tool's own v1.1 development plan — real data, linked to the GitHub issues and maintained by Claude Code).
-   Name your own data file anything you like (e.g. `wbs.json`)
-3. Edit `wbs.json` and save → press **Reload** to reflect changes
-4. Click a project / phase name or `▼/▶` to collapse. The **`▼/▶` in the Task column header** expands / collapses everything (**Ctrl+Z** restores the previous view after a slip)
+- **Single HTML file** — just open it in Chrome. No server, CDN, build, or dependencies
+- **Inazuma line (progress line)** — bulging **left of the today line = behind schedule**; start delays and deadline overruns at a glance
+- **Plan-vs-actual Gantt overlay** — the actual bar is drawn inside a plan outline, so overruns stick out visibly
+- **Data is one JSON of facts only** — it holds nothing but plan and actual dates. Effort (qty × hours ÷ 8, person-days), progress, and the inazuma line are all **computed automatically** — no numbers to maintain by hand
+- **Three ways to edit** — in-browser editing (autosave) / any text editor / **AI chat** (ships with `CLAUDE.md` so Claude Code already understands the data format)
+- Plus: multiple projects, collapsible tree, milestone lines, completed-task graying with ✓, auto-linked URLs in notes, Japanese/English UI
 
-From **planning** (adding and restructuring tasks, setting and rescheduling dates) to **recording daily actuals** (`actual.start` when work begins, `actual.end` when it finishes), the whole WBS lifecycle happens in this tool. There are three ways to edit — use whichever you like:
+## Working the screen
 
-1. **In-browser edit mode** (next section) — change things right on screen
-2. **Edit `wbs.json` directly** — any text editor, save → press **Reload**
-3. **Ask the AI (Claude Code)** — "mark X as done" (see below)
-
-Whichever way you choose, **effort and the inazuma line are never entered by hand** — they are always computed automatically. No spreadsheet-style formula maintenance, which is the whole point of this tool.
+- **Collapse**: click a project / phase name or `▼/▶`. The **`▼/▶` in the Task column header** expands / collapses everything (**Ctrl+Z** restores the previous view after a slip)
+- **Gantt**: the day column under your mouse is **highlighted** with its date emphasized in the header; **hover a bar** to see the exact plan / actual dates
 
 ## In-browser editing (optional)
 
-Besides text / AI editing, you can edit directly on screen.
+Turn the **Edit** button ON to edit directly on screen. Changes are **autosaved to `wbs.json` ~0.4 s later** (save status always visible at the top right).
 
-**⚠ Enabling edit mode requires re-selecting the file**
+- Available: in-place editing of every field (dates typed as `YYYY-MM-DD` or picked via 📅), add `＋`, delete `✕` (with confirmation), reorder `▲▼`
+- Not supported (edit the JSON or ask the AI): drag-and-drop reordering / moving to a different parent / automatic renumbering
 
-When you press **Edit**, a **file save dialog opens immediately**. This is not a bug: for security, Chrome only grants a page write access to a file when **the user picks that file in a save dialog** (an unavoidable constraint of `file://`-based tools). Steps:
+<details>
+<summary>⚠ Enabling edit mode requires re-selecting the file (click for steps)</summary>
+
+When you press **Edit**, a **file save dialog opens immediately**. This is not a bug: for security, Chrome only grants a page write access to a file when **the user picks that file in a save dialog** (an unavoidable constraint of `file://`-based tools).
 
 1. Press the **Edit** button → a save dialog opens
 2. Select **the same `wbs.json` you currently have open** and press Save
@@ -56,38 +55,23 @@ What the page looks like right after pressing **Edit** (a yellow guidance bar ap
 
 You do **not** do this every time — only **once after starting Chrome** (required again after restarting Chrome).
 
-**What you can do (while Edit is ON)**
-
-- **Edit any field in place** (task name, qty, hours, owner, notes; dates typed as `YYYY-MM-DD` or picked via the 📅 calendar button)
-- **Add** tasks: row `＋` (insert below) / `+Task` on a project row
-- **Delete** tasks: `✕` (with confirmation; children included)
-- **Reorder**: `▲▼` (move up/down among siblings)
-- Changes are **autosaved to `wbs.json` ~0.4 s later**. The save status is always visible at the **top right** ("Saved 12:34:56" etc.)
-
-**Not supported** (edit the JSON directly or ask the AI): drag-and-drop reordering / moving to a different parent / automatic renumbering
+</details>
 
 ![edit mode](docs/screenshot-edit.en.png)
 
-## Editing with AI (chat-based maintenance)
-The number-one reason WBS charts die is **the cost of updating them**. This tool freezes the view logic (HTML) and treats the data (`wbs.json`) as the only thing that changes — which means you can **delegate updates to Claude Code via chat**.
+## Maintaining via AI chat
 
-**What chat-based editing uniquely enables**
+The number-one reason WBS charts die is **the cost of updating them**. This tool freezes the view logic (HTML) and treats the data (`wbs.json`) as the only thing that changes — so you can **delegate updates to Claude Code via chat**. The data is one plain JSON file, so no plugins or integrations are needed; bulk edits, workload aggregation, and cross-file analysis are each one sentence.
 
-- **No plugins or integrations** — the data is one plain JSON file, so the AI reads and edits it natively (no Excel-plugin wall)
-- **Bulk changes in one sentence** — "push every June task back a week", "reassign all of A's unstarted tasks to B"
-- **Effort and trend analysis on demand** — workload by owner, delay patterns, risk callouts — analyses the viewer itself doesn't have
-- **Scoped and cross-file aggregation** — "total effort for the design phase only", "actuals across archives and multiple wbs.json files" — any scope, across any files
+- "Mark the design review as completed today" → sets `actual.end` to today
+- "Push every June task back a week" → bulk change
+- "Total workload by owner" → analyses the viewer itself doesn't have
+- "Archive everything completed before May" → backup + cleanup
 
-The repository ships with [`CLAUDE.md`](CLAUDE.md) ([English: `CLAUDE.en.md`](CLAUDE.en.md)), so the AI understands the data format, editing rules, and operating conventions before touching `wbs.json`. Examples:
-
-- "Mark the design review as completed today" → sets `actual.end` of that leaf to today
-- "Component placement has started" → sets `actual.start`
-- "Add a testing phase" → appends a summary node + leaves
-- "Archive everything completed before May" → creates a backup, then removes those tasks
-
-Editing `wbs.json` by hand is of course fine too. The rule of thumb: never touch the HTML, only the data.
+The bundled [`CLAUDE.md`](CLAUDE.md) ([English: `CLAUDE.en.md`](CLAUDE.en.md)) teaches the AI the data format, editing rules, and conventions.
 
 ## Data format (wbs.json)
+
 ```json
 {
   "projects": [
@@ -108,29 +92,26 @@ Editing `wbs.json` by hand is of course fine too. The rule of thumb: never touch
   ]
 }
 ```
-- Tasks nest up to 3 levels. A node with `children` is a summary node; without it, a leaf (carries effort)
-- **Keys starting with `_` are custom keys** you can add freely (`_ai` = AI effort, `_money` = outsourcing cost, `_links` = reference links above; any structure works). The viewer ignores them and in-browser editing preserves them (optional). Note: URLs you want to click belong in `note`, which auto-links them
-- The legacy single-project format `{ "project", "milestones", "tasks" }` is still readable (backward compatible)
-- For the full spec, operations, and edge-case handling, see [`CLAUDE.en.md`](CLAUDE.en.md)
 
-## Computation
-Effort and the inazuma line are **derived automatically from qty, hours, and actual dates** (no derived values stored in the data).
-On the inazuma line, **bulging left of the today line = behind schedule**. For exact formulas and conditions, see [`CLAUDE.en.md`](CLAUDE.en.md) (single source of truth for the spec).
+- Tasks nest up to 3 levels. A node with `children` is a summary node; without it, a leaf (carries effort)
+- **Keys starting with `_` are custom keys** you can add freely (`_ai` = AI effort, `_money` = outsourcing cost, `_links` = reference links above; any structure works). The viewer ignores them and in-browser editing preserves them. URLs you want to click belong in `note` (auto-linked)
+- The legacy single-project format `{ "project", "milestones", "tasks" }` is still readable (backward compatible)
+- For exact formulas, operations, and edge-case handling, see [`CLAUDE.en.md`](CLAUDE.en.md) (single source of truth for the spec)
 
 ## Requirements
+
 **Google Chrome (latest) recommended**. Uses the File System Access API, so a **Chromium-based browser is required**; works when opened directly via `file://`.
 
 - **Microsoft Edge** and other Chromium-based browsers work as well (same engine; development testing is done on Chrome)
 - On corporate-managed browsers, the File System Access API may be disabled by policy — viewing still works but **editing won't** (check `edge://policy`)
 - Firefox / Safari are **not supported** (no File System Access API)
 
-## Tests
-`tests/` contains normal-case (`正常_*.json`) and boundary / broken-input (`異常_*.json`) samples (see [`tests/INDEX.md`](tests/INDEX.md)). Design policy: graceful degradation — broken input must never crash the viewer.
+## Tests & known limitations
 
-## Known limitations
-- Initial rendering slows down with thousands of rows (mitigate by collapsing)
-- Projects with identical names share collapse state (keep project names unique)
-- No keyboard navigation / screen-reader support (mouse-first personal tool)
+`tests/` contains normal-case and broken-input sample JSONs plus e2e tests (see [`tests/INDEX.md`](tests/INDEX.md)). Design policy: graceful degradation — broken input must never crash the viewer.
+
+Known limitations: initial rendering slows down with thousands of rows (mitigate by collapsing) / projects with identical names share collapse state / no keyboard navigation or screen-reader support (mouse-first personal tool).
 
 ## License
+
 [MIT](LICENSE)

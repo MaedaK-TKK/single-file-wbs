@@ -276,6 +276,28 @@
                 "end": "2026-06-12"
               },
               "note": "https://github.com/piguo45/single-file-wbs/issues/54 飛び込み対応・実績1.5h（設計議論/実装/手戻り/テスト込み）"
+            },
+            {
+              "id": "4.8",
+              "name": "📅クリアの修正",
+              "qty": 1,
+              "hours": 0.5,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "actual": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/56 飛び込みバグ修正（ユーザー報告）",
+              "_ai": {
+                "tokens": 70000,
+                "model": "fable-5",
+                "wallMin": 25,
+                "memo": "概算・再現/修正/テスト/実機確認待ち込み"
+              }
             }
           ]
         },

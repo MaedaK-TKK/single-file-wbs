@@ -97,7 +97,7 @@ Editing `wbs.json` by hand is of course fine too. The rule of thumb: never touch
           { "id": "1.1", "name": "Task", "qty": 1, "hours": 16, "assignee": "Owner",
             "plan":   { "start": "2026-07-01", "end": "2026-07-05" },
             "actual": { "start": null, "end": null }, "note": "",
-            "_ai":    { "tokens": 70000, "minutes": 25 } }
+            "_ai":    { "tokens": 70000, "minutes": 25, "model": "fable-5" } }
         ] }
       ]
     }

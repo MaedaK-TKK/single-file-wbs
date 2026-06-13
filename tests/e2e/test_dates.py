@@ -23,8 +23,8 @@ with sync_playwright() as p:
       return {type:i.type, value:i.value, ph:i.placeholder,
               btn:!!i.closest('.date-wrap').querySelector('button[data-cal]')};
     }""")
-    check(info["type"] == "text" and info["value"] == "2026-06-01" and info["ph"] == "YYYY-MM-DD",
-          "日付欄はISO固定のテキスト（全環境で年/月/日順）")
+    check(info["type"] == "text" and info["value"] == "06-01" and info["ph"] == "MM-DD",
+          "日付欄は今年なら短縮表示MM-DD（ISO由来・全環境で月/日順・#59）")
     check(info["btn"], "📅カレンダーボタンあり")
 
     pg.fill('input[data-field="pe"]', "2026/06/20")

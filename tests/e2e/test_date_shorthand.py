@@ -55,6 +55,16 @@ with sync_playwright() as p:
     setfield("0/0", "ae", "2030-12-31")
     check(saved(0)["actual"]["end"] == "2030-12-31", f"full ISO直接→ {saved(0)['actual']['end']}")
 
+    # 年違いも緩く入力できる（月日と同じ緩さ＝UX一貫性・#59）
+    setfield("0/0", "ps", "270611")           # YYMMDD
+    check(saved(0)["plan"]["start"] == "2027-06-11", f"270611→2027-06-11(YYMMDD)→ {saved(0)['plan']['start']}")
+    setfield("0/0", "pe", "2028-7-3")          # YYYY-M-D（区切り・単桁月日）
+    check(saved(0)["plan"]["end"] == "2028-07-03", f"2028-7-3→2028-07-03→ {saved(0)['plan']['end']}")
+    setfield("0/0", "as", "29-1-5")            # YY-M-D
+    check(saved(0)["actual"]["start"] == "2029-01-05", f"29-1-5→2029-01-05→ {saved(0)['actual']['start']}")
+    setfield("0/0", "ae", "20251224")          # YYYYMMDD
+    check(saved(0)["actual"]["end"] == "2025-12-24", f"20251224→2025-12-24(YYYYMMDD)→ {saved(0)['actual']['end']}")
+
     # 解釈不能・範囲外は無視（ゴミを保存しない）
     before = saved(0)["plan"]["start"]
     setfield("0/0", "ps", "99999")

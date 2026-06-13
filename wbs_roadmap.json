@@ -34,6 +34,28 @@
                 "end": "2026-06-11"
               },
               "note": "https://github.com/piguo45/single-file-wbs/issues/53 消失スイートの復元含む"
+            },
+            {
+              "id": "1.2",
+              "name": "回帰テスト網羅化",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-13",
+                "end": "2026-06-13"
+              },
+              "actual": {
+                "start": "2026-06-13",
+                "end": "2026-06-13"
+              },
+              "note": "飛び込み。#16の安全網。fixture5件追加（カスタムキー/URL/color注入/非オブジェクトtop/5階層）＋corpus/display/save/securityの4テスト＋ゴールデンマスター。13スイートALL GREEN",
+              "_ai": {
+                "tokens": 200000,
+                "model": "fable-5",
+                "minutes": 60,
+                "memo": "概算・カバレッジ分析とfixture実機確認込み"
+              }
             }
           ]
         },
@@ -45,17 +67,23 @@
               "id": "2.1",
               "name": "COLSメタデータ駆動化",
               "qty": 1,
-              "hours": 8,
+              "hours": 16,
               "assignee": "Claude",
               "plan": {
                 "start": "2026-06-12",
                 "end": "2026-06-13"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-13",
+                "end": "2026-06-13"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/16 列マッピングの一元化"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/16 列マッピングの一元化 完了。view/field/edit/getを1エントリに集約・ゴールデンマスター差分ゼロで挙動不変を保証",
+              "_ai": {
+                "tokens": 400000,
+                "model": "fable-5",
+                "minutes": 110,
+                "memo": "概算・テスト網羅化込みの大仕事"
+              }
             }
           ]
         },

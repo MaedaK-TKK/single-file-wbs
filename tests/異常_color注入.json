@@ -1,0 +1,32 @@
+{
+  "projects": [
+    {
+      "name": "マイルストーンcolor属性インジェクション",
+      "milestones": [
+        { "date": "2026-06-05", "label": "正当な#hex（描画される）", "color": "#22c55e" },
+        { "date": "2026-06-07", "label": "属性脱出狙い", "color": "#fff\" onload=\"alert(1)" },
+        { "date": "2026-06-09", "label": "javascriptスキーム", "color": "javascript:alert(1)" },
+        { "date": "2026-06-11", "label": "色名（#hex以外）", "color": "red" },
+        { "date": "2026-06-13", "label": "閉じタグ注入", "color": "\"></rect><script>alert(1)</script>" }
+      ],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "注入されないことの確認",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "基準リーフ",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "A",
+              "plan": { "start": "2026-06-04", "end": "2026-06-12" },
+              "actual": { "start": "2026-06-04", "end": null },
+              "note": "isColor()以外のcolorは無視されデフォルト色になる"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

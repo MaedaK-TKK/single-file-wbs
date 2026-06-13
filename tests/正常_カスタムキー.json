@@ -1,0 +1,41 @@
+{
+  "_meta": { "owner": "架空テスト", "schemaVersion": 2 },
+  "projects": [
+    {
+      "name": "カスタムキー保持テスト",
+      "milestones": [],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "AI実績つき工程",
+          "_phaseMemo": "集計ノードにも _ キーを置ける",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "設計（AI担当）",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "Claude",
+              "plan": { "start": "2026-06-02", "end": "2026-06-06" },
+              "actual": { "start": "2026-06-02", "end": "2026-06-06" },
+              "note": "ビューアは _ キーを無視して描画する",
+              "_ai": { "tokens": 70000, "minutes": 25, "model": "fable-5" },
+              "_money": { "outsource": 50000, "currency": "JPY" },
+              "_links": ["https://example.com/spec.md", "https://example.com/adr-001.md"]
+            },
+            {
+              "id": "1.2",
+              "name": "実装（外注）",
+              "qty": 2,
+              "hours": 8,
+              "assignee": "架空ベンダ",
+              "plan": { "start": "2026-06-06", "end": "2026-06-10" },
+              "actual": { "start": "2026-06-06", "end": null },
+              "note": "カスタムキーなしのリーフも混在してよい"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

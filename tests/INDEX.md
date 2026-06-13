@@ -34,4 +34,14 @@
 ## E2E テスト（自動）
 
 `e2e/` に headless Chromium（Playwright）の自動テストを同梱（実行方法は [`e2e/README.md`](e2e/README.md)）。
-上記の JSON データが「目視確認用」、e2e が「機械検証用」。
+上記の JSON データは目視確認だけでなく **`test_corpus.py` が全件を読み込み JSエラー/NaN無しを機械検証**する（graceful degradation の回帰）。
+
+| テスト | 検証内容 |
+|---|---|
+| test_corpus | 全fixture＋非オブジェクトtop（null/配列/数値/文字列）で no-crash / no-NaN |
+| test_display | 全列のセル表示値・派生計算（工数=qty×h÷8・親集計）・進行中/—/✓・linkify・カスタムキー非表示 |
+| test_save | 各フィールドの編集が**正しいJSONパス**に保存（field→path 混線検出） |
+| test_security | XSSエスケープ（esc）・color属性インジェクション防御（isColor） |
+| test_render | イナズマ点x座標が仕様式どおり・2段見出し・NaN無し |
+| test_edit / test_dates / test_permissions | 編集モード・日付欄・FSA保存パス |
+| test_collapse / test_i18n / test_ui / test_load / test_links | 折りたたみ・言語・保存状態・読込経路・URLリンク |

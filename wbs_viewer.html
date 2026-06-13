@@ -86,6 +86,12 @@
                background:#fff;border-radius:3px;cursor:pointer;color:#445}
   .acts button:hover{background:#eef2ff;border-color:#9db4f0}
   .acts button[data-act="del"]{margin-left:5px}   /* 破壊的操作の✕は少し離して誤クリック防止 */
+  .movegrp{display:inline-flex;flex-direction:column;flex:0 0 auto;margin-right:3px}  /* 兄弟内移動：↑↓の密ペア（caretの三角と区別） */
+  .movegrp button{font:inherit;font-size:9px;line-height:1;padding:1px 5px;border:1px solid var(--btn-border);
+                  background:#fff;cursor:pointer;color:#445}
+  .movegrp button:first-child{border-radius:3px 3px 0 0;border-bottom:none}
+  .movegrp button:last-child{border-radius:0 0 3px 3px}
+  .movegrp button:hover{background:#eef2ff;border-color:#9db4f0}
   .date-wrap{display:flex;align-items:center;gap:2px;width:100%;min-width:0}
   #leftRows .date-wrap input[type="text"]{flex:1 1 auto;width:auto}  /* #leftRows input{width:100%} に勝つ詳細度（.nm-in と同じ理由） */
   .cal-proxy{position:absolute;width:0;height:0;opacity:0;border:0;padding:0;margin:0;pointer-events:none}
@@ -412,14 +418,14 @@
           if(col.key==="no")v=editMode?inp("id",n.id,"text"):esc(n.id);
           else if(col.key==="name"){
             if(editMode){
-              const acts=`<span class="acts"><button data-act="up" data-path="${P}" title="${esc(t("up"))}">▲</button>`
-                +`<button data-act="down" data-path="${P}" title="${esc(t("down"))}">▼</button>`
-                +`<button data-act="add" data-path="${P}" title="${esc(t("addBelow"))}">＋</button>`
+              const move=`<span class="movegrp"><button data-act="up" data-path="${P}" title="${esc(t("up"))}">↑</button>`  // ↑↓=兄弟内移動（caretの三角と区別）・チェックの前
+                +`<button data-act="down" data-path="${P}" title="${esc(t("down"))}">↓</button></span>`;
+              const acts=`<span class="acts"><button data-act="add" data-path="${P}" title="${esc(t("addBelow"))}">＋</button>`
                 +`<button data-act="del" data-path="${P}" title="${esc(t("del"))}">✕</button></span>`;
               const doneCtl=leaf                                              // リーフ=押せる完了チェック／集計ノード=読み取り✓のまま
                 ?`<button class="donechk${done?" on":""}" data-act="done" data-path="${P}" title="${esc(t("doneTip"))}">${done?"✓":""}</button>`
                 :(done?'<span class="done-mark">✓</span>':"");
-              v=`<span class="nm-wrap" style="padding-left:${r.depth*15}px">${sym(r,true)}${doneCtl}`
+              v=`<span class="nm-wrap" style="padding-left:${r.depth*15}px">${sym(r,true)}${move}${doneCtl}`
                 +`<input class="nm-in" data-path="${P}" data-field="name" type="text" value="${esc(n.name)}" title="${esc(n.name)}">${acts}</span>`;
             }else{
               const body=`${sym(r)}${done?"✓ ":""}<span class="nm">${esc(n.name)}</span>`;

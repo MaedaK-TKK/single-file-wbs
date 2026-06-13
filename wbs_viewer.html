@@ -678,7 +678,7 @@
     const cb=e.target.closest("button[data-cal]");                           // 📅 → ネイティブカレンダー（表示形式の制御不能を回避し、入力はISO固定 #33）
     if(cb){
       const w=cb.closest(".date-wrap"), txt=w.querySelector("input[data-field]"), px=w.querySelector(".cal-proxy");
-      px.value=isDate(txt.value)?txt.value:"";
+      px.value=isDate(txt.value)?txt.value:(expandDate(txt.value)||"");        // 短縮形"06-01"はfull ISOに展開してからnativeへ（空でないと現在日付/クリアが効かない・#59）
       try{px.showPicker();}catch(_){}
       return;
     }

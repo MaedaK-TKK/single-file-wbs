@@ -50,6 +50,14 @@ with sync_playwright() as p:
     pg.wait_for_timeout(600)
     check(saved()["actual"]["start"] is None, "📅のクリアで日付が消える（null保存）")
 
+    # 📅クリック時、短縮表示(06-01)でも cal-proxy に full ISO が入る（#59回帰：これが空だとクリア不能だった）
+    proxy = pg.evaluate("""()=>{
+      const w = document.querySelector('input[data-field="ps"]').closest('.date-wrap');
+      w.querySelector('button[data-cal]').click();
+      return w.querySelector('.cal-proxy').value;
+    }""")
+    check(proxy == "2026-06-01", f"📅クリックで短縮形→full ISOをnativeへ（#59回帰）→ {proxy!r}")
+
     pg.fill('input[data-field="ps"]', "0002/07/15")
     pg.dispatch_event('input[data-field="ps"]', "change")
     pg.wait_for_timeout(600)

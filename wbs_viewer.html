@@ -212,19 +212,6 @@
   };
   let lang="ja";try{if(localStorage.getItem("wbsLang")==="en")lang="en";}catch(_){}   // 既定は日本語・明示切替のみ記憶
   const t=k=>I18N[lang][k];
-  const COLS=[
-    {key:"no",label:"colNo",w:48,cls:"num"},
-    {key:"name",label:"colTask",w:200,cls:"name"},
-    {key:"qty",label:"colQty",w:40,cls:"r"},
-    {key:"hrs",label:"colHrs",w:50,cls:"r"},
-    {key:"work",label:"colWork",sub:"colWorkUnit",tip:"colWorkTip",w:56,cls:"r"},
-    {key:"asg",label:"colAsg",w:64,cls:""},
-    {key:"ps",label:"colStart",group:"grpPlan",w:64,cls:"r"},
-    {key:"pe",label:"colEnd",group:"grpPlan",w:64,cls:"r"},
-    {key:"as",label:"colStart",group:"grpActual",w:64,cls:"r"},
-    {key:"ae",label:"colEnd",group:"grpActual",w:64,cls:"r"},
-    {key:"note",label:"colNote",w:200,cls:"note"},
-  ];
   let fileHandle=null, lock=false, lastData=null, pendingCenter=true;
   let editMode=false, curProjects=null, refreshTimer=null;                 // 編集モード関連
   let dirty=false, saveTimer=null, saveChain=Promise.resolve(), fileMtime=0;  // 保存キュー（直列化＋外部変更検知）
@@ -249,6 +236,31 @@
     .map((part,i)=>i%2?`<a href="${esc(part)}" target="_blank" rel="noopener noreferrer">${esc(part)}</a>`:esc(part))
     .join("");
   const todayStr=()=>{const n=new Date();return new Date(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())).toISOString().slice(0,10);};
+
+  // 列メタデータ（表示=view・編集=field/edit/get を1エントリに集約）。view(c,n,x) x={leaf,inProg}・get(c,n)。
+  // no/name は caret/✓/アクション等で特殊なため描画ループ側で個別処理（#16）。helper参照のためヘルパー定義の後ろに置く
+  const COLS=[
+    {key:"no",label:"colNo",w:48,cls:"num"},
+    {key:"name",label:"colTask",w:200,cls:"name"},
+    {key:"qty",label:"colQty",w:40,cls:"r",
+     view:(c,n,x)=>x.leaf?esc(n.qty):"", field:"qty",edit:"number",get:(c,n)=>n.qty},
+    {key:"hrs",label:"colHrs",w:50,cls:"r",
+     view:(c,n,x)=>x.leaf?esc(n.hours):"", field:"hours",edit:"number",get:(c,n)=>n.hours},
+    {key:"work",label:"colWork",sub:"colWorkUnit",tip:"colWorkTip",w:56,cls:"r",
+     view:c=>c.load?esc(fmtLoad(c.load)):""},                                  // 派生（編集不可）
+    {key:"asg",label:"colAsg",w:64,cls:"",
+     view:(c,n,x)=>x.leaf?esc(n.assignee||""):"", field:"assignee",edit:"text",get:(c,n)=>n.assignee||""},
+    {key:"ps",label:"colStart",group:"grpPlan",w:64,cls:"r",
+     view:c=>esc(mdSlash(c.planStart)), field:"ps",edit:"date",get:c=>c.planStart||""},
+    {key:"pe",label:"colEnd",group:"grpPlan",w:64,cls:"r",
+     view:c=>esc(mdSlash(c.planEnd)), field:"pe",edit:"date",get:c=>c.planEnd||""},
+    {key:"as",label:"colStart",group:"grpActual",w:64,cls:"r",
+     view:c=>esc(c.actualStart?mdSlash(c.actualStart):"—"), field:"as",edit:"date",get:c=>c.actualStart||""},
+    {key:"ae",label:"colEnd",group:"grpActual",w:64,cls:"r",
+     view:(c,n,x)=>esc(c.actualEnd?mdSlash(c.actualEnd):(x.inProg?t("active"):"—")), field:"ae",edit:"date",get:c=>c.actualEnd||""},
+    {key:"note",label:"colNote",w:200,cls:"note",
+     view:(c,n,x)=>x.leaf?linkify(n.note||""):"", field:"note",edit:"text",get:(c,n)=>n.note||""},
+  ];
 
   const isColor=s=>typeof s==="string"&&/^#[0-9a-fA-F]{3,8}$/.test(s);
   function normalizeProjects(d){
@@ -379,49 +391,33 @@
       }else{
         const n=r.node,c=n._calc,leaf=n._leaf;
         const inProg=leaf&&c.actualStart&&!c.actualEnd, done=c.allDone;  // 完了=実績終了あり（集計は全子完了）
+        const x={leaf,inProg};
+        const P=esc(r.path), inp=(f,val,type)=>type==="date"                 // 編集入力欄（型でテンプレ分岐）
+          ?`<span class="date-wrap"><input data-path="${P}" data-field="${f}" type="text" placeholder="YYYY-MM-DD" value="${esc(val)}">`
+            +`<input type="date" class="cal-proxy" tabindex="-1" aria-hidden="true">`
+            +`<button type="button" class="cal-btn" data-cal title="${esc(t("calTip"))}">📅</button></span>`
+          :`<input data-path="${P}" data-field="${f}" type="${type}"${type==="number"?' step="any"':""} value="${esc(val)}">`;
         let info="";
         COLS.forEach(col=>{let v="";
-          switch(col.key){
-            case"no":v=esc(n.id);break;
-            case"name":{const body=`${sym(r)}${done?"✓ ":""}<span class="nm">${esc(n.name)}</span>`;
-              v=r.collapsible
-                ?`<span style="padding-left:${r.depth*15}px"><span class="clk" data-collapse="${esc(r.key)}">${body}</span></span>`
-                :`<span style="padding-left:${r.depth*15}px">${body}</span>`;break;}
-            case"qty":v=leaf?esc(n.qty):"";break;
-            case"hrs":v=leaf?esc(n.hours):"";break;
-            case"work":v=c.load?esc(fmtLoad(c.load)):"";break;
-            case"asg":v=leaf?esc(n.assignee||""):"";break;
-            case"ps":v=esc(mdSlash(c.planStart));break;
-            case"pe":v=esc(mdSlash(c.planEnd));break;
-            case"as":v=esc(c.actualStart?mdSlash(c.actualStart):"—");break;
-            case"ae":v=esc(c.actualEnd?mdSlash(c.actualEnd):(inProg?t("active"):"—"));break;
-            case"note":v=leaf?linkify(n.note||""):"";break;
-          }
-          if(editMode){
-            const P=esc(r.path), inp=(f,val,type)=>type==="date"
-              ?`<span class="date-wrap"><input data-path="${P}" data-field="${f}" type="text" placeholder="YYYY-MM-DD" value="${esc(val)}">`
-                +`<input type="date" class="cal-proxy" tabindex="-1" aria-hidden="true">`
-                +`<button type="button" class="cal-btn" data-cal title="${esc(t("calTip"))}">📅</button></span>`
-              :`<input data-path="${P}" data-field="${f}" type="${type}"${type==="number"?' step="any"':""} value="${esc(val)}">`;
-            if(col.key==="no")v=inp("id",n.id,"text");
-            else if(col.key==="name"){
+          if(col.key==="no")v=editMode?inp("id",n.id,"text"):esc(n.id);
+          else if(col.key==="name"){
+            if(editMode){
               const acts=`<span class="acts"><button data-act="up" data-path="${P}" title="${esc(t("up"))}">▲</button>`
                 +`<button data-act="down" data-path="${P}" title="${esc(t("down"))}">▼</button>`
                 +`<button data-act="add" data-path="${P}" title="${esc(t("addBelow"))}">＋</button>`
                 +`<button data-act="del" data-path="${P}" title="${esc(t("del"))}">✕</button></span>`;
               v=`<span class="nm-wrap" style="padding-left:${r.depth*15}px">${sym(r,true)}${done?'<span class="done-mark">✓</span>':""}`
                 +`<input class="nm-in" data-path="${P}" data-field="name" type="text" value="${esc(n.name)}" title="${esc(n.name)}">${acts}</span>`;
+            }else{
+              const body=`${sym(r)}${done?"✓ ":""}<span class="nm">${esc(n.name)}</span>`;
+              v=r.collapsible
+                ?`<span style="padding-left:${r.depth*15}px"><span class="clk" data-collapse="${esc(r.key)}">${body}</span></span>`
+                :`<span style="padding-left:${r.depth*15}px">${body}</span>`;
             }
-            else if(leaf){
-              if(col.key==="qty")v=inp("qty",n.qty,"number");
-              else if(col.key==="hrs")v=inp("hours",n.hours,"number");
-              else if(col.key==="asg")v=inp("assignee",n.assignee||"","text");
-              else if(col.key==="ps")v=inp("ps",c.planStart||"","date");
-              else if(col.key==="pe")v=inp("pe",c.planEnd||"","date");
-              else if(col.key==="as")v=inp("as",c.actualStart||"","date");
-              else if(col.key==="ae")v=inp("ae",c.actualEnd||"","date");
-              else if(col.key==="note")v=inp("note",n.note||"","text");
-            }
+          }
+          else{                                                              // メタデータ駆動：表示=view・編集=field/get（リーフのみ）
+            v=col.view?col.view(c,n,x):"";
+            if(editMode&&leaf&&col.field)v=inp(col.field,col.get(c,n),col.edit);
           }
           let tip="";
           if(col.key==="name"&&!editMode)tip=` title="${esc(n.name)}"`;

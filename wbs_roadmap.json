@@ -156,10 +156,10 @@
                 "end": "2026-06-16"
               },
               "actual": {
-                "start": null,
+                "start": "2026-06-13",
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/49 ▲▼↔↑↓・📅統一・✕hover"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/49 移動▲▼→⬆⬇横独立・チェック前(feat/37)。スモーク待ち"
             },
             {
               "id": "3.5",
@@ -210,10 +210,10 @@
                 "end": "2026-06-18"
               },
               "actual": {
-                "start": null,
+                "start": "2026-06-13",
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/37"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/37 完了チェックボックス実装済(feat/37)。着手ワンクリックは別途検討。スモーク→マージ待ち"
             },
             {
               "id": "4.2",
@@ -290,10 +290,10 @@
                 "end": "2026-06-24"
               },
               "actual": {
-                "start": null,
+                "start": "2026-06-13",
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/48 操作後フェード・左右同期hover"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/48 ガント横ハイライト=十字を実装(feat/37)。操作後フェードは未。スモーク待ち"
             },
             {
               "id": "4.7",
@@ -376,6 +376,76 @@
                 "minutes": 90,
                 "memo": "概算・スクショ往復のモック比較を多数含む"
               }
+            },
+            {
+              "id": "4.11",
+              "name": "自動更新＋衝突警告",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-20",
+                "end": "2026-06-30"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/58 mtimeポーリング・閲覧自動再読込/編集中警告"
+            },
+            {
+              "id": "4.12",
+              "name": "日付欄の短縮入力",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-20",
+                "end": "2026-06-30"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/59 適応型表示＋ショートハンド入力(611等)・聖域"
+            },
+            {
+              "id": "4.13",
+              "name": "起動時に前回ファイル復帰",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-20",
+                "end": "2026-06-30"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/61 IndexedDBにハンドル保存・ワンクリック復帰・聖域"
+            },
+            {
+              "id": "4.14",
+              "name": "フォルダ記憶(中止)",
+              "qty": 1,
+              "hours": 1,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-13",
+                "end": "2026-06-13"
+              },
+              "actual": {
+                "start": "2026-06-13",
+                "end": "2026-06-13"
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/60 startIn/id実装→file://のopaque originで不可と判明・revert・クローズ。検証に要した記録",
+              "_ai": {
+                "tokens": 80000,
+                "model": "fable-5",
+                "minutes": 30,
+                "memo": "概算・実機不能の検証/裏取り/revert込み。教訓:file://ピッカー系は未検証扱い"
+              }
             }
           ]
         },
@@ -446,6 +516,22 @@
                 "end": null
               },
               "note": "https://github.com/piguo45/single-file-wbs/issues/39 OS設定に追従"
+            },
+            {
+              "id": "5.5",
+              "name": "ガント直接編集",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-20",
+                "end": "2026-06-30"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/57 クリック=実績/ドラッグ=予定・大物・差別化目玉"
             }
           ]
         },

@@ -108,6 +108,9 @@
   #rowHl{position:absolute;left:0;right:0;height:var(--row-h);pointer-events:none;display:none;z-index:3;
          background:rgba(37,99,235,.06);border-top:1px solid rgba(37,99,235,.30);border-bottom:1px solid rgba(37,99,235,.30)}
   #leftRows .lrow.hl{box-shadow:inset 0 0 0 999px rgba(37,99,235,.06)}  /* 十字の横：対象行を薄く塗る（inset影で階層色の上に重ねる・ガント帯と同トーン） */
+  #leftRows{position:relative}
+  #leftColHl{position:absolute;top:0;bottom:0;pointer-events:none;display:none;z-index:3;  /* 十字の縦（左表側）：マウスがいるデータ列を薄く塗る */
+             background:rgba(37,99,235,.06);border-left:1px solid rgba(37,99,235,.30);border-right:1px solid rgba(37,99,235,.30)}
   #rightBody{position:relative}
   #ganttBg{position:absolute;top:0;left:0;z-index:0}
   #ganttBg .we{position:absolute;top:0;bottom:0;background:var(--weekend)}
@@ -477,7 +480,7 @@
     pts.slice(1,-1).forEach(p=>svg+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1]}" r="2.5" fill="#e11d48"></circle>`);
 
     document.getElementById("leftHead").innerHTML=lh;
-    document.getElementById("leftRows").innerHTML=lrows;
+    document.getElementById("leftRows").innerHTML=lrows+`<div id="leftColHl"></div>`;
     document.getElementById("left").style.width=COLS.reduce((s,c)=>s+cw(c),0)+"px";
     const rh=document.getElementById("rightHead"); rh.className="head"; rh.style.width=ganttW+"px";
     rh.innerHTML=`<div id="ym">${ym}</div><div id="dates">${dc}</div>`;
@@ -739,6 +742,15 @@
       const col=document.getElementById("colHl");if(col)col.style.display="none";hlIdx=-1;};
     const clearRow=()=>{const lr=document.querySelectorAll("#leftRows .lrow")[rowIdx];if(lr)lr.classList.remove("hl");
       const row=document.getElementById("rowHl");if(row)row.style.display="none";rowIdx=-1;};
+    const clearLeftCol=()=>{const band=document.getElementById("leftColHl");if(band)band.style.display="none";};
+    const setLeftCol=clientX=>{                                               // 縦：左表のデータ列（マウス位置のセル幅で）
+      const band=document.getElementById("leftColHl"),rowsEl=document.getElementById("leftRows");
+      const row=rowsEl&&rowsEl.querySelector(".lrow"); if(!band||!row){return;}
+      const rowsLeft=rowsEl.getBoundingClientRect().left; let found=null;
+      for(const c of row.querySelectorAll(".c")){const r=c.getBoundingClientRect(); if(clientX>=r.left&&clientX<r.right){found=r;break;}}
+      if(!found){clearLeftCol();return;}
+      band.style.left=(found.left-rowsLeft)+"px";band.style.width=found.width+"px";band.style.display="block";
+    };
     const setCol=clientX=>{                                                   // 縦：日付列（ガント領域のみ）
       const col=document.getElementById("colHl"); if(!col)return;
       const idx=Math.floor((clientX-right.getBoundingClientRect().left+right.scrollLeft)/DAY_W);
@@ -757,9 +769,9 @@
       const prevL=leftRows[rowIdx];if(prevL)prevL.classList.remove("hl");
       rowIdx=ri;row.style.top=(ri*ROW_H)+"px";row.style.display="block"; const lr=leftRows[ri];if(lr)lr.classList.add("hl");
     };
-    right.addEventListener("mousemove",e=>{setCol(e.clientX);setRow(e.clientY);}); // ガント＝縦＋横
-    left.addEventListener("mousemove",e=>{setRow(e.clientY);});                    // 作業項目＝横を更新。縦(日付列)は最後の位置を保持＝左表に居ても十字が崩れない
-    main.addEventListener("mouseleave",()=>{clearCol();clearRow();});              // 表全体を出たら消す（左右間の移動では消さない）
+    right.addEventListener("mousemove",e=>{clearLeftCol();setCol(e.clientX);setRow(e.clientY);}); // ガント＝縦(日付列)＋横
+    left.addEventListener("mousemove",e=>{clearCol();setLeftCol(e.clientX);setRow(e.clientY);});  // 作業項目＝縦(データ列)＋横。縦は今いるペインの列に切替
+    main.addEventListener("mouseleave",()=>{clearCol();clearLeftCol();clearRow();});               // 表全体を出たら消す（左右間の移動では消さない）
   }
   document.getElementById("fallbackInput").addEventListener("change",async e=>{
     const f=e.target.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true,t("fileLabel")(f.name,f.size));}});

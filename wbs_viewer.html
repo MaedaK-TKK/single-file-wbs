@@ -758,7 +758,7 @@
       rowIdx=ri;row.style.top=(ri*ROW_H)+"px";row.style.display="block"; const lr=leftRows[ri];if(lr)lr.classList.add("hl");
     };
     right.addEventListener("mousemove",e=>{setCol(e.clientX);setRow(e.clientY);}); // ガント＝縦＋横
-    left.addEventListener("mousemove",e=>{clearCol();setRow(e.clientY);});         // 作業項目＝横のみ（日付列は無いので縦は消す）
+    left.addEventListener("mousemove",e=>{setRow(e.clientY);});                    // 作業項目＝横を更新。縦(日付列)は最後の位置を保持＝左表に居ても十字が崩れない
     main.addEventListener("mouseleave",()=>{clearCol();clearRow();});              // 表全体を出たら消す（左右間の移動では消さない）
   }
   document.getElementById("fallbackInput").addEventListener("change",async e=>{

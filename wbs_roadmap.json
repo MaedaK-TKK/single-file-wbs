@@ -149,7 +149,7 @@
               "id": "3.4",
               "name": "アイコン整理",
               "qty": 1,
-              "hours": 2,
+              "hours": 4,
               "assignee": "Claude",
               "plan": {
                 "start": "2026-06-16",
@@ -157,9 +157,15 @@
               },
               "actual": {
                 "start": "2026-06-13",
-                "end": null
+                "end": "2026-06-15"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/49 移動▲▼→⬆⬇横独立・チェック前(feat/37)。スモーク待ち"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/49 完了。移動▲▼→⬆⬇横独立・チェックの前・caretと区別(太矢印+FE0E)",
+              "_ai": {
+                "tokens": 120000,
+                "model": "fable-5",
+                "minutes": 35,
+                "memo": "概算・グリフ比較込み"
+              }
             },
             {
               "id": "3.5",
@@ -203,7 +209,7 @@
               "id": "4.1",
               "name": "今日着手/完了ボタン",
               "qty": 1,
-              "hours": 4,
+              "hours": 6,
               "assignee": "Claude",
               "plan": {
                 "start": "2026-06-18",
@@ -211,9 +217,15 @@
               },
               "actual": {
                 "start": "2026-06-13",
-                "end": null
+                "end": "2026-06-15"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/37 完了チェックボックス実装済(feat/37)。着手ワンクリックは別途検討。スモーク→マージ待ち"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/37 完了。先頭✓トグルで実績終了=今日(未着手なら着手も今日)。着手ワンクリックは別途",
+              "_ai": {
+                "tokens": 150000,
+                "model": "fable-5",
+                "minutes": 40,
+                "memo": "概算"
+              }
             },
             {
               "id": "4.2",
@@ -283,7 +295,7 @@
               "id": "4.6",
               "name": "行ハイライト2種",
               "qty": 1,
-              "hours": 3,
+              "hours": 10,
               "assignee": "Claude",
               "plan": {
                 "start": "2026-06-24",
@@ -291,9 +303,15 @@
               },
               "actual": {
                 "start": "2026-06-13",
-                "end": null
+                "end": "2026-06-15"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/48 ガント横ハイライト=十字を実装(feat/37)。操作後フェードは未。スモーク待ち"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/48 完了(左右同期hover=十字)。横=左表+ガント連続帯/縦=ペインごとの列。reflow回避キャッシュ。操作後フェードは未",
+              "_ai": {
+                "tokens": 400000,
+                "model": "fable-5",
+                "minutes": 120,
+                "memo": "概算・十字の試行錯誤(3px→帯→A+B→左列→perf)込み"
+              }
             },
             {
               "id": "4.7",

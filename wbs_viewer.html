@@ -107,7 +107,7 @@
          background:rgba(37,99,235,.08);border-left:1px solid rgba(37,99,235,.35);border-right:1px solid rgba(37,99,235,.35)}
   #rowHl{position:absolute;left:0;right:0;height:var(--row-h);pointer-events:none;display:none;z-index:3;
          background:rgba(37,99,235,.06);border-top:1px solid rgba(37,99,235,.30);border-bottom:1px solid rgba(37,99,235,.30)}
-  #leftRows .lrow.hl{box-shadow:inset 3px 0 0 var(--accent)}  /* 十字の横：対象タスク名を左端アクセントで（行背景に依存しない） */
+  #leftRows .lrow.hl{box-shadow:inset 0 0 0 999px rgba(37,99,235,.06)}  /* 十字の横：対象行を薄く塗る（inset影で階層色の上に重ねる・ガント帯と同トーン） */
   #rightBody{position:relative}
   #ganttBg{position:absolute;top:0;left:0;z-index:0}
   #ganttBg .we{position:absolute;top:0;bottom:0;background:var(--weekend)}
@@ -733,31 +733,33 @@
   // ガントの十字ハイライト（マウスのある日の列＋行に帯＋ヘッダ強調）。
   // オーバーレイ2枚の移動のみ＝行数×日数に比例する仕事は増やさない（描画パス予算）
   {
-    const right=document.getElementById("right");
+    const right=document.getElementById("right"), left=document.getElementById("left"), main=document.getElementById("main");
     let hlIdx=-1, rowIdx=-1;
-    const clearHl=()=>{const d=document.querySelectorAll("#dates .d")[hlIdx];if(d)d.classList.remove("hl");
-      const lr=document.querySelectorAll("#leftRows .lrow")[rowIdx];if(lr)lr.classList.remove("hl");
-      const col=document.getElementById("colHl");if(col)col.style.display="none";
-      const row=document.getElementById("rowHl");if(row)row.style.display="none";hlIdx=-1;rowIdx=-1;};
-    right.addEventListener("mousemove",e=>{
-      const col=document.getElementById("colHl"),row=document.getElementById("rowHl"),grows=document.getElementById("grows");
-      if(!col||!row||!grows)return;
-      const idx=Math.floor((e.clientX-right.getBoundingClientRect().left+right.scrollLeft)/DAY_W);
+    const clearCol=()=>{const d=document.querySelectorAll("#dates .d")[hlIdx];if(d)d.classList.remove("hl");
+      const col=document.getElementById("colHl");if(col)col.style.display="none";hlIdx=-1;};
+    const clearRow=()=>{const lr=document.querySelectorAll("#leftRows .lrow")[rowIdx];if(lr)lr.classList.remove("hl");
+      const row=document.getElementById("rowHl");if(row)row.style.display="none";rowIdx=-1;};
+    const setCol=clientX=>{                                                   // 縦：日付列（ガント領域のみ）
+      const col=document.getElementById("colHl"); if(!col)return;
+      const idx=Math.floor((clientX-right.getBoundingClientRect().left+right.scrollLeft)/DAY_W);
       const days=document.querySelectorAll("#dates .d");
-      if(idx>=0&&idx<days.length&&idx!==hlIdx){
-        const prev=days[hlIdx];if(prev)prev.classList.remove("hl");
-        hlIdx=idx;days[idx].classList.add("hl");
-        col.style.left=(idx*DAY_W)+"px";col.style.display="block";
-      }
-      const ri=Math.floor((e.clientY-grows.getBoundingClientRect().top)/ROW_H);  // 行=タスク
-      if(ri!==rowIdx&&ri>=0&&ri*ROW_H<grows.offsetHeight){
-        const leftRows=document.querySelectorAll("#leftRows .lrow");
-        const prevL=leftRows[rowIdx];if(prevL)prevL.classList.remove("hl");
-        rowIdx=ri;row.style.top=(ri*ROW_H)+"px";row.style.display="block";
-        const lr=leftRows[ri];if(lr)lr.classList.add("hl");
-      }
-    });
-    right.addEventListener("mouseleave",clearHl);
+      if(idx<0||idx>=days.length){clearCol();return;}
+      if(idx===hlIdx)return;
+      const prev=days[hlIdx];if(prev)prev.classList.remove("hl");
+      hlIdx=idx;days[idx].classList.add("hl"); col.style.left=(idx*DAY_W)+"px";col.style.display="block";
+    };
+    const setRow=clientY=>{                                                   // 横：行＝タスク（左表＋ガント連続）
+      const row=document.getElementById("rowHl"),grows=document.getElementById("grows"); if(!row||!grows)return;
+      const ri=Math.floor((clientY-grows.getBoundingClientRect().top)/ROW_H);
+      if(ri===rowIdx)return;
+      if(ri<0||ri*ROW_H>=grows.offsetHeight){clearRow();return;}
+      const leftRows=document.querySelectorAll("#leftRows .lrow");
+      const prevL=leftRows[rowIdx];if(prevL)prevL.classList.remove("hl");
+      rowIdx=ri;row.style.top=(ri*ROW_H)+"px";row.style.display="block"; const lr=leftRows[ri];if(lr)lr.classList.add("hl");
+    };
+    right.addEventListener("mousemove",e=>{setCol(e.clientX);setRow(e.clientY);}); // ガント＝縦＋横
+    left.addEventListener("mousemove",e=>{clearCol();setRow(e.clientY);});         // 作業項目＝横のみ（日付列は無いので縦は消す）
+    main.addEventListener("mouseleave",()=>{clearCol();clearRow();});              // 表全体を出たら消す（左右間の移動では消さない）
   }
   document.getElementById("fallbackInput").addEventListener("change",async e=>{
     const f=e.target.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true,t("fileLabel")(f.name,f.size));}});

@@ -76,10 +76,16 @@
   .nm-wrap .clk.caret{align-self:stretch;display:flex;align-items:center;justify-content:center;width:20px}  /* 編集時の折りたたみは caret のみ＝行高いっぱいにヒット領域を拡大 */
   #leftRows input.nm-in{flex:1 1 auto;width:auto}  /* #leftRows input{width:100%} のID詳細度に勝つためセレクタで上書き（!important回避） */
   .done-mark{color:var(--done-fg);flex:0 0 auto}
-  .acts{display:inline-flex;gap:3px;flex:0 0 auto}
-  .acts button{font:inherit;font-size:12px;line-height:1.3;padding:2px 6px;border:1px solid var(--btn-border);
+  .donechk{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:0 0 auto;  /* 完了トグル：既存の✓トーン(done-fg)を踏襲 */
+           margin-right:3px;padding:0;border:1px solid var(--btn-border);border-radius:3px;background:#fff;
+           cursor:pointer;font-size:11px;line-height:1;color:var(--done-fg)}
+  .donechk.on{border-color:var(--done-fg)}
+  .donechk:hover{border-color:var(--accent)}
+  .acts,.movegrp{display:inline-flex;gap:3px;flex:0 0 auto}
+  .movegrp{margin-right:3px}   /* 移動⬆⬇はチェックの前・横並び独立（穂先が大きく視認しやすい・＋✕と同サイズ） */
+  .acts button,.movegrp button{font:inherit;font-size:12px;line-height:1.3;padding:2px 6px;border:1px solid var(--btn-border);
                background:#fff;border-radius:3px;cursor:pointer;color:#445}
-  .acts button:hover{background:#eef2ff;border-color:#9db4f0}
+  .acts button:hover,.movegrp button:hover{background:#eef2ff;border-color:#9db4f0}
   .acts button[data-act="del"]{margin-left:5px}   /* 破壊的操作の✕は少し離して誤クリック防止 */
   .date-wrap{display:flex;align-items:center;gap:2px;width:100%;min-width:0}
   #leftRows .date-wrap input[type="text"]{flex:1 1 auto;width:auto}  /* #leftRows input{width:100%} に勝つ詳細度（.nm-in と同じ理由） */
@@ -99,6 +105,12 @@
   #dates .d.hl{background:#dbe7ff;font-weight:700}
   #colHl{position:absolute;top:0;bottom:0;width:var(--day-w);pointer-events:none;display:none;z-index:3;
          background:rgba(37,99,235,.08);border-left:1px solid rgba(37,99,235,.35);border-right:1px solid rgba(37,99,235,.35)}
+  #rowHl{position:absolute;left:0;right:0;height:var(--row-h);pointer-events:none;display:none;z-index:3;
+         background:rgba(37,99,235,.06);border-top:1px solid rgba(37,99,235,.30);border-bottom:1px solid rgba(37,99,235,.30)}
+  #leftRows .lrow.hl{box-shadow:inset 0 0 0 999px rgba(37,99,235,.06)}  /* 十字の横：対象行を薄く塗る（inset影で階層色の上に重ねる・ガント帯と同トーン） */
+  #leftRows{position:relative}
+  #leftColHl{position:absolute;top:0;bottom:0;pointer-events:none;display:none;z-index:3;  /* 十字の縦（左表側）：マウスがいるデータ列を薄く塗る */
+             background:rgba(37,99,235,.06);border-left:1px solid rgba(37,99,235,.30);border-right:1px solid rgba(37,99,235,.30)}
   #rightBody{position:relative}
   #ganttBg{position:absolute;top:0;left:0;z-index:0}
   #ganttBg .we{position:absolute;top:0;bottom:0;background:var(--weekend)}
@@ -159,6 +171,7 @@
       addTask:"＋タスク",addTaskTip:"タスクを追加",up:"上へ",down:"下へ",addBelow:"下に作業を追加",del:"削除",
       unsaved:"未保存の変更あり…",savedAt:"保存済 ",saveFail:"保存失敗",savePending:"未保存（外部変更のため保留）",
       calTip:"カレンダーから選択",
+      doneTip:"完了/未完了を切替（チェックで実績終了＝今日。未着手なら着手も今日）",
       ym:(y,m)=>`${y}年${m}月`,
       stat:(n,load,time,today)=>`${n}プロジェクト ／ 総工数 <b>${load}人日</b><br>更新: ${time}（本日 ${today}）`,
       confirmDel:name=>`「${name}」を削除します。よろしいですか？（配下も削除）`,
@@ -190,6 +203,7 @@
       addTask:"+Task",addTaskTip:"Add a task",up:"Move up",down:"Move down",addBelow:"Add task below",del:"Delete",
       unsaved:"Unsaved changes…",savedAt:"Saved ",saveFail:"Save failed",savePending:"Not saved (external change)",
       calTip:"Pick a date",
+      doneTip:"Toggle done (check = actual end today; also start if not yet started)",
       ym:(y,m)=>`${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]} ${y}`,
       stat:(n,load,time,today)=>`${n} project${n===1?"":"s"} / total <b>${load} person-days</b><br>Updated: ${time} (today ${today})`,
       confirmDel:name=>`Delete "${name}"? (children will also be deleted)`,
@@ -214,6 +228,7 @@
   const t=k=>I18N[lang][k];
   let fileHandle=null, lock=false, lastData=null, pendingCenter=true;
   let editMode=false, curProjects=null, refreshTimer=null;                 // 編集モード関連
+  let leftColBounds=null;                                                  // 左表の列境界キャッシュ（render毎に無効化・mousemoveのreflow回避）
   let dirty=false, saveTimer=null, saveChain=Promise.resolve(), fileMtime=0;  // 保存キュー（直列化＋外部変更検知）
   let pickerNeeded=false;   // file://等：権限APIが使えず保存ピッカー方式が必要（セッション中記憶）
   let saveMsg="";           // 保存状態の表示文言（未保存/保存済/保存失敗）
@@ -424,11 +439,14 @@
           if(col.key==="no")v=editMode?inp("id",n.id,"text"):esc(n.id);
           else if(col.key==="name"){
             if(editMode){
-              const acts=`<span class="acts"><button data-act="up" data-path="${P}" title="${esc(t("up"))}">▲</button>`
-                +`<button data-act="down" data-path="${P}" title="${esc(t("down"))}">▼</button>`
-                +`<button data-act="add" data-path="${P}" title="${esc(t("addBelow"))}">＋</button>`
+              const move=`<span class="movegrp"><button data-act="up" data-path="${P}" title="${esc(t("up"))}">⬆︎</button>`  // ⬆⬇=兄弟内移動（caretの三角と区別）・チェックの前。FE0E=絵文字でなくテキスト字形を強制
+                +`<button data-act="down" data-path="${P}" title="${esc(t("down"))}">⬇︎</button></span>`;
+              const acts=`<span class="acts"><button data-act="add" data-path="${P}" title="${esc(t("addBelow"))}">＋</button>`
                 +`<button data-act="del" data-path="${P}" title="${esc(t("del"))}">✕</button></span>`;
-              v=`<span class="nm-wrap" style="padding-left:${r.depth*15}px">${sym(r,true)}${done?'<span class="done-mark">✓</span>':""}`
+              const doneCtl=leaf                                              // リーフ=押せる完了チェック／集計ノード=読み取り✓のまま
+                ?`<button class="donechk${done?" on":""}" data-act="done" data-path="${P}" title="${esc(t("doneTip"))}">${done?"✓":""}</button>`
+                :(done?'<span class="done-mark">✓</span>':"");
+              v=`<span class="nm-wrap" style="padding-left:${r.depth*15}px">${sym(r,true)}${move}${doneCtl}`
                 +`<input class="nm-in" data-path="${P}" data-field="name" type="text" value="${esc(n.name)}" title="${esc(n.name)}">${acts}</span>`;
             }else{
               const body=`${sym(r)}${done?"✓ ":""}<span class="nm">${esc(n.name)}</span>`;
@@ -485,7 +503,7 @@
     pts.slice(1,-1).forEach(p=>svg+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1]}" r="2.5" fill="#e11d48"></circle>`);
 
     document.getElementById("leftHead").innerHTML=lh;
-    document.getElementById("leftRows").innerHTML=lrows;
+    document.getElementById("leftRows").innerHTML=lrows+`<div id="leftColHl"></div>`; leftColBounds=null;  // 列幅が変わりうるので境界キャッシュを無効化
     document.getElementById("left").style.width=COLS.reduce((s,c)=>s+cw(c),0)+"px";
     const rh=document.getElementById("rightHead"); rh.className="head"; rh.style.width=ganttW+"px";
     rh.innerHTML=`<div id="ym">${ym}</div><div id="dates">${dc}</div>`;
@@ -493,7 +511,7 @@
     rb.innerHTML=`<div id="ganttBg" style="width:${ganttW}px;height:${rowsH}px">${bg}</div>`
       +`<div id="grows">${grows}</div>`
       +`<svg id="overlay" width="${ganttW}" height="${rowsH}" viewBox="0 0 ${ganttW} ${rowsH}">${svg}</svg>`
-      +`<div id="colHl"></div>`;
+      +`<div id="colHl"></div><div id="rowHl"></div>`;
     document.getElementById("empty").style.display="none";
     document.getElementById("left").style.display="block";
     document.getElementById("right").style.display="block";
@@ -704,6 +722,10 @@
     else if(act==="add"){
       const base=String(r.node.id||""), dot=base.lastIndexOf("."), prefix=dot>=0?base.slice(0,dot+1):"";
       arr.splice(i+1,0,newLeaf(mintId(arr,prefix)));
+    }
+    else if(act==="done"){                                                   // 完了トグル：チェックで実績終了=今日（未着手なら着手も今日）・解除でnull
+      const a=r.node.actual=r.node.actual&&typeof r.node.actual==="object"?r.node.actual:{};
+      if(a.end)a.end=null; else{a.end=todayStr(); if(!a.start)a.start=todayStr();}
     }else return;
     queueSave(); render(lastData);                                           // 変異→即render（stale path防止 #5/#8）
   });
@@ -735,24 +757,51 @@
   }
   document.getElementById("openBtn").addEventListener("click",openPicker);
   document.getElementById("refreshBtn").addEventListener("click",refresh);
-  // ガントの日付列ハイライト（マウスのある日の列に帯＋ヘッダ強調）。
-  // オーバーレイ1枚の移動のみ＝行数×日数に比例する仕事は増やさない（描画パス予算）
+  // ガントの十字ハイライト（マウスのある日の列＋行に帯＋ヘッダ強調）。
+  // オーバーレイ2枚の移動のみ＝行数×日数に比例する仕事は増やさない（描画パス予算）
   {
-    const right=document.getElementById("right");
-    let hlIdx=-1;
-    const clearHl=()=>{const d=document.querySelectorAll("#dates .d")[hlIdx];if(d)d.classList.remove("hl");
-      const hl=document.getElementById("colHl");if(hl)hl.style.display="none";hlIdx=-1;};
-    right.addEventListener("mousemove",e=>{
-      const hl=document.getElementById("colHl"); if(!hl)return;
-      const idx=Math.floor((e.clientX-right.getBoundingClientRect().left+right.scrollLeft)/DAY_W);
-      if(idx===hlIdx)return;
+    const right=document.getElementById("right"), left=document.getElementById("left"), main=document.getElementById("main");
+    let hlIdx=-1, rowIdx=-1, leftColIdx=-1;
+    const clearCol=()=>{const d=document.querySelectorAll("#dates .d")[hlIdx];if(d)d.classList.remove("hl");
+      const col=document.getElementById("colHl");if(col)col.style.display="none";hlIdx=-1;};
+    const clearRow=()=>{const lr=document.querySelectorAll("#leftRows .lrow")[rowIdx];if(lr)lr.classList.remove("hl");
+      const row=document.getElementById("rowHl");if(row)row.style.display="none";rowIdx=-1;};
+    const clearLeftCol=()=>{const band=document.getElementById("leftColHl");if(band)band.style.display="none";leftColIdx=-1;};
+    const setLeftCol=clientX=>{                                               // 縦：左表のデータ列。境界はrender毎に1回だけ実測しキャッシュ（mousemoveでのreflow回避）
+      const band=document.getElementById("leftColHl"),rowsEl=document.getElementById("leftRows");
+      const row=rowsEl&&rowsEl.querySelector(".lrow"); if(!band||!row)return;
+      if(!leftColBounds){
+        const rowsLeft=rowsEl.getBoundingClientRect().left;
+        leftColBounds=[...row.querySelectorAll(".c")].map(c=>{const r=c.getBoundingClientRect();return{l:r.left,rt:r.right,rel:r.left-rowsLeft,w:r.width};});
+        leftColIdx=-1;                                                       // 再構築時はindexもリセット（render後に古い位置で早期リターンしない）
+      }
+      const idx=leftColBounds.findIndex(b=>clientX>=b.l&&clientX<b.rt);
+      if(idx===leftColIdx)return;                                            // 列が変わった時だけ動かす（数値比較のみ・reflow無し）
+      leftColIdx=idx;
+      if(idx<0){band.style.display="none";return;}
+      const b=leftColBounds[idx]; band.style.left=b.rel+"px";band.style.width=b.w+"px";band.style.display="block";
+    };
+    const setCol=clientX=>{                                                   // 縦：日付列（ガント領域のみ）
+      const col=document.getElementById("colHl"); if(!col)return;
+      const idx=Math.floor((clientX-right.getBoundingClientRect().left+right.scrollLeft)/DAY_W);
       const days=document.querySelectorAll("#dates .d");
-      if(idx<0||idx>=days.length){clearHl();return;}
+      if(idx<0||idx>=days.length){clearCol();return;}
+      if(idx===hlIdx)return;
       const prev=days[hlIdx];if(prev)prev.classList.remove("hl");
-      hlIdx=idx;days[idx].classList.add("hl");
-      hl.style.left=(idx*DAY_W)+"px";hl.style.display="block";
-    });
-    right.addEventListener("mouseleave",clearHl);
+      hlIdx=idx;days[idx].classList.add("hl"); col.style.left=(idx*DAY_W)+"px";col.style.display="block";
+    };
+    const setRow=clientY=>{                                                   // 横：行＝タスク（左表＋ガント連続）
+      const row=document.getElementById("rowHl"),grows=document.getElementById("grows"); if(!row||!grows)return;
+      const ri=Math.floor((clientY-grows.getBoundingClientRect().top)/ROW_H);
+      if(ri===rowIdx)return;
+      if(ri<0||ri*ROW_H>=grows.offsetHeight){clearRow();return;}
+      const leftRows=document.querySelectorAll("#leftRows .lrow");
+      const prevL=leftRows[rowIdx];if(prevL)prevL.classList.remove("hl");
+      rowIdx=ri;row.style.top=(ri*ROW_H)+"px";row.style.display="block"; const lr=leftRows[ri];if(lr)lr.classList.add("hl");
+    };
+    right.addEventListener("mousemove",e=>{clearLeftCol();setCol(e.clientX);setRow(e.clientY);}); // ガント＝縦(日付列)＋横
+    left.addEventListener("mousemove",e=>{clearCol();setLeftCol(e.clientX);setRow(e.clientY);});  // 作業項目＝縦(データ列)＋横。縦は今いるペインの列に切替
+    main.addEventListener("mouseleave",()=>{clearCol();clearLeftCol();clearRow();});               // 表全体を出たら消す（左右間の移動では消さない）
   }
   document.getElementById("fallbackInput").addEventListener("change",async e=>{
     const f=e.target.files[0];if(f){fileHandle=null;fileMtime=0;loadText(await f.text(),true,t("fileLabel")(f.name,f.size));}});

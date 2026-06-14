@@ -228,6 +228,7 @@
   const t=k=>I18N[lang][k];
   let fileHandle=null, lock=false, lastData=null, pendingCenter=true;
   let editMode=false, curProjects=null, refreshTimer=null;                 // 編集モード関連
+  let leftColBounds=null;                                                  // 左表の列境界キャッシュ（render毎に無効化・mousemoveのreflow回避）
   let dirty=false, saveTimer=null, saveChain=Promise.resolve(), fileMtime=0;  // 保存キュー（直列化＋外部変更検知）
   let pickerNeeded=false;   // file://等：権限APIが使えず保存ピッカー方式が必要（セッション中記憶）
   let saveMsg="";           // 保存状態の表示文言（未保存/保存済/保存失敗）
@@ -480,7 +481,7 @@
     pts.slice(1,-1).forEach(p=>svg+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1]}" r="2.5" fill="#e11d48"></circle>`);
 
     document.getElementById("leftHead").innerHTML=lh;
-    document.getElementById("leftRows").innerHTML=lrows+`<div id="leftColHl"></div>`;
+    document.getElementById("leftRows").innerHTML=lrows+`<div id="leftColHl"></div>`; leftColBounds=null;  // 列幅が変わりうるので境界キャッシュを無効化
     document.getElementById("left").style.width=COLS.reduce((s,c)=>s+cw(c),0)+"px";
     const rh=document.getElementById("rightHead"); rh.className="head"; rh.style.width=ganttW+"px";
     rh.innerHTML=`<div id="ym">${ym}</div><div id="dates">${dc}</div>`;
@@ -737,19 +738,25 @@
   // オーバーレイ2枚の移動のみ＝行数×日数に比例する仕事は増やさない（描画パス予算）
   {
     const right=document.getElementById("right"), left=document.getElementById("left"), main=document.getElementById("main");
-    let hlIdx=-1, rowIdx=-1;
+    let hlIdx=-1, rowIdx=-1, leftColIdx=-1;
     const clearCol=()=>{const d=document.querySelectorAll("#dates .d")[hlIdx];if(d)d.classList.remove("hl");
       const col=document.getElementById("colHl");if(col)col.style.display="none";hlIdx=-1;};
     const clearRow=()=>{const lr=document.querySelectorAll("#leftRows .lrow")[rowIdx];if(lr)lr.classList.remove("hl");
       const row=document.getElementById("rowHl");if(row)row.style.display="none";rowIdx=-1;};
-    const clearLeftCol=()=>{const band=document.getElementById("leftColHl");if(band)band.style.display="none";};
-    const setLeftCol=clientX=>{                                               // 縦：左表のデータ列（マウス位置のセル幅で）
+    const clearLeftCol=()=>{const band=document.getElementById("leftColHl");if(band)band.style.display="none";leftColIdx=-1;};
+    const setLeftCol=clientX=>{                                               // 縦：左表のデータ列。境界はrender毎に1回だけ実測しキャッシュ（mousemoveでのreflow回避）
       const band=document.getElementById("leftColHl"),rowsEl=document.getElementById("leftRows");
-      const row=rowsEl&&rowsEl.querySelector(".lrow"); if(!band||!row){return;}
-      const rowsLeft=rowsEl.getBoundingClientRect().left; let found=null;
-      for(const c of row.querySelectorAll(".c")){const r=c.getBoundingClientRect(); if(clientX>=r.left&&clientX<r.right){found=r;break;}}
-      if(!found){clearLeftCol();return;}
-      band.style.left=(found.left-rowsLeft)+"px";band.style.width=found.width+"px";band.style.display="block";
+      const row=rowsEl&&rowsEl.querySelector(".lrow"); if(!band||!row)return;
+      if(!leftColBounds){
+        const rowsLeft=rowsEl.getBoundingClientRect().left;
+        leftColBounds=[...row.querySelectorAll(".c")].map(c=>{const r=c.getBoundingClientRect();return{l:r.left,rt:r.right,rel:r.left-rowsLeft,w:r.width};});
+        leftColIdx=-1;                                                       // 再構築時はindexもリセット（render後に古い位置で早期リターンしない）
+      }
+      const idx=leftColBounds.findIndex(b=>clientX>=b.l&&clientX<b.rt);
+      if(idx===leftColIdx)return;                                            // 列が変わった時だけ動かす（数値比較のみ・reflow無し）
+      leftColIdx=idx;
+      if(idx<0){band.style.display="none";return;}
+      const b=leftColBounds[idx]; band.style.left=b.rel+"px";band.style.width=b.w+"px";band.style.display="block";
     };
     const setCol=clientX=>{                                                   // 縦：日付列（ガント領域のみ）
       const col=document.getElementById("colHl"); if(!col)return;

@@ -397,17 +397,23 @@
               "id": "4.12",
               "name": "日付欄の短縮入力",
               "qty": 1,
-              "hours": 6,
+              "hours": 8,
               "assignee": "Claude",
               "plan": {
                 "start": "2026-06-20",
                 "end": "2026-06-30"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-13",
+                "end": "2026-06-14"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/59 適応型表示＋ショートハンド入力(611等)・聖域"
+              "note": "https://github.com/piguo45/single-file-wbs/issues/59 完了。611/270611/6-11等で緩く入力(年も)・今年MM-DD短縮表示・幅圧縮。スモークで📅クリア不能修正・年違いショートハンド追加",
+              "_ai": {
+                "tokens": 300000,
+                "model": "fable-5",
+                "minutes": 80,
+                "memo": "概算・実機スモーク2往復(issue5/7)込み"
+              }
             },
             {
               "id": "4.13",

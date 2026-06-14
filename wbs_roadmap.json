@@ -556,6 +556,22 @@
                 "end": null
               },
               "note": "https://github.com/piguo45/single-file-wbs/issues/57 クリック=実績/ドラッグ=予定・大物・差別化目玉"
+            },
+            {
+              "id": "5.6",
+              "name": "単一スクロール化",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-25",
+                "end": "2026-07-02"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/62 縦スクロールの左右同期ズレを根本解消。レイアウト核＋スクロール保持(過去バグ箇所)に触る・聖域寄り"
             }
           ]
         },

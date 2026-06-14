@@ -23,8 +23,8 @@ with sync_playwright() as p:
       return {type:i.type, value:i.value, ph:i.placeholder,
               btn:!!i.closest('.date-wrap').querySelector('button[data-cal]')};
     }""")
-    check(info["type"] == "text" and info["value"] == "2026-06-01" and info["ph"] == "YYYY-MM-DD",
-          "日付欄はISO固定のテキスト（全環境で年/月/日順）")
+    check(info["type"] == "text" and info["value"] == "06-01" and info["ph"] == "MM-DD",
+          "日付欄は今年なら短縮表示MM-DD（ISO由来・全環境で月/日順・#59）")
     check(info["btn"], "📅カレンダーボタンあり")
 
     pg.fill('input[data-field="pe"]', "2026/06/20")
@@ -49,6 +49,14 @@ with sync_playwright() as p:
     }""")
     pg.wait_for_timeout(600)
     check(saved()["actual"]["start"] is None, "📅のクリアで日付が消える（null保存）")
+
+    # 📅クリック時、短縮表示(06-01)でも cal-proxy に full ISO が入る（#59回帰：これが空だとクリア不能だった）
+    proxy = pg.evaluate("""()=>{
+      const w = document.querySelector('input[data-field="ps"]').closest('.date-wrap');
+      w.querySelector('button[data-cal]').click();
+      return w.querySelector('.cal-proxy').value;
+    }""")
+    check(proxy == "2026-06-01", f"📅クリックで短縮形→full ISOをnativeへ（#59回帰）→ {proxy!r}")
 
     pg.fill('input[data-field="ps"]', "0002/07/15")
     pg.dispatch_event('input[data-field="ps"]', "change")

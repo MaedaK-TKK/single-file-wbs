@@ -236,6 +236,28 @@
     .map((part,i)=>i%2?`<a href="${esc(part)}" target="_blank" rel="noopener noreferrer">${esc(part)}</a>`:esc(part))
     .join("");
   const todayStr=()=>{const n=new Date();return new Date(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())).toISOString().slice(0,10);};
+  // 編集欄の短縮表示：今年は MM-DD、他年は full ISO（年が"意外"な時だけ年を見せる・#59）
+  const shortDate=iso=>(iso&&isDate(iso)&&iso.slice(0,4)===todayStr().slice(0,4))?iso.slice(5):(iso||"");
+  // ショートハンド入力→full ISO。月日も年も緩く受ける（#59）：
+  //   611/0611/6-11/6/11=今年(or既存年)のMD ／ 270611/20270611=YY(YY)MMDD ／ 27-6-11/2027-6-11=年-月-日(2桁年は20YY)
+  //   年未指定は既存値→空なら今年で補完。無効はnull。
+  const expandDate=(val,curISO)=>{
+    val=String(val).trim().replace(/\//g,"-");
+    if(val==="")return "";                                                    // 空＝クリア
+    if(isDate(val))return val;                                                // 既に full ISO
+    const defYr=(curISO&&isDate(curISO))?curISO.slice(0,4):todayStr().slice(0,4);
+    const yr4=y=>y.length===2?"20"+y:y;                                       // 2桁年→20YY
+    let yr,m,d, parts=val.split("-"), g=val.replace(/\D/g,"");
+    if(parts.length===2&&/^\d{1,2}$/.test(parts[0])&&/^\d{1,2}$/.test(parts[1])){yr=defYr;[m,d]=parts;}            // M-D
+    else if(parts.length===3&&/^\d{2}(\d{2})?$/.test(parts[0])&&/^\d{1,2}$/.test(parts[1])&&/^\d{1,2}$/.test(parts[2])){yr=yr4(parts[0]);[,m,d]=parts;}  // Y-M-D
+    else if(g.length===3){yr=defYr;m=g.slice(0,1);d=g.slice(1);}              // MDD
+    else if(g.length===4){yr=defYr;m=g.slice(0,2);d=g.slice(2);}             // MMDD
+    else if(g.length===6){yr=yr4(g.slice(0,2));m=g.slice(2,4);d=g.slice(4);} // YYMMDD
+    else if(g.length===8){yr=g.slice(0,4);m=g.slice(4,6);d=g.slice(6);}      // YYYYMMDD
+    else return null;                                                        // 解釈不能
+    const iso=`${yr}-${m.padStart(2,"0")}-${d.padStart(2,"0")}`;
+    return isDate(iso)?iso:null;                                              // 範囲・妥当性チェック
+  };
 
   // 列メタデータ（表示=view・編集=field/edit/get を1エントリに集約）。view(c,n,x) x={leaf,inProg}・get(c,n)。
   // no/name は caret/✓/アクション等で特殊なため描画ループ側で個別処理（#16）。helper参照のためヘルパー定義の後ろに置く
@@ -251,13 +273,13 @@
     {key:"asg",label:"colAsg",w:64,cls:"",
      view:(c,n,x)=>x.leaf?esc(n.assignee||""):"", field:"assignee",edit:"text",get:(c,n)=>n.assignee||""},
     {key:"ps",label:"colStart",group:"grpPlan",w:64,cls:"r",
-     view:c=>esc(mdSlash(c.planStart)), field:"ps",edit:"date",get:c=>c.planStart||""},
+     view:c=>esc(mdSlash(c.planStart)), field:"ps",edit:"date",get:c=>shortDate(c.planStart)},
     {key:"pe",label:"colEnd",group:"grpPlan",w:64,cls:"r",
-     view:c=>esc(mdSlash(c.planEnd)), field:"pe",edit:"date",get:c=>c.planEnd||""},
+     view:c=>esc(mdSlash(c.planEnd)), field:"pe",edit:"date",get:c=>shortDate(c.planEnd)},
     {key:"as",label:"colStart",group:"grpActual",w:64,cls:"r",
-     view:c=>esc(c.actualStart?mdSlash(c.actualStart):"—"), field:"as",edit:"date",get:c=>c.actualStart||""},
+     view:c=>esc(c.actualStart?mdSlash(c.actualStart):"—"), field:"as",edit:"date",get:c=>shortDate(c.actualStart)},
     {key:"ae",label:"colEnd",group:"grpActual",w:64,cls:"r",
-     view:(c,n,x)=>esc(c.actualEnd?mdSlash(c.actualEnd):(x.inProg?t("active"):"—")), field:"ae",edit:"date",get:c=>c.actualEnd||""},
+     view:(c,n,x)=>esc(c.actualEnd?mdSlash(c.actualEnd):(x.inProg?t("active"):"—")), field:"ae",edit:"date",get:c=>shortDate(c.actualEnd)},
     {key:"note",label:"colNote",w:200,cls:"note",
      view:(c,n,x)=>x.leaf?linkify(n.note||""):"", field:"note",edit:"text",get:(c,n)=>n.note||""},
   ];
@@ -301,7 +323,7 @@
     const TODAY=todayStr();
     const projects=normalizeProjects(data);
     curProjects=projects;                                                    // 編集ハンドラ用に保持
-    const cw=c=>editMode&&DATE_FIELDS[c.key]?120:editMode&&c.key==="name"?c.w+40:c.w;  // 編集時は日付列と作業項目列を広げる
+    const cw=c=>editMode&&DATE_FIELDS[c.key]?84:editMode&&c.key==="name"?c.w+40:c.w;  // 編集時：日付列は短縮表示に合わせ84px(#59)・作業項目は広げる
     const ms=[], rows=[];
     projects.forEach((proj,pi)=>{
       (proj.tasks||[]).forEach(n=>computeNode(n,TODAY));
@@ -393,7 +415,7 @@
         const inProg=leaf&&c.actualStart&&!c.actualEnd, done=c.allDone;  // 完了=実績終了あり（集計は全子完了）
         const x={leaf,inProg};
         const P=esc(r.path), inp=(f,val,type)=>type==="date"                 // 編集入力欄（型でテンプレ分岐）
-          ?`<span class="date-wrap"><input data-path="${P}" data-field="${f}" type="text" placeholder="YYYY-MM-DD" value="${esc(val)}">`
+          ?`<span class="date-wrap"><input data-path="${P}" data-field="${f}" type="text" placeholder="MM-DD" value="${esc(val)}">`
             +`<input type="date" class="cal-proxy" tabindex="-1" aria-hidden="true">`
             +`<button type="button" class="cal-btn" data-cal title="${esc(t("calTip"))}">📅</button></span>`
           :`<input data-path="${P}" data-field="${f}" type="${type}"${type==="number"?' step="any"':""} value="${esc(val)}">`;
@@ -537,10 +559,11 @@
   function applyField(n,f,val){
     if(f==="qty"||f==="hours")n[f]=val===""?0:(Number(val)||0);
     else if(DATE_FIELDS[f]){
-      val=val.trim().replace(/\//g,"-");                                     // 2026/07/01 形式も受け付けて正規化
-      if(val!==""&&!isDate(val))return;                                      // 入力途中・範囲外の日付は無視（ゴミを保存しない）
       const[grp,key]=DATE_FIELDS[f];
-      if(!n[grp]||typeof n[grp]!=="object")n[grp]={}; n[grp][key]=val===""?null:val;
+      const cur=(n[grp]&&typeof n[grp]==="object")?n[grp][key]:null;          // 既存値（年補完に使う）
+      const iso=expandDate(val,cur);                                          // 611/6-11/full等→full ISO・無効はnull
+      if(iso===null)return;                                                   // 解釈不能・範囲外は無視（ゴミを保存しない）
+      if(!n[grp]||typeof n[grp]!=="object")n[grp]={}; n[grp][key]=iso===""?null:iso;
     }else n[f]=val;   // id, name, assignee, note
   }
   async function ensureWritable(){   // file:// では権限プロンプトが出せないため段階的にフォールバック（#17/#18/#19）
@@ -661,7 +684,7 @@
     const cb=e.target.closest("button[data-cal]");                           // 📅 → ネイティブカレンダー（表示形式の制御不能を回避し、入力はISO固定 #33）
     if(cb){
       const w=cb.closest(".date-wrap"), txt=w.querySelector("input[data-field]"), px=w.querySelector(".cal-proxy");
-      px.value=isDate(txt.value)?txt.value:"";
+      px.value=isDate(txt.value)?txt.value:(expandDate(txt.value)||"");        // 短縮形"06-01"はfull ISOに展開してからnativeへ（空でないと現在日付/クリアが効かない・#59）
       try{px.showPicker();}catch(_){}
       return;
     }

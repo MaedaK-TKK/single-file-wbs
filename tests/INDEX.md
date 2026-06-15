@@ -43,5 +43,9 @@
 | test_save | 各フィールドの編集が**正しいJSONパス**に保存（field→path 混線検出） |
 | test_security | XSSエスケープ（esc）・color属性インジェクション防御（isColor） |
 | test_render | イナズマ点x座標が仕様式どおり・2段見出し・NaN無し |
+| test_gantt_bars | 予実バー種別（予定帯/実績/終了遅延over/着手遅れgap）・「+N」ラベル値・titleの正確値（#65/#34） |
+| test_highlight | ガント十字ハイライト：行/日付列/左表データ列の display 切替・pointer-events:none（#48） |
+| test_done | 先頭✓トグルで actual.end＝本日・未着手なら start も補完（#37） |
+| test_date_shorthand | 日付ショートハンド入力・適応型短縮表示・年補完・範囲外無視（#59） |
 | test_edit / test_dates / test_permissions | 編集モード・日付欄・FSA保存パス |
-| test_collapse / test_i18n / test_ui / test_load / test_links | 折りたたみ・言語・保存状態・読込経路・URLリンク |
+| test_collapse / test_i18n / test_ui / test_load / test_links | 折りたたみ（ヘッダ▼▶＋Ctrl+Z）・言語・保存状態・読込経路・URLリンク |

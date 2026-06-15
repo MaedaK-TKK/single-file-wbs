@@ -1,7 +1,7 @@
 {
   "projects": [
     {
-      "name": "single-file-wbs v1.1 開発",
+      "name": "single-file-wbs 開発",
       "milestones": [
         {
           "date": "2026-06-13",
@@ -22,7 +22,7 @@
       "tasks": [
         {
           "id": "1",
-          "name": "テスト基盤",
+          "name": "完了：土台（v1.0.x〜現在）",
           "children": [
             {
               "id": "1.1",
@@ -42,34 +42,6 @@
             },
             {
               "id": "1.2",
-              "name": "回帰テスト網羅化",
-              "qty": 1,
-              "hours": 8,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-13",
-                "end": "2026-06-13"
-              },
-              "actual": {
-                "start": "2026-06-13",
-                "end": "2026-06-13"
-              },
-              "note": "飛び込み。#16の安全網。fixture5件追加（カスタムキー/URL/color注入/非オブジェクトtop/5階層）＋corpus/display/save/securityの4テスト＋ゴールデンマスター。13スイートALL GREEN",
-              "_ai": {
-                "tokens": 200000,
-                "model": "fable-5",
-                "minutes": 60,
-                "memo": "概算・カバレッジ分析とfixture実機確認込み"
-              }
-            }
-          ]
-        },
-        {
-          "id": "2",
-          "name": "構造化（増えにくい仕組み）",
-          "children": [
-            {
-              "id": "2.1",
               "name": "COLSメタデータ駆動化",
               "qty": 1,
               "hours": 16,
@@ -89,237 +61,9 @@
                 "minutes": 110,
                 "memo": "概算・テスト網羅化込みの大仕事"
               }
-            }
-          ]
-        },
-        {
-          "id": "3",
-          "name": "小粒バッチ（v1.2以降）",
-          "children": [
-            {
-              "id": "3.1",
-              "name": "エラー文言に回復手順",
-              "qty": 1,
-              "hours": 2,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-14",
-                "end": "2026-06-14"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#45：https://github.com/piguo45/single-file-wbs/issues/45"
             },
             {
-              "id": "3.2",
-              "name": "ツールチップ整備",
-              "qty": 1,
-              "hours": 3,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-14",
-                "end": "2026-06-15"
-              },
-              "actual": {
-                "start": "2026-06-12",
-                "end": null
-              },
-              "note": "#46：https://github.com/piguo45/single-file-wbs/issues/46 全ボタン・バー・…慣習 バーの予定/実績titleは先行実装済み。残り=ボタンの動詞title・…慣習"
-            },
-            {
-              "id": "3.3",
-              "name": "ツールバー区切り",
-              "qty": 1,
-              "hours": 1,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-15",
-                "end": "2026-06-15"
-              },
-              "actual": {
-                "start": "2026-06-12",
-                "end": "2026-06-12"
-              },
-              "note": "#47：https://github.com/piguo45/single-file-wbs/issues/47 論理グループ化 前倒し完了（開く+D&D統合・区切り線2本・EN右端化として実装）",
-              "_ai": {
-                "tokens": 60000,
-                "model": "fable-5",
-                "minutes": 20,
-                "memo": "概算・モック比較込み"
-              }
-            },
-            {
-              "id": "3.4",
-              "name": "アイコン整理",
-              "qty": 1,
-              "hours": 4,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-16",
-                "end": "2026-06-16"
-              },
-              "actual": {
-                "start": "2026-06-13",
-                "end": "2026-06-15"
-              },
-              "note": "#49：https://github.com/piguo45/single-file-wbs/issues/49 完了。移動▲▼→⬆⬇横独立・チェックの前・caretと区別(太矢印+FE0E)",
-              "_ai": {
-                "tokens": 120000,
-                "model": "fable-5",
-                "minutes": 35,
-                "memo": "概算・グリフ比較込み"
-              }
-            },
-            {
-              "id": "3.5",
-              "name": "描画中フィードバック",
-              "qty": 1,
-              "hours": 2,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-16",
-                "end": "2026-06-16"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#50：https://github.com/piguo45/single-file-wbs/issues/50"
-            },
-            {
-              "id": "3.6",
-              "name": "標準機能ガイド追記",
-              "qty": 1,
-              "hours": 1,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-17",
-                "end": "2026-06-17"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#51：https://github.com/piguo45/single-file-wbs/issues/51 Ctrl+F/ズーム/印刷をREADMEへ"
-            }
-          ]
-        },
-        {
-          "id": "4",
-          "name": "機能改善（doneはv1.1同梱／未着手はv1.2以降）",
-          "children": [
-            {
-              "id": "4.1",
-              "name": "今日着手/完了ボタン",
-              "qty": 1,
-              "hours": 6,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-18",
-                "end": "2026-06-18"
-              },
-              "actual": {
-                "start": "2026-06-13",
-                "end": "2026-06-15"
-              },
-              "note": "#37：https://github.com/piguo45/single-file-wbs/issues/37 完了。先頭✓トグルで実績終了=今日(未着手なら着手も今日)。着手ワンクリックは別途",
-              "_ai": {
-                "tokens": 150000,
-                "model": "fable-5",
-                "minutes": 40,
-                "memo": "概算"
-              }
-            },
-            {
-              "id": "4.2",
-              "name": "無効入力の可視化",
-              "qty": 1,
-              "hours": 3,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-19",
-                "end": "2026-06-19"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#41：https://github.com/piguo45/single-file-wbs/issues/41"
-            },
-            {
-              "id": "4.3",
-              "name": "保存失敗の警告強化",
-              "qty": 1,
-              "hours": 3,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-20",
-                "end": "2026-06-20"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#42：https://github.com/piguo45/single-file-wbs/issues/42"
-            },
-            {
-              "id": "4.4",
-              "name": "凡例＋遅延サマリ",
-              "qty": 1,
-              "hours": 6,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-21",
-                "end": "2026-06-22"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#40：https://github.com/piguo45/single-file-wbs/issues/40 ヘッダに「遅延N件」"
-            },
-            {
-              "id": "4.5",
-              "name": "キーボード基本操作",
-              "qty": 1,
-              "hours": 4,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-23",
-                "end": "2026-06-23"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#43：https://github.com/piguo45/single-file-wbs/issues/43"
-            },
-            {
-              "id": "4.6",
-              "name": "行ハイライト2種",
-              "qty": 1,
-              "hours": 10,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-24",
-                "end": "2026-06-24"
-              },
-              "actual": {
-                "start": "2026-06-13",
-                "end": "2026-06-15"
-              },
-              "note": "#48：https://github.com/piguo45/single-file-wbs/issues/48 完了(左右同期hover=十字)。横=左表+ガント連続帯/縦=ペインごとの列。reflow回避キャッシュ。操作後フェードは未",
-              "_ai": {
-                "tokens": 400000,
-                "model": "fable-5",
-                "minutes": 120,
-                "memo": "概算・十字の試行錯誤(3px→帯→A+B→左列→perf)込み"
-              }
-            },
-            {
-              "id": "4.7",
+              "id": "1.3",
               "name": "備考URLリンク化",
               "qty": 1,
               "hours": 1.5,
@@ -335,7 +79,7 @@
               "note": "#54：https://github.com/piguo45/single-file-wbs/issues/54 飛び込み対応・実績1.5h（設計議論/実装/手戻り/テスト込み）"
             },
             {
-              "id": "4.8",
+              "id": "1.4",
               "name": "📅クリアの修正",
               "qty": 1,
               "hours": 0.5,
@@ -357,7 +101,7 @@
               }
             },
             {
-              "id": "4.9",
+              "id": "1.5",
               "name": "ロゴ・ファビコン",
               "qty": 1,
               "hours": 1.5,
@@ -379,7 +123,7 @@
               }
             },
             {
-              "id": "4.10",
+              "id": "1.6",
               "name": "表示磨き込み一式",
               "qty": 1,
               "hours": 2.5,
@@ -401,23 +145,133 @@
               }
             },
             {
-              "id": "4.11",
-              "name": "自動更新＋衝突警告",
+              "id": "1.7",
+              "name": "回帰テスト網羅化",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-13",
+                "end": "2026-06-13"
+              },
+              "actual": {
+                "start": "2026-06-13",
+                "end": "2026-06-13"
+              },
+              "note": "飛び込み。#16の安全網。fixture5件追加（カスタムキー/URL/color注入/非オブジェクトtop/5階層）＋corpus/display/save/securityの4テスト＋ゴールデンマスター。13スイートALL GREEN",
+              "_ai": {
+                "tokens": 200000,
+                "model": "fable-5",
+                "minutes": 60,
+                "memo": "概算・カバレッジ分析とfixture実機確認込み"
+              }
+            },
+            {
+              "id": "1.8",
+              "name": "フォルダ記憶(中止)",
+              "qty": 1,
+              "hours": 1,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-13",
+                "end": "2026-06-13"
+              },
+              "actual": {
+                "start": "2026-06-13",
+                "end": "2026-06-13"
+              },
+              "note": "#60：https://github.com/piguo45/single-file-wbs/issues/60 startIn/id実装→file://のopaque originで不可と判明・revert・クローズ。検証に要した記録",
+              "_ai": {
+                "tokens": 80000,
+                "model": "fable-5",
+                "minutes": 30,
+                "memo": "概算・実機不能の検証/裏取り/revert込み。教訓:file://ピッカー系は未検証扱い"
+              }
+            },
+            {
+              "id": "1.9",
+              "name": "ツールバー区切り",
+              "qty": 1,
+              "hours": 1,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-15",
+                "end": "2026-06-15"
+              },
+              "actual": {
+                "start": "2026-06-12",
+                "end": "2026-06-12"
+              },
+              "note": "#47：https://github.com/piguo45/single-file-wbs/issues/47 論理グループ化 前倒し完了（開く+D&D統合・区切り線2本・EN右端化として実装）",
+              "_ai": {
+                "tokens": 60000,
+                "model": "fable-5",
+                "minutes": 20,
+                "memo": "概算・モック比較込み"
+              }
+            },
+            {
+              "id": "1.10",
+              "name": "ガント表現刷新",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-15",
+                "end": "2026-06-17"
+              },
+              "actual": {
+                "start": "2026-06-15",
+                "end": "2026-06-15"
+              },
+              "note": "#65：https://github.com/piguo45/single-file-wbs/issues/65 予定=背景帯・終了遅延=赤+N日・着手遅れ=薄赤。プログレスバー誤認の解消。表示層のみ。案1（予定=上下罫線の背景帯・左右開放／実績=前面バー／終了遅延=赤バー+N／着手遅れ=薄赤）で構造確定。色はCUD検証(#35)で後決め"
+            },
+            {
+              "id": "1.11",
+              "name": "アイコン整理",
+              "qty": 1,
+              "hours": 4,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-16",
+                "end": "2026-06-16"
+              },
+              "actual": {
+                "start": "2026-06-13",
+                "end": "2026-06-15"
+              },
+              "note": "#49：https://github.com/piguo45/single-file-wbs/issues/49 完了。移動▲▼→⬆⬇横独立・チェックの前・caretと区別(太矢印+FE0E)",
+              "_ai": {
+                "tokens": 120000,
+                "model": "fable-5",
+                "minutes": 35,
+                "memo": "概算・グリフ比較込み"
+              }
+            },
+            {
+              "id": "1.12",
+              "name": "今日着手/完了ボタン",
               "qty": 1,
               "hours": 6,
               "assignee": "Claude",
               "plan": {
-                "start": "2026-06-20",
-                "end": "2026-06-30"
+                "start": "2026-06-18",
+                "end": "2026-06-18"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-13",
+                "end": "2026-06-15"
               },
-              "note": "#58：https://github.com/piguo45/single-file-wbs/issues/58 mtimeポーリング・閲覧自動再読込/編集中警告"
+              "note": "#37：https://github.com/piguo45/single-file-wbs/issues/37 完了。先頭✓トグルで実績終了=今日(未着手なら着手も今日)。着手ワンクリックは別途",
+              "_ai": {
+                "tokens": 150000,
+                "model": "fable-5",
+                "minutes": 40,
+                "memo": "概算"
+              }
             },
             {
-              "id": "4.12",
+              "id": "1.13",
               "name": "日付欄の短縮入力",
               "qty": 1,
               "hours": 8,
@@ -439,169 +293,35 @@
               }
             },
             {
-              "id": "4.13",
-              "name": "起動時に前回ファイル復帰",
+              "id": "1.14",
+              "name": "行ハイライト2種",
               "qty": 1,
-              "hours": 6,
+              "hours": 10,
               "assignee": "Claude",
               "plan": {
-                "start": "2026-06-20",
-                "end": "2026-06-30"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#61：https://github.com/piguo45/single-file-wbs/issues/61 IndexedDBにハンドル保存・ワンクリック復帰・聖域"
-            },
-            {
-              "id": "4.14",
-              "name": "フォルダ記憶(中止)",
-              "qty": 1,
-              "hours": 1,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-13",
-                "end": "2026-06-13"
+                "start": "2026-06-24",
+                "end": "2026-06-24"
               },
               "actual": {
                 "start": "2026-06-13",
-                "end": "2026-06-13"
+                "end": "2026-06-15"
               },
-              "note": "#60：https://github.com/piguo45/single-file-wbs/issues/60 startIn/id実装→file://のopaque originで不可と判明・revert・クローズ。検証に要した記録",
+              "note": "#48：https://github.com/piguo45/single-file-wbs/issues/48 完了(左右同期hover=十字)。横=左表+ガント連続帯/縦=ペインごとの列。reflow回避キャッシュ。操作後フェードは未",
               "_ai": {
-                "tokens": 80000,
+                "tokens": 400000,
                 "model": "fable-5",
-                "minutes": 30,
-                "memo": "概算・実機不能の検証/裏取り/revert込み。教訓:file://ピッカー系は未検証扱い"
+                "minutes": 120,
+                "memo": "概算・十字の試行錯誤(3px→帯→A+B→左列→perf)込み"
               }
             }
           ]
         },
         {
-          "id": "5",
-          "name": "大物機能（v1.2以降）",
-          "children": [
-            {
-              "id": "5.1",
-              "name": "Undo/Redo (Ctrl+Z)",
-              "qty": 1,
-              "hours": 12,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-25",
-                "end": "2026-06-27"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#36：https://github.com/piguo45/single-file-wbs/issues/36"
-            },
-            {
-              "id": "5.2",
-              "name": "検索・ジャンプ",
-              "qty": 1,
-              "hours": 6,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-28",
-                "end": "2026-06-28"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#38：https://github.com/piguo45/single-file-wbs/issues/38 Phase1"
-            },
-            {
-              "id": "5.3",
-              "name": "文字サイズ追従(rem)",
-              "qty": 1,
-              "hours": 8,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-29",
-                "end": "2026-06-30"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#44：https://github.com/piguo45/single-file-wbs/issues/44"
-            },
-            {
-              "id": "5.4",
-              "name": "ダークモード",
-              "qty": 1,
-              "hours": 12,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-07-01",
-                "end": "2026-07-03"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#39：https://github.com/piguo45/single-file-wbs/issues/39 OS設定に追従"
-            },
-            {
-              "id": "5.5",
-              "name": "ガント直接編集",
-              "qty": 1,
-              "hours": 24,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-20",
-                "end": "2026-06-30"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#57：https://github.com/piguo45/single-file-wbs/issues/57 クリック=実績/ドラッグ=予定・大物・差別化目玉"
-            },
-            {
-              "id": "5.6",
-              "name": "単一スクロール化",
-              "qty": 1,
-              "hours": 24,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-25",
-                "end": "2026-07-02"
-              },
-              "actual": {
-                "start": null,
-                "end": null
-              },
-              "note": "#62：https://github.com/piguo45/single-file-wbs/issues/62 縦スクロールの左右同期ズレを根本解消。レイアウト核＋スクロール保持(過去バグ箇所)に触る・聖域寄り"
-            }
-          ]
-        },
-        {
-          "id": "6",
+          "id": "2",
           "name": "v1.1: 進捗軸ビュー追加（バズ窓）",
           "children": [
             {
-              "id": "6.1",
-              "name": "ガント表現刷新",
-              "qty": 1,
-              "hours": 8,
-              "assignee": "Claude",
-              "plan": {
-                "start": "2026-06-15",
-                "end": "2026-06-17"
-              },
-              "actual": {
-                "start": "2026-06-15",
-                "end": "2026-06-15"
-              },
-              "note": "#65：https://github.com/piguo45/single-file-wbs/issues/65 予定=背景帯・終了遅延=赤+N日・着手遅れ=薄赤。プログレスバー誤認の解消。表示層のみ。案1（予定=上下罫線の背景帯・左右開放／実績=前面バー／終了遅延=赤バー+N／着手遅れ=薄赤）で構造確定。色はCUD検証(#35)で後決め"
-            },
-            {
-              "id": "6.2",
+              "id": "2.1",
               "name": "進捗の2軸ビュー",
               "qty": 1,
               "hours": 16,
@@ -617,7 +337,7 @@
               "note": "#63：https://github.com/piguo45/single-file-wbs/issues/63 左=4分割進捗入力(0/25/50/75/100量子化)・右=時間軸/進捗軸タブ・AI査定%(_progress カスタムキー)。v2マーキー機能＝AIネイティブの実証"
             },
             {
-              "id": "6.3",
+              "id": "2.2",
               "name": "CUD検証（配色）",
               "qty": 1,
               "hours": 6,
@@ -633,7 +353,7 @@
               "note": "#35：https://github.com/piguo45/single-file-wbs/issues/35 カラーユニバーサルデザイン"
             },
             {
-              "id": "6.4",
+              "id": "2.3",
               "name": "コンセプト明文化",
               "qty": 1,
               "hours": 3,
@@ -649,7 +369,7 @@
               "note": "#67：https://github.com/piguo45/single-file-wbs/issues/67 ★v2の最後。機能が揃ってから、それを指してREADME/CLAUDE.mdに製品の核を書く（知る→作る→書く）。応用情報PM手法を枠に＋AIメンバー時代の新理論を北極星に。Zenn記事の論題基盤"
             },
             {
-              "id": "6.5",
+              "id": "2.4",
               "name": "Zenn記事",
               "qty": 1,
               "hours": 8,
@@ -665,7 +385,7 @@
               "note": "#68：https://github.com/piguo45/single-file-wbs/issues/68 仮題『WBSという至高ツールでこのAI時代をサバイブする』。#67の論考をZenn公開。v2リリースと同時。本人が執筆"
             },
             {
-              "id": "6.6",
+              "id": "2.5",
               "name": "v1.1リリース作業",
               "qty": 1,
               "hours": 3,
@@ -683,11 +403,11 @@
           ]
         },
         {
-          "id": "7",
+          "id": "3",
           "name": "v1.2: 依存追加",
           "children": [
             {
-              "id": "7.1",
+              "id": "3.1",
               "name": "依存/CPビュー（最小版）",
               "qty": 1,
               "hours": 12,
@@ -703,7 +423,7 @@
               "note": "#66：https://github.com/piguo45/single-file-wbs/issues/66 _deps カスタムキー＋トポロジカルソート＋CP赤ハイライト(最小版)。新データ前提で重い＝v3に後送（優先度低）"
             },
             {
-              "id": "7.2",
+              "id": "3.2",
               "name": "v1.2リリース作業",
               "qty": 1,
               "hours": 3,
@@ -717,6 +437,268 @@
                 "end": null
               },
               "note": "リリースノート・スクショ・gitタグ・GitHub Releases"
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "name": "v1.2以降: 未着手バックログ（予定=未定）",
+          "children": [
+            {
+              "id": "4.1",
+              "name": "エラー文言に回復手順",
+              "qty": 1,
+              "hours": 2,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#45：https://github.com/piguo45/single-file-wbs/issues/45"
+            },
+            {
+              "id": "4.2",
+              "name": "ツールチップ整備",
+              "qty": 1,
+              "hours": 3,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": "2026-06-12",
+                "end": null
+              },
+              "note": "#46：https://github.com/piguo45/single-file-wbs/issues/46 全ボタン・バー・…慣習 バーの予定/実績titleは先行実装済み。残り=ボタンの動詞title・…慣習"
+            },
+            {
+              "id": "4.3",
+              "name": "描画中フィードバック",
+              "qty": 1,
+              "hours": 2,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#50：https://github.com/piguo45/single-file-wbs/issues/50"
+            },
+            {
+              "id": "4.4",
+              "name": "標準機能ガイド追記",
+              "qty": 1,
+              "hours": 1,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#51：https://github.com/piguo45/single-file-wbs/issues/51 Ctrl+F/ズーム/印刷をREADMEへ"
+            },
+            {
+              "id": "4.5",
+              "name": "無効入力の可視化",
+              "qty": 1,
+              "hours": 3,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#41：https://github.com/piguo45/single-file-wbs/issues/41"
+            },
+            {
+              "id": "4.6",
+              "name": "保存失敗の警告強化",
+              "qty": 1,
+              "hours": 3,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#42：https://github.com/piguo45/single-file-wbs/issues/42"
+            },
+            {
+              "id": "4.7",
+              "name": "凡例＋遅延サマリ",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#40：https://github.com/piguo45/single-file-wbs/issues/40 ヘッダに「遅延N件」"
+            },
+            {
+              "id": "4.8",
+              "name": "キーボード基本操作",
+              "qty": 1,
+              "hours": 4,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#43：https://github.com/piguo45/single-file-wbs/issues/43"
+            },
+            {
+              "id": "4.9",
+              "name": "自動更新＋衝突警告",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#58：https://github.com/piguo45/single-file-wbs/issues/58 mtimeポーリング・閲覧自動再読込/編集中警告"
+            },
+            {
+              "id": "4.10",
+              "name": "起動時に前回ファイル復帰",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#61：https://github.com/piguo45/single-file-wbs/issues/61 IndexedDBにハンドル保存・ワンクリック復帰・聖域"
+            },
+            {
+              "id": "4.11",
+              "name": "Undo/Redo (Ctrl+Z)",
+              "qty": 1,
+              "hours": 12,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#36：https://github.com/piguo45/single-file-wbs/issues/36"
+            },
+            {
+              "id": "4.12",
+              "name": "検索・ジャンプ",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#38：https://github.com/piguo45/single-file-wbs/issues/38 Phase1"
+            },
+            {
+              "id": "4.13",
+              "name": "文字サイズ追従(rem)",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#44：https://github.com/piguo45/single-file-wbs/issues/44"
+            },
+            {
+              "id": "4.14",
+              "name": "ダークモード",
+              "qty": 1,
+              "hours": 12,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#39：https://github.com/piguo45/single-file-wbs/issues/39 OS設定に追従"
+            },
+            {
+              "id": "4.15",
+              "name": "ガント直接編集",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#57：https://github.com/piguo45/single-file-wbs/issues/57 クリック=実績/ドラッグ=予定・大物・差別化目玉"
+            },
+            {
+              "id": "4.16",
+              "name": "単一スクロール化",
+              "qty": 1,
+              "hours": 24,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#62：https://github.com/piguo45/single-file-wbs/issues/62 縦スクロールの左右同期ズレを根本解消。レイアウト核＋スクロール保持(過去バグ箇所)に触る・聖域寄り"
             }
           ]
         }

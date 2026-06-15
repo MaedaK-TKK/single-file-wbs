@@ -12,6 +12,11 @@
           "date": "2026-07-06",
           "label": "v1.1リリース",
           "color": "#ef4444"
+        },
+        {
+          "date": "2026-06-21",
+          "label": "v2リリース（バズ転換）",
+          "color": "#3b82f6"
         }
       ],
       "tasks": [
@@ -610,6 +615,120 @@
                 "end": null
               },
               "note": "ノート・スクショ・タグ・Releases"
+            }
+          ]
+        },
+        {
+          "id": "7",
+          "name": "v2: 進捗ビューとガント刷新（バズ窓・今週）",
+          "children": [
+            {
+              "id": "7.1",
+              "name": "ガント表現刷新",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-15",
+                "end": "2026-06-17"
+              },
+              "actual": {
+                "start": "2026-06-15",
+                "end": "2026-06-15"
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/65 予定=背景帯・終了遅延=赤+N日・着手遅れ=薄赤。プログレスバー誤認の解消。表示層のみ。案1（予定=上下罫線の背景帯・左右開放／実績=前面バー／終了遅延=赤バー+N／着手遅れ=薄赤）で構造確定。色はCUD検証(#35)で後決め"
+            },
+            {
+              "id": "7.2",
+              "name": "進捗の2軸ビュー",
+              "qty": 1,
+              "hours": 16,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-17",
+                "end": "2026-06-20"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/63 左=4分割進捗入力(0/25/50/75/100量子化)・右=時間軸/進捗軸タブ・AI査定%(_progress カスタムキー)。v2マーキー機能＝AIネイティブの実証"
+            },
+            {
+              "id": "7.3",
+              "name": "コンセプト明文化",
+              "qty": 1,
+              "hours": 3,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-20",
+                "end": "2026-06-21"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/67 ★v2の最後。機能が揃ってから、それを指してREADME/CLAUDE.mdに製品の核を書く（知る→作る→書く）。応用情報PM手法を枠に＋AIメンバー時代の新理論を北極星に。Zenn記事の論題基盤"
+            }
+          ]
+        },
+        {
+          "id": "8",
+          "name": "v3: 依存・クリティカルパスビュー（バズ窓の後）",
+          "children": [
+            {
+              "id": "8.1",
+              "name": "依存/CPビュー（最小版）",
+              "qty": 1,
+              "hours": 12,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-23",
+                "end": "2026-06-27"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "https://github.com/piguo45/single-file-wbs/issues/66 _deps カスタムキー＋トポロジカルソート＋CP赤ハイライト(最小版)。新データ前提で重い＝v3に後送（優先度低）"
+            }
+          ]
+        },
+        {
+          "id": "9",
+          "name": "発信（バズを採用へ転換）",
+          "children": [
+            {
+              "id": "9.1",
+              "name": "Zenn記事（魂を込めて）",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": "2026-06-15",
+                "end": "2026-06-20"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "仮題『WBSという至高ツールでこのAI時代をサバイブする』。論考(#67)＝WBS至高→メンテ地獄→だから作った→AI時代は全員PL/TL→AIも本ツールでメンバーエージェント管理→その未来にベット。本人が書く・Claudeは編集黒子"
+            },
+            {
+              "id": "9.2",
+              "name": "v2リリース作業",
+              "qty": 1,
+              "hours": 3,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": "2026-06-21",
+                "end": "2026-06-21"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "ノート・スクショ・タグ・Releases。Zenn記事と同時に出してバズ窓で相互強化"
             }
           ]
         }

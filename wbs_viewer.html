@@ -10,10 +10,10 @@
     --day-w:22px; --row-h:30px; --header-h:48px;
     --border:#d7dbe0; --btn-border:#9aa2ad; --grid:#eceef1; --line:#c5cad3; --weekend:#f4f5f7;  /* line=表の区切り（縦横共通・青帯と色相で区別できるグレー）。--grid はガント日グリッド用 */  /* btn-border=操作物の輪郭（罫線より濃く・WCAG非テキスト3:1寄り） */
     --text:#1f2430; --muted:#6b7280; --ym-fg:#11161f;  /* 年月ラベル: 日付の数字(--text)より一段濃い=月>日の階層 */
-    --plan:#bcd0f7; --actual:#2f6fed; --pplan:#9fb1c9; --pactual:#134e9e;  /* 親=青族の濃淡（紫を廃し青×紫のCVD混同を回避・#35）。pactual=ネイビー/pplan=スチール */
+    --actual:#2f6fed;  /* 実績は全階層で同色（親もリーフも同じ＝何のバーか一目で分かる・#65）。階層は行背景＋左表で表現 */
     --proj:#93acdf; --proj-line:#3a5694; --lvl0:#b9cdf2; --lvl1:#e3ebfb;
     --done-bg:#d4dae1; --done-fg:#5f6772; --accent:#2563eb; --edit-on:#16a34a;
-    --plan-edge:#6f8fd0; --pspan:#5b78bd; --head-bg:#eef0f3;
+    --plan-edge:#4a6a9e; --pspan:#5b78bd; --head-bg:#eef0f3;  /* plan-edge=予定の枠線（4辺・前面・塗りなし）。遅延/完了を色分けしたので枠でもプログレスバー誤認しない・#65 */
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
@@ -121,14 +121,15 @@
   .grow.done{background:var(--done-bg)}
   .bar{position:absolute;border-radius:3px}
   /* 予定=薄い背景帯(ゾーン)／実績=塗りバー(前面)。枠＋塗り＝プログレスバー誤認を避ける(#65)。終了遅延=超過分を赤・着手遅れ=空きを薄赤 */
-  .bar.plan{top:3px;height:24px;background:var(--plan);border-radius:0;z-index:0;border-top:1px solid var(--plan-edge);border-bottom:1px solid var(--plan-edge)}  /* 予定=上下罫線・左右開放（容器=プログレスバーに見えない・#65/案1） */
+  .bar.plan{top:5px;height:20px;background:transparent;border:2px solid var(--plan-edge);border-radius:4px;z-index:2}  /* 予定=塗りなしの枠（前面・4辺）。実績/遅延が枠を超える/空くで予実差が見える。色分け済みなのでプログレスバー誤認しない・#65 */
   .bar.actual{top:8px;height:14px;background:var(--actual);z-index:1}
   .bar.actual.cut{border-radius:3px 0 0 3px}                                 /* 超過がある時は右角を直角に（赤と連続させる） */
-  .bar.gap{top:8px;height:14px;background:#ffe1b0;border:1px dashed #e6912e;border-radius:3px;z-index:0}  /* 着手遅れ=予定開始～実績開始の空き。アンバー＝注意（赤=終了遅延より軽い severity）。CUD検証#35: 旧ピンクは日曜背景とΔE6で紛らわしく、アンバーで日曜/予定/実績/終了遅延すべてからΔE>15 */
-  .bar.over{top:8px;height:14px;background:#e11d48;border-radius:0 3px 3px 0;z-index:1}                   /* 終了遅延=予定終了の超過分 */
-  .delay{position:absolute;top:6px;font-size:10px;font-weight:700;color:#e11d48;white-space:nowrap;z-index:2;line-height:16px}
-  .grow.parent .bar.plan{background:var(--pplan);border-color:#4a6a9e} .grow.parent .bar.actual{background:var(--pactual)}
-  .grow.done .bar.actual{opacity:.55}
+  .bar.over{top:8px;height:14px;background:#e11d48;border-radius:0 3px 3px 0;z-index:1}                   /* 終了遅延=予定終了の超過分（枠の右を超える分・赤+N）。着手遅れは枠の左が空くことで表現＝専用バー不要 */
+  .delay{position:absolute;top:-4px;font-size:10px;font-weight:700;color:#e11d48;white-space:nowrap;z-index:4;line-height:16px}  /* バーの上に出す＝本日付近を走るイナズマ線と被らない。枠(z2)より前面 */
+  .grow.done .bar.actual{background:#8c98a6}  /* 完了=グレーのバー（青=進行中／グレー=完了 を一目で。状態の区別・色覚に依らない輝度差） */
+  .grow.done .bar.over{background:#b07480} .grow.done .delay{color:#b07480}  /* 完了済みの終了遅延=くすんだ赤（確定・過去）。進行中の鮮赤=まだ増える緊急、と区別 */
+  /* 親(集約)=細いサマリーバー（予定枠も実績も遅延も薄く）＝形で葉と区別・色は増やさない・CUD安全・全情報も保持 */
+  .grow.parent .bar.plan{top:9px;height:12px;border-width:1.5px} .grow.parent .bar.actual,.grow.parent .bar.over{top:11px;height:8px}  /* 細いサマリーだが実績の充填比率は子と同じ（枠12に対し上下2px余白＝子の20:14と同比率）。中心15 */
   .pspan{position:absolute;top:12px;height:6px;border-radius:3px;background:var(--pspan)}
   #overlay{position:absolute;top:0;left:0;z-index:2;pointer-events:none}
   #empty{padding:40px;color:var(--muted);text-align:center;width:100%}
@@ -478,14 +479,15 @@
         let bt=[ps&&pe?`${t("grpPlan")} ${md(ps,pe)}`:"", as?`${t("grpActual")} ${md(as,ae)}`:"",
                 startDelay?t("startDelayTip")(startDelay):"", endDelay?t("endDelayTip")(endDelay,!ae):""].filter(Boolean).join("&#10;");
         if(bt)bt=` title="${bt}"`;
-        if(ps&&pe)bars+=`<div class="bar plan"${bt} style="left:${xOf(ps)}px;width:${barW(ps,pe)}px"></div>`;   // 予定=薄い背景帯
-        if(startDelay)bars+=`<div class="bar gap" style="left:${xOf(ps)}px;width:${xOf(as)-xOf(ps)}px"></div>`;  // 着手遅れ=空きを薄赤
+        if(ps&&pe)bars+=`<div class="bar plan"${bt} style="left:${xOf(ps)}px;width:${barW(ps,pe)}px"></div>`;   // 予定=塗りなしの枠（前面）
+        // 着手遅れは枠の左が空くことで表現（専用バー無し）。精密値は startDelayTip でツールチップに残す
         if(as&&aeEff){
           const pxAS=xOf(as), pxAEend=xOf(aeEff)+DAY_W, pxPEend=pe?xOf(pe)+DAY_W:pxAEend;
           const normalRight=endDelay?Math.min(pxAEend,pxPEend):pxAEend;
           if(normalRight>pxAS)bars+=`<div class="bar actual${endDelay?" cut":""}"${bt} style="left:${pxAS}px;width:${normalRight-pxAS}px"></div>`;
           if(endDelay){const ovL=Math.max(pxAS,pxPEend);
             bars+=`<div class="bar over"${bt} style="left:${ovL}px;width:${pxAEend-ovL}px"></div>`;
+            // 遅延ラベルは一律「線の先」（実績終了の直後）。中央配置はイナズマの角度で隠れ得るため、被りは妥協し一貫性を優先
             bars+=`<div class="delay" style="left:${pxAEend+3}px">+${endDelay}</div>`;}
         }
         grows+=`<div class="grow ${leaf?"leaf":"parent"} ${lvl} ${done?"done":""}">${bars}</div>`;

@@ -1,4 +1,5 @@
-"""ガント予実バー（#65/#34）: 予定=背景帯／実績=前面バー／終了遅延=赤over+「+N」／着手遅れ=薄赤gap。
+"""ガント予実バー（#65/#34）: 予定=塗りなしの枠／実績=前面バー／終了遅延=赤over+「+N」。
+   着手遅れは専用バーを持たず『枠の左が空く（実績開始が枠の左より右）』で表現する。
    golden は本日依存の使い捨てなので、こちらは『バー種別の有無』と『+N ラベル値』を構造的に固定する
    （px幾何は撮らない＝DAY_W/原点に依存しない・本日に依存しないケースを主軸に）。"""
 import datetime
@@ -57,9 +58,17 @@ with sync_playwright() as p:
     check("over" in kinds(L[2]["bars"]) and "actual cut" in L[2]["bars"] and L[2]["delay"] == "+3",
           f"終了遅延＝over+actual.cut・ラベル+3 → bars={L[2]['bars']} delay={L[2]['delay']}")
 
-    # L4 着手遅れ＝gap有り・over無し
-    check("gap" in kinds(L[3]["bars"]) and "over" not in kinds(L[3]["bars"]),
-          f"着手遅れ＝gap有り・over無し → {L[3]['bars']}")
+    # L4 着手遅れ＝専用gapバー無し（枠の左が空くことで表現）。plan+actual・over無し
+    check(kinds(L[3]["bars"]) == {"plan", "actual"} and "gap" not in kinds(L[3]["bars"])
+          and "over" not in kinds(L[3]["bars"]),
+          f"着手遅れ＝gapバー無し・plan+actual・over無し → {L[3]['bars']}")
+    # 着手遅れは「実績の開始が予定枠の左より右」で見える（geometryで確認）
+    geo = pg.evaluate("""()=>{const g=[...document.querySelectorAll('#grows .grow')]
+      .filter(x=>!x.classList.contains('prow'))[3];
+      const pl=g.querySelector('.bar.plan'), ac=g.querySelector('.bar.actual');
+      return {planLeft:parseFloat(pl.style.left), actLeft:parseFloat(ac.style.left)};}""")
+    check(geo["actLeft"] > geo["planLeft"],
+          f"着手遅れ＝実績開始が予定枠の左より右（空きで分かる）→ {geo}")
 
     # L5 進行中・期限内＝actual有り・over無し（着手ズレは出さない仕様）
     check("actual" in kinds(L[4]["bars"]) and "over" not in kinds(L[4]["bars"]) and L[4]["delay"] is None,

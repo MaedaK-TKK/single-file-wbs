@@ -10,11 +10,10 @@
     --day-w:22px; --row-h:30px; --header-h:48px;
     --border:#d7dbe0; --btn-border:#9aa2ad; --grid:#eceef1; --line:#c5cad3; --weekend:#f4f5f7;  /* line=表の区切り（縦横共通・青帯と色相で区別できるグレー）。--grid はガント日グリッド用 */  /* btn-border=操作物の輪郭（罫線より濃く・WCAG非テキスト3:1寄り） */
     --text:#1f2430; --muted:#6b7280; --ym-fg:#11161f;  /* 年月ラベル: 日付の数字(--text)より一段濃い=月>日の階層 */
-    --plan:#bcd0f7; --actual:#2f6fed; --pplan:#d9cdf5; --pactual:#7c3aed;
+    --plan:#bcd0f7; --actual:#2f6fed; --pplan:#9fb1c9; --pactual:#134e9e;  /* 親=青族の濃淡（紫を廃し青×紫のCVD混同を回避・#35）。pactual=ネイビー/pplan=スチール */
     --proj:#93acdf; --proj-line:#3a5694; --lvl0:#b9cdf2; --lvl1:#e3ebfb;
     --done-bg:#d4dae1; --done-fg:#5f6772; --accent:#2563eb; --edit-on:#16a34a;
     --plan-edge:#6f8fd0; --pspan:#5b78bd; --head-bg:#eef0f3;
-    --plan-line:rgba(39,65,110,.55); --pplan-line:rgba(91,33,182,.55);  /* 予定枠の色: リーフ/親（半透明で枠を主張させない） */
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
@@ -128,7 +127,7 @@
   .bar.gap{top:8px;height:14px;background:#ffe1b0;border:1px dashed #e6912e;border-radius:3px;z-index:0}  /* 着手遅れ=予定開始～実績開始の空き。アンバー＝注意（赤=終了遅延より軽い severity）。CUD検証#35: 旧ピンクは日曜背景とΔE6で紛らわしく、アンバーで日曜/予定/実績/終了遅延すべてからΔE>15 */
   .bar.over{top:8px;height:14px;background:#e11d48;border-radius:0 3px 3px 0;z-index:1}                   /* 終了遅延=予定終了の超過分 */
   .delay{position:absolute;top:6px;font-size:10px;font-weight:700;color:#e11d48;white-space:nowrap;z-index:2;line-height:16px}
-  .grow.parent .bar.plan{background:var(--pplan);border-color:#9d86d3} .grow.parent .bar.actual{background:var(--pactual)}
+  .grow.parent .bar.plan{background:var(--pplan);border-color:#4a6a9e} .grow.parent .bar.actual{background:var(--pactual)}
   .grow.done .bar.actual{opacity:.55}
   .pspan{position:absolute;top:12px;height:6px;border-radius:3px;background:var(--pspan)}
   #overlay{position:absolute;top:0;left:0;z-index:2;pointer-events:none}
@@ -511,7 +510,7 @@
     let svg="";
     // CSS変数(var(--x))はSVGのプレゼンテーション属性では解決されない → stroke/fill はリテラル色を書く
     ms.forEach(m=>{if(!isDate(m.date)||m.date<rangeStart||m.date>rangeEnd)return;
-      const x=centerOf(m.date),col=isColor(m.color)?m.color:"#a855f7";   // 色は#hexのみ許可（注入防止）
+      const x=centerOf(m.date),col=isColor(m.color)?m.color:"#cc79a7";   // 色は#hexのみ許可（注入防止）。既定=Okabe-Ito赤紫(青と安全に分離・#35）
       const lbl=String(m.label??"");                                     // label欠損でも落とさない
       svg+=`<line x1="${x}" y1="0" x2="${x}" y2="${rowsH}" stroke="${col}" stroke-width="1.5" stroke-dasharray="4 3"></line>`
          +`<rect x="${x+2}" y="1" width="${Math.max(28,lbl.length*11)}" height="14" rx="2" fill="${col}"></rect>`

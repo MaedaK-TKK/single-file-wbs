@@ -350,7 +350,7 @@
                 "start": "2026-06-15",
                 "end": "2026-06-15"
               },
-              "note": "#35：https://github.com/piguo45/single-file-wbs/issues/35 カラーユニバーサルデザイン。amberA(#ffe1b0)で着手遅れを日曜背景から分離(旧pink ΔE6→ΔE>15)。全重なり/隣接ペアをCUD監査しcritical無し・親実績の高彩度のみ意図確認。配色監査をtest_color_audit.pyで自動化＋レビュー観点化"
+              "note": "#35：https://github.com/piguo45/single-file-wbs/issues/35 カラーユニバーサルデザイン。amberA(#ffe1b0)で着手遅れを日曜背景から分離(旧pink ΔE6→ΔE>15)。全重なり/隣接ペアをCUD監査しcritical無し・親実績の高彩度のみ意図確認。配色監査をtest_color_audit.pyで自動化＋レビュー観点化。最新研究照合(Okabe-Ito/Wong・青×紫はCVD混同)で親バー紫→ネイビー(青族を輝度で区別)・MS既定紫→Okabe-Itoモーブ#cc79a7に。実績/予定/階層の青デザインは温存"
             },
             {
               "id": "2.3",

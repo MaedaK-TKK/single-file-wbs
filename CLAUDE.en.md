@@ -140,8 +140,12 @@ Append to the project's `milestones`:
 - **Plan/Actual date columns have a two-level header**: "Plan" / "Actual" on top, "Start / End" beneath (adjacent columns grouped by the `group` property in `COLS`).
 - Row layer colors: **◆project (with separators) > L1 > L2 > L3**.
 - Gantt: date + weekday (year-month header), weekends shaded; active tasks extend the actual bar to today.
-  **Plan = translucent solid outline (front, no fill) / actual = filled bar (behind), overlaid in the same lane**:
-  the actual bar sticking past the outline's right edge = deadline overrun; empty space at the outline's left = late start — both directly visible.
+  **Plan = background band with top/bottom rules (open left/right) / actual = filled bar in front, overlaid in the same lane** (#65; a band, not an outline, to avoid being misread as a progress bar):
+  the part past the planned end = **finish delay = red bar + "+N"** (number only; exact value in the tooltip "Finish delay +N d"),
+  the gap between planned start and actual start = **start delay = amber dashed bar** — both directly visible.
+- **Colors (CUD-aware, #35)**: actual = blue / **parent aggregate = navy (parent vs leaf by lightness, not hue)** / plan = pale blue band /
+  start delay = amber / finish delay & inazuma = red. Following the Okabe-Ito principle we avoid "blue vs purple" and never rely on color alone (shape, position, labels add redundancy).
+  Verified by `tests/e2e/test_color_audit.py` (add the pair and re-run whenever you add/change a color).
 - Date columns show `5/11` style. Initial view centers near today.
 - **Completed tasks**: darker gray row + strikethrough + leading `✓`.
 - **URLs inside notes are auto-linked** (`http(s)://` only, opens in a new tab). Put plain URLs in `note` to jump to issues or specs.
@@ -153,7 +157,7 @@ Append to the project's `milestones`:
     - Active (within deadline) = on the today line (start drift is not shown)
     - Everything else (not started, not yet due, etc.) = on the today line
     - A collapsed node contributes a single aggregated point. No explicit today line is drawn (today is the reference).
-  - **Milestone lines** (per-project `milestones`, arbitrary color).
+  - **Milestone lines** (per-project `milestones`, arbitrary color; **default = Okabe-Ito mauve `#cc79a7`**).
 
 ## Broken input (graceful degradation)
 

@@ -9,7 +9,7 @@
           "color": "#a855f7"
         },
         {
-          "date": "2026-06-27",
+          "date": "2026-06-29",
           "label": "v1.1リリース（進捗軸view・バズ窓）",
           "color": "#ef4444"
         },
@@ -354,10 +354,10 @@
             },
             {
               "id": "2.3",
-              "name": "コンセプト明文化",
+              "name": "ヘッダ指標＋全体サマリ",
               "qty": 1,
-              "hours": 3,
-              "assignee": "Claude",
+              "hours": 8,
+              "assignee": "ぴぐお",
               "plan": {
                 "start": "2026-06-24",
                 "end": "2026-06-26"
@@ -366,10 +366,26 @@
                 "start": null,
                 "end": null
               },
-              "note": "#67：https://github.com/piguo45/single-file-wbs/issues/67 ★v2の最後。機能が揃ってから、それを指してREADME/CLAUDE.mdに製品の核を書く（知る→作る→書く）。応用情報PM手法を枠に＋AIメンバー時代の新理論を北極星に。Zenn記事の論題基盤"
+              "note": "#71：https://github.com/piguo45/single-file-wbs/issues/71 プロジェクト数/全体期間/予定工数(人月)/実績工数=完了の出来高/遅延(日数件数)。本日・更新を簡素化。ファイル名表示(#69)を統合。進捗%(#63)が入ればEVMサマリ(人日の遅れ/SPI/予定%実績%)に格上げ"
             },
             {
               "id": "2.4",
+              "name": "コンセプト明文化",
+              "qty": 1,
+              "hours": 3,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-26",
+                "end": "2026-06-27"
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#67：https://github.com/piguo45/single-file-wbs/issues/67 ★v2の最後。機能が揃ってから、それを指してREADME/CLAUDE.mdに製品の核を書く（知る→作る→書く）。応用情報PM手法を枠に＋AIメンバー時代の新理論を北極星に。Zenn記事の論題基盤"
+            },
+            {
+              "id": "2.5",
               "name": "Zenn記事",
               "qty": 1,
               "hours": 8,
@@ -385,14 +401,14 @@
               "note": "#68：https://github.com/piguo45/single-file-wbs/issues/68 仮題『WBSという至高ツールでこのAI時代をサバイブする』。#67の論考をZenn公開。v2リリースと同時。本人が執筆"
             },
             {
-              "id": "2.5",
+              "id": "2.6",
               "name": "v1.1リリース作業",
               "qty": 1,
               "hours": 3,
               "assignee": "ぴぐお",
               "plan": {
-                "start": "2026-06-27",
-                "end": "2026-06-27"
+                "start": "2026-06-29",
+                "end": "2026-06-29"
               },
               "actual": {
                 "start": null,
@@ -699,6 +715,22 @@
                 "end": null
               },
               "note": "#62：https://github.com/piguo45/single-file-wbs/issues/62 縦スクロールの左右同期ズレを根本解消。レイアウト核＋スクロール保持(過去バグ箇所)に触る・聖域寄り"
+            },
+            {
+              "id": "4.17",
+              "name": "子タスク追加（編集）",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#70：https://github.com/piguo45/single-file-wbs/issues/70 リーフ→集計への変換。＋子ボタン・3階層上限ガード・保存パス聖域"
             }
           ]
         }

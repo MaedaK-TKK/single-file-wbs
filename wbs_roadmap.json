@@ -38,7 +38,7 @@
                 "start": "2026-06-11",
                 "end": "2026-06-11"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/53 消失スイートの復元含む"
+              "note": "#53：https://github.com/piguo45/single-file-wbs/issues/53 消失スイートの復元含む"
             },
             {
               "id": "1.2",
@@ -82,7 +82,7 @@
                 "start": "2026-06-13",
                 "end": "2026-06-13"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/16 列マッピングの一元化 完了。view/field/edit/getを1エントリに集約・ゴールデンマスター差分ゼロで挙動不変を保証",
+              "note": "#16：https://github.com/piguo45/single-file-wbs/issues/16 列マッピングの一元化 完了。view/field/edit/getを1エントリに集約・ゴールデンマスター差分ゼロで挙動不変を保証",
               "_ai": {
                 "tokens": 400000,
                 "model": "fable-5",
@@ -110,7 +110,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/45"
+              "note": "#45：https://github.com/piguo45/single-file-wbs/issues/45"
             },
             {
               "id": "3.2",
@@ -126,7 +126,7 @@
                 "start": "2026-06-12",
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/46 全ボタン・バー・…慣習 バーの予定/実績titleは先行実装済み。残り=ボタンの動詞title・…慣習"
+              "note": "#46：https://github.com/piguo45/single-file-wbs/issues/46 全ボタン・バー・…慣習 バーの予定/実績titleは先行実装済み。残り=ボタンの動詞title・…慣習"
             },
             {
               "id": "3.3",
@@ -142,7 +142,7 @@
                 "start": "2026-06-12",
                 "end": "2026-06-12"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/47 論理グループ化 前倒し完了（開く+D&D統合・区切り線2本・EN右端化として実装）",
+              "note": "#47：https://github.com/piguo45/single-file-wbs/issues/47 論理グループ化 前倒し完了（開く+D&D統合・区切り線2本・EN右端化として実装）",
               "_ai": {
                 "tokens": 60000,
                 "model": "fable-5",
@@ -164,7 +164,7 @@
                 "start": "2026-06-13",
                 "end": "2026-06-15"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/49 完了。移動▲▼→⬆⬇横独立・チェックの前・caretと区別(太矢印+FE0E)",
+              "note": "#49：https://github.com/piguo45/single-file-wbs/issues/49 完了。移動▲▼→⬆⬇横独立・チェックの前・caretと区別(太矢印+FE0E)",
               "_ai": {
                 "tokens": 120000,
                 "model": "fable-5",
@@ -186,7 +186,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/50"
+              "note": "#50：https://github.com/piguo45/single-file-wbs/issues/50"
             },
             {
               "id": "3.6",
@@ -202,7 +202,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/51 Ctrl+F/ズーム/印刷をREADMEへ"
+              "note": "#51：https://github.com/piguo45/single-file-wbs/issues/51 Ctrl+F/ズーム/印刷をREADMEへ"
             }
           ]
         },
@@ -224,7 +224,7 @@
                 "start": "2026-06-13",
                 "end": "2026-06-15"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/37 完了。先頭✓トグルで実績終了=今日(未着手なら着手も今日)。着手ワンクリックは別途",
+              "note": "#37：https://github.com/piguo45/single-file-wbs/issues/37 完了。先頭✓トグルで実績終了=今日(未着手なら着手も今日)。着手ワンクリックは別途",
               "_ai": {
                 "tokens": 150000,
                 "model": "fable-5",
@@ -246,7 +246,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/41"
+              "note": "#41：https://github.com/piguo45/single-file-wbs/issues/41"
             },
             {
               "id": "4.3",
@@ -262,7 +262,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/42"
+              "note": "#42：https://github.com/piguo45/single-file-wbs/issues/42"
             },
             {
               "id": "4.4",
@@ -278,7 +278,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/40 ヘッダに「遅延N件」"
+              "note": "#40：https://github.com/piguo45/single-file-wbs/issues/40 ヘッダに「遅延N件」"
             },
             {
               "id": "4.5",
@@ -294,7 +294,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/43"
+              "note": "#43：https://github.com/piguo45/single-file-wbs/issues/43"
             },
             {
               "id": "4.6",
@@ -310,7 +310,7 @@
                 "start": "2026-06-13",
                 "end": "2026-06-15"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/48 完了(左右同期hover=十字)。横=左表+ガント連続帯/縦=ペインごとの列。reflow回避キャッシュ。操作後フェードは未",
+              "note": "#48：https://github.com/piguo45/single-file-wbs/issues/48 完了(左右同期hover=十字)。横=左表+ガント連続帯/縦=ペインごとの列。reflow回避キャッシュ。操作後フェードは未",
               "_ai": {
                 "tokens": 400000,
                 "model": "fable-5",
@@ -332,7 +332,7 @@
                 "start": "2026-06-12",
                 "end": "2026-06-12"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/54 飛び込み対応・実績1.5h（設計議論/実装/手戻り/テスト込み）"
+              "note": "#54：https://github.com/piguo45/single-file-wbs/issues/54 飛び込み対応・実績1.5h（設計議論/実装/手戻り/テスト込み）"
             },
             {
               "id": "4.8",
@@ -348,7 +348,7 @@
                 "start": "2026-06-12",
                 "end": "2026-06-12"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/56 飛び込みバグ修正（ユーザー報告）",
+              "note": "#56：https://github.com/piguo45/single-file-wbs/issues/56 飛び込みバグ修正（ユーザー報告）",
               "_ai": {
                 "tokens": 70000,
                 "model": "fable-5",
@@ -414,7 +414,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/58 mtimeポーリング・閲覧自動再読込/編集中警告"
+              "note": "#58：https://github.com/piguo45/single-file-wbs/issues/58 mtimeポーリング・閲覧自動再読込/編集中警告"
             },
             {
               "id": "4.12",
@@ -430,7 +430,7 @@
                 "start": "2026-06-13",
                 "end": "2026-06-14"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/59 完了。611/270611/6-11等で緩く入力(年も)・今年MM-DD短縮表示・幅圧縮。スモークで📅クリア不能修正・年違いショートハンド追加",
+              "note": "#59：https://github.com/piguo45/single-file-wbs/issues/59 完了。611/270611/6-11等で緩く入力(年も)・今年MM-DD短縮表示・幅圧縮。スモークで📅クリア不能修正・年違いショートハンド追加",
               "_ai": {
                 "tokens": 300000,
                 "model": "fable-5",
@@ -452,7 +452,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/61 IndexedDBにハンドル保存・ワンクリック復帰・聖域"
+              "note": "#61：https://github.com/piguo45/single-file-wbs/issues/61 IndexedDBにハンドル保存・ワンクリック復帰・聖域"
             },
             {
               "id": "4.14",
@@ -468,7 +468,7 @@
                 "start": "2026-06-13",
                 "end": "2026-06-13"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/60 startIn/id実装→file://のopaque originで不可と判明・revert・クローズ。検証に要した記録",
+              "note": "#60：https://github.com/piguo45/single-file-wbs/issues/60 startIn/id実装→file://のopaque originで不可と判明・revert・クローズ。検証に要した記録",
               "_ai": {
                 "tokens": 80000,
                 "model": "fable-5",
@@ -496,7 +496,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/36"
+              "note": "#36：https://github.com/piguo45/single-file-wbs/issues/36"
             },
             {
               "id": "5.2",
@@ -512,7 +512,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/38 Phase1"
+              "note": "#38：https://github.com/piguo45/single-file-wbs/issues/38 Phase1"
             },
             {
               "id": "5.3",
@@ -528,7 +528,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/44"
+              "note": "#44：https://github.com/piguo45/single-file-wbs/issues/44"
             },
             {
               "id": "5.4",
@@ -544,7 +544,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/39 OS設定に追従"
+              "note": "#39：https://github.com/piguo45/single-file-wbs/issues/39 OS設定に追従"
             },
             {
               "id": "5.5",
@@ -560,7 +560,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/57 クリック=実績/ドラッグ=予定・大物・差別化目玉"
+              "note": "#57：https://github.com/piguo45/single-file-wbs/issues/57 クリック=実績/ドラッグ=予定・大物・差別化目玉"
             },
             {
               "id": "5.6",
@@ -576,7 +576,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/62 縦スクロールの左右同期ズレを根本解消。レイアウト核＋スクロール保持(過去バグ箇所)に触る・聖域寄り"
+              "note": "#62：https://github.com/piguo45/single-file-wbs/issues/62 縦スクロールの左右同期ズレを根本解消。レイアウト核＋スクロール保持(過去バグ箇所)に触る・聖域寄り"
             }
           ]
         },
@@ -598,7 +598,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/35 カラーユニバーサルデザイン"
+              "note": "#35：https://github.com/piguo45/single-file-wbs/issues/35 カラーユニバーサルデザイン"
             },
             {
               "id": "6.2",
@@ -636,7 +636,7 @@
                 "start": "2026-06-15",
                 "end": "2026-06-15"
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/65 予定=背景帯・終了遅延=赤+N日・着手遅れ=薄赤。プログレスバー誤認の解消。表示層のみ。案1（予定=上下罫線の背景帯・左右開放／実績=前面バー／終了遅延=赤バー+N／着手遅れ=薄赤）で構造確定。色はCUD検証(#35)で後決め"
+              "note": "#65：https://github.com/piguo45/single-file-wbs/issues/65 予定=背景帯・終了遅延=赤+N日・着手遅れ=薄赤。プログレスバー誤認の解消。表示層のみ。案1（予定=上下罫線の背景帯・左右開放／実績=前面バー／終了遅延=赤バー+N／着手遅れ=薄赤）で構造確定。色はCUD検証(#35)で後決め"
             },
             {
               "id": "7.2",
@@ -652,7 +652,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/63 左=4分割進捗入力(0/25/50/75/100量子化)・右=時間軸/進捗軸タブ・AI査定%(_progress カスタムキー)。v2マーキー機能＝AIネイティブの実証"
+              "note": "#63：https://github.com/piguo45/single-file-wbs/issues/63 左=4分割進捗入力(0/25/50/75/100量子化)・右=時間軸/進捗軸タブ・AI査定%(_progress カスタムキー)。v2マーキー機能＝AIネイティブの実証"
             },
             {
               "id": "7.3",
@@ -668,7 +668,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/67 ★v2の最後。機能が揃ってから、それを指してREADME/CLAUDE.mdに製品の核を書く（知る→作る→書く）。応用情報PM手法を枠に＋AIメンバー時代の新理論を北極星に。Zenn記事の論題基盤"
+              "note": "#67：https://github.com/piguo45/single-file-wbs/issues/67 ★v2の最後。機能が揃ってから、それを指してREADME/CLAUDE.mdに製品の核を書く（知る→作る→書く）。応用情報PM手法を枠に＋AIメンバー時代の新理論を北極星に。Zenn記事の論題基盤"
             }
           ]
         },
@@ -690,7 +690,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "https://github.com/piguo45/single-file-wbs/issues/66 _deps カスタムキー＋トポロジカルソート＋CP赤ハイライト(最小版)。新データ前提で重い＝v3に後送（優先度低）"
+              "note": "#66：https://github.com/piguo45/single-file-wbs/issues/66 _deps カスタムキー＋トポロジカルソート＋CP赤ハイライト(最小版)。新データ前提で重い＝v3に後送（優先度低）"
             }
           ]
         },
@@ -700,7 +700,7 @@
           "children": [
             {
               "id": "9.1",
-              "name": "Zenn記事（魂を込めて）",
+              "name": "Zenn記事",
               "qty": 1,
               "hours": 8,
               "assignee": "ぴぐお",
@@ -712,7 +712,7 @@
                 "start": null,
                 "end": null
               },
-              "note": "仮題『WBSという至高ツールでこのAI時代をサバイブする』。論考(#67)＝WBS至高→メンテ地獄→だから作った→AI時代は全員PL/TL→AIも本ツールでメンバーエージェント管理→その未来にベット。本人が書く・Claudeは編集黒子"
+              "note": "#68：https://github.com/piguo45/single-file-wbs/issues/68 仮題『WBSという至高ツールでこのAI時代をサバイブする』。#67の論考をZenn公開。v2リリースと同時。本人が執筆"
             },
             {
               "id": "9.2",

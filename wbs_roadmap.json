@@ -347,10 +347,10 @@
                 "end": "2026-06-21"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-15",
+                "end": "2026-06-15"
               },
-              "note": "#35：https://github.com/piguo45/single-file-wbs/issues/35 カラーユニバーサルデザイン"
+              "note": "#35：https://github.com/piguo45/single-file-wbs/issues/35 カラーユニバーサルデザイン。amberA(#ffe1b0)で着手遅れを日曜背景から分離(旧pink ΔE6→ΔE>15)。全重なり/隣接ペアをCUD監査しcritical無し・親実績の高彩度のみ意図確認。配色監査をtest_color_audit.pyで自動化＋レビュー観点化"
             },
             {
               "id": "2.3",

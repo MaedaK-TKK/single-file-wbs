@@ -125,7 +125,7 @@
   .bar.plan{top:3px;height:24px;background:var(--plan);border-radius:0;z-index:0;border-top:1px solid var(--plan-edge);border-bottom:1px solid var(--plan-edge)}  /* 予定=上下罫線・左右開放（容器=プログレスバーに見えない・#65/案1） */
   .bar.actual{top:8px;height:14px;background:var(--actual);z-index:1}
   .bar.actual.cut{border-radius:3px 0 0 3px}                                 /* 超過がある時は右角を直角に（赤と連続させる） */
-  .bar.gap{top:8px;height:14px;background:#fde2e4;border:1px dashed #f3a3ab;border-radius:3px;z-index:0}  /* 着手遅れ=予定開始～実績開始の空き */
+  .bar.gap{top:8px;height:14px;background:#ffe1b0;border:1px dashed #e6912e;border-radius:3px;z-index:0}  /* 着手遅れ=予定開始～実績開始の空き。アンバー＝注意（赤=終了遅延より軽い severity）。CUD検証#35: 旧ピンクは日曜背景とΔE6で紛らわしく、アンバーで日曜/予定/実績/終了遅延すべてからΔE>15 */
   .bar.over{top:8px;height:14px;background:#e11d48;border-radius:0 3px 3px 0;z-index:1}                   /* 終了遅延=予定終了の超過分 */
   .delay{position:absolute;top:6px;font-size:10px;font-weight:700;color:#e11d48;white-space:nowrap;z-index:2;line-height:16px}
   .grow.parent .bar.plan{background:var(--pplan);border-color:#9d86d3} .grow.parent .bar.actual{background:var(--pactual)}

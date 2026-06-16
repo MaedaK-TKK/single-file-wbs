@@ -731,6 +731,22 @@
                 "end": null
               },
               "note": "#70：https://github.com/piguo45/single-file-wbs/issues/70 リーフ→集計への変換。＋子ボタン・3階層上限ガード・保存パス聖域"
+            },
+            {
+              "id": "4.18",
+              "name": "課題管理表（別の単一HTML）",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "WBSとは別の単一HTMLツール（WBS Viewerには足さない）。依存ゼロ・file://・JA/EN・編集モード/FSA保存などWBSの資産を流用。列例: 課題ID/件名/起票/担当/優先度/ステータス/期限/対応/備考。置き場所(同リポ併置 or 新リポ)は要決定"
             }
           ]
         }

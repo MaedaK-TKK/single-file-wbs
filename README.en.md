@@ -36,7 +36,7 @@ Updating the tool = overwriting `wbs_viewer.html`; your `wbs.json` data is never
 
 Turn the **Edit** button ON to edit directly on screen. Changes are **autosaved to `wbs.json` ~0.4 s later** (save status always visible at the top right).
 
-- Available: in-place editing of every field (dates typed as `YYYY-MM-DD` or picked via 📅), add `＋`, delete `✕` (with confirmation), reorder `▲▼`
+- Available: in-place editing of each field (No./name/qty/hours/owner/dates/notes — **effort is auto-computed**, not editable). Dates accept shorthand like `611`/`6/11`, `YYYY-MM-DD`, or the 📅 picker (this year shows `MM-DD`); add `＋`, delete `✕` (with confirmation), reorder `⬆⬇`
 - Not supported (edit the JSON or ask the AI): drag-and-drop reordering / moving to a different parent / automatic renumbering
 
 <details>

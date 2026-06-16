@@ -140,10 +140,17 @@ Append to the project's `milestones`:
 - **Plan/Actual date columns have a two-level header**: "Plan" / "Actual" on top, "Start / End" beneath (adjacent columns grouped by the `group` property in `COLS`).
 - Row layer colors: **◆project (with separators) > L1 > L2 > L3**.
 - Gantt: date + weekday (year-month header), weekends shaded; active tasks extend the actual bar to today.
-  **Plan = translucent solid outline (front, no fill) / actual = filled bar (behind), overlaid in the same lane**:
-  the actual bar sticking past the outline's right edge = deadline overrun; empty space at the outline's left = late start — both directly visible.
+  **Plan = unfilled outline (front, 4 sides) / actual = filled bar (behind), overlaid in the same lane** (#65):
+  the actual sticking past the outline's right = **finish delay = red bar + "+N"** (number only; always placed at the bar tip; exact value in the tooltip "Finish delay +N d"),
+  empty space at the outline's left = **start delay** (actual start is right of the outline's left) — shown by the gap, no dedicated color.
+  Because delays are color-coded (red = finish delay, gray = done), the outline + fill is not misread as a progress bar.
+- **Parent (aggregate) = thin summary bar**: both plan outline and actual are thin (parent vs leaf by shape, not extra color = CUD-safe, keeps all info when collapsed).
+  The actual's fill ratio matches leaves. **Bar color is identical across all levels** (parent vs leaf distinguished by bar thickness/shape, not hue or lightness).
+- **Colors (CUD-aware, #35)**: actual = blue / plan = blue outline / finish delay & inazuma = red (vivid while active / muted when done) / done = gray bar.
+  Start delay uses no color — just the empty outline. Following the Okabe-Ito principle we avoid "blue vs purple" (milestone default = mauve `#cc79a7`) and never rely on color alone (shape, position, labels add redundancy).
+  Verified by `tests/e2e/test_color_audit.py` (add the pair and re-run whenever you add/change a color).
 - Date columns show `5/11` style. Initial view centers near today.
-- **Completed tasks**: darker gray row + strikethrough + leading `✓`.
+- **Completed tasks**: darker gray row + strikethrough + leading `✓`. The gantt actual bar is **gray** too (blue = active / gray = done at a glance).
 - **URLs inside notes are auto-linked** (`http(s)://` only, opens in a new tab). Put plain URLs in `note` to jump to issues or specs.
 - Overlay (SVG):
   - **Inazuma line** (red, **one line across all projects**). Each terminal row's point is placed as follows (**bulging left = behind schedule**):
@@ -153,7 +160,7 @@ Append to the project's `milestones`:
     - Active (within deadline) = on the today line (start drift is not shown)
     - Everything else (not started, not yet due, etc.) = on the today line
     - A collapsed node contributes a single aggregated point. No explicit today line is drawn (today is the reference).
-  - **Milestone lines** (per-project `milestones`, arbitrary color).
+  - **Milestone lines** (per-project `milestones`, arbitrary color; **default = Okabe-Ito mauve `#cc79a7`**).
 
 ## Broken input (graceful degradation)
 

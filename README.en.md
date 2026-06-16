@@ -22,7 +22,7 @@ Updating the tool = overwriting `wbs_viewer.html`; your `wbs.json` data is never
 
 - **Single HTML file** — just open it in Chrome. No server, CDN, build, or dependencies
 - **Inazuma line (progress line)** — bulging **left of the today line = behind schedule**; start delays and deadline overruns at a glance
-- **Plan-vs-actual Gantt overlay** — the actual bar is drawn inside a plan outline, so overruns stick out visibly
+- **Plan-vs-actual Gantt overlay** — the actual bar sits inside a plan outline; **overrun = finish delay (red + N days), empty left = late start**. Done tasks are gray, parents (aggregates) are thin summary bars — state at a glance. Colors are **Color-Universal-Design (CVD) aware**
 - **Data is one JSON of facts only** — it holds nothing but plan and actual dates. Effort (qty × hours ÷ 8, person-days), progress, and the inazuma line are all **computed automatically** — no numbers to maintain by hand
 - **Three ways to edit** — in-browser editing (autosave) / any text editor / **AI chat** (ships with `CLAUDE.md` so Claude Code already understands the data format)
 - Plus: multiple projects, collapsible tree, milestone lines, completed-task graying with ✓, auto-linked URLs in notes, Japanese/English UI

@@ -198,3 +198,12 @@
 ## メモ
 - Chromium 系（Chrome 推奨）・file:// 前提（File System Access API を使用）。
 - 自分の実データ `wbs.json` は**既定で gitignore 済み**（誤コミット防止）。`wbs-archive-*.json` も既定で無視。サンプル＝`wbs_sample.json`／開発計画＝`wbs_roadmap.json`。
+
+## 開発運用：`/pm` スキル（Issue × WBS メンテ）の設定
+
+汎用スキル `~/.claude/commands/pm.md`（リポ直下 `pm-skill.md` に公開スナップショット）が、このリポを維持する時に使う設定。
+- **真実の分担**：Issue＝問題・課題・完了条件／WBS（`wbs_roadmap.json`）＝必要な作業の分解。鍵＝`#N`（issue番号）。
+- **repo**：`piguo45/single-file-wbs`。**issueタイトル**＝`【表示】【編集】` 等のカテゴリ接頭辞。
+- **version**：後方互換の機能追加＝MINOR／バグ修正＝PATCH／破壊的・正体変更＝MAJOR（一度だけ）。
+- **完了の自動検証**：e2e 全スイートの GREEN（実行コマンドは**ローカルパスを含むため非公開ルール `.claude/rules/` に記載**・公開には書かない）＋ **保存パスの実機スモークは人間確認**。
+- **判定ゲート**：機能/改修は壁打ち後に起票／テスト失敗は dedup＋閾値で自動起票。別の高度・別成果物（例：課題管理表）は別ツール扱い（#72）。

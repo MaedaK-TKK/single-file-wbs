@@ -198,3 +198,12 @@ Avoid the following when entering data (nothing crashes, but display degrades).
 ## Notes
 - Chromium-based browsers (Chrome recommended), file:// based (uses the File System Access API).
 - Your own `wbs.json` is **gitignored by default** (prevents accidental commits). `wbs-archive-*.json` is ignored too. Sample = `wbs_sample.json`; development plan = `wbs_roadmap.json`.
+
+## Dev workflow: the `/pm` skill (Issue × WBS maintenance)
+
+A generic skill `~/.claude/commands/pm.md` (public snapshot at repo root `pm-skill.md`) maintains this repo's management artifacts.
+- **Split of truth**: Issue = problem / challenge / done-criteria; WBS (`wbs_roadmap.json`) = the work breakdown needed. Linked by `#N` (issue number).
+- **repo**: `piguo45/single-file-wbs`. **Issue titles** use category prefixes like `【表示】 【編集】`.
+- **Versioning**: backward-compatible features = MINOR / bug fixes = PATCH / breaking or identity changes = MAJOR (once).
+- **Done auto-verification**: all e2e suites green (the exact command contains a local path, so it lives in the private `.claude/rules/`, not here) + the save-path **smoke test is human-confirmed**.
+- **Gate**: features/changes are filed after discussion; test failures are auto-filed with dedup + threshold. A different altitude or artifact (e.g., an issue-tracking table) is a separate tool (#72).

@@ -407,6 +407,77 @@
             },
             {
               "id": "2.6",
+              "name": "ライセンス変更 MIT→AGPL-3.0",
+              "note": "#73：https://github.com/piguo45/single-file-wbs/issues/73 v1.2.0(view追加)と同時。proprietary組み込みを封じる＋商用ライセンス窓口（デュアル）。v1.1.0以前はMITのまま（取消不可）",
+              "children": [
+                {
+                  "id": "2.6.1",
+                  "name": "LICENSE→AGPL-3.0全文",
+                  "qty": 1,
+                  "hours": 8,
+                  "assignee": "ぴぐお",
+                  "plan": {
+                    "start": "2026-06-27",
+                    "end": "2026-06-27"
+                  },
+                  "actual": {
+                    "start": null,
+                    "end": null
+                  },
+                  "note": ""
+                },
+                {
+                  "id": "2.6.2",
+                  "name": "HTML先頭に通知＋Copyright",
+                  "qty": 1,
+                  "hours": 8,
+                  "assignee": "ぴぐお",
+                  "plan": {
+                    "start": "2026-06-27",
+                    "end": "2026-06-27"
+                  },
+                  "actual": {
+                    "start": null,
+                    "end": null
+                  },
+                  "note": "Copyright (C) 2026 piguo45"
+                },
+                {
+                  "id": "2.6.3",
+                  "name": "README/CLAUDE.md(ja/en)のライセンス節",
+                  "qty": 1,
+                  "hours": 8,
+                  "assignee": "ぴぐお",
+                  "plan": {
+                    "start": "2026-06-28",
+                    "end": "2026-06-28"
+                  },
+                  "actual": {
+                    "start": null,
+                    "end": null
+                  },
+                  "note": "v1.1.0以前はMITと明記"
+                },
+                {
+                  "id": "2.6.4",
+                  "name": "商用ライセンス窓口の一文",
+                  "qty": 1,
+                  "hours": 8,
+                  "assignee": "ぴぐお",
+                  "plan": {
+                    "start": "2026-06-28",
+                    "end": "2026-06-28"
+                  },
+                  "actual": {
+                    "start": null,
+                    "end": null
+                  },
+                  "note": "契約文面は弁護士確認・別途"
+                }
+              ]
+            },
+            {
+              "id": "2.7",
               "name": "v1.2リリース作業",
               "qty": 1,
               "hours": 3,

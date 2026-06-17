@@ -1,4 +1,4 @@
-# <img src="docs/logo.svg" width="26"> single-file-wbs
+# <img src="docs/logo.svg" width="26"> WBS Viewer
 
 > 単一HTMLで動く、ガントチャート＋**イナズマ線（進捗線）**の WBS ビューア。サーバー・依存ライブラリ・ビルド不要。
 > 画面上のアプリ名は **WBS Viewer**（`single-file-wbs` は配布名＝このリポジトリ）。

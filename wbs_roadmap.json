@@ -318,6 +318,28 @@
                 "minutes": 120,
                 "memo": "概算・十字の試行錯誤(3px→帯→A+B→左列→perf)込み"
               }
+            },
+            {
+              "id": "1.15",
+              "name": "保存リトライ",
+              "qty": 1,
+              "hours": 3,
+              "assignee": "Claude",
+              "plan": {
+                "start": "2026-06-18",
+                "end": "2026-06-18"
+              },
+              "actual": {
+                "start": "2026-06-18",
+                "end": null
+              },
+              "note": "#74：https://github.com/piguo45/single-file-wbs/issues/74 保存時のInvalidStateError(同期/AV横入り)を250ms後1回だけ自動リトライ。createWritableが書込前に弾く＝原本無傷。再失敗はdirty保持で抱え落ち防止。e2e(test_save_retry)で固定。実機スモーク後v1.1.1リリース。保存パス聖域=ブランチfix/save-retry-invalidstate運用。関連#42(失敗UI強化)",
+              "_ai": {
+                "tokens": 130000,
+                "model": "opus-4-8",
+                "minutes": 35,
+                "memo": "概算・原因調査(FS Access仕様の裏取り)＋実装＋e2e＋ja/en doc。実機スモーク待ち"
+              }
             }
           ]
         },

@@ -161,6 +161,7 @@
 (function(){
   const DAY_W=22, ROW_H=30, DAY_MS=86400000;
   const SAVE_DEBOUNCE_MS=400, RENDER_DEFER_MS=350, FOCUS_POLL_MS=400;  // 自動保存と遅延再描画の間隔
+  const SAVE_RETRY_DELAY_MS=250;  // InvalidStateError（同期/AVの横入り）時に1拍おいて1回だけ再試行する間隔
   // ===== i18n（UI文言の単一ソース。データ(wbs.json)は翻訳しない） =====
   const I18N={
     ja:{
@@ -657,8 +658,8 @@
   function setSaveMsg(m){saveMsg=m;const el=document.getElementById("saveMsg");if(el)el.textContent=m?" ／ "+m:"";}
   function notice(m){const el=document.getElementById("notice");el.textContent=m;el.classList.toggle("show",!!m);}  // ページ内の案内バー（alertと違いジェスチャーを消費しない）
   function queueSave(){dirty=true;setSaveMsg(t("unsaved"));clearTimeout(saveTimer);saveTimer=setTimeout(flushSaves,SAVE_DEBOUNCE_MS);}
-  function flushSaves(){clearTimeout(saveTimer);if(dirty){dirty=false;saveChain=saveChain.then(writeNow);}return saveChain;}
-  async function writeNow(){
+  function flushSaves(){clearTimeout(saveTimer);if(dirty){dirty=false;saveChain=saveChain.then(()=>writeNow());}return saveChain;}
+  async function writeNow(retry){
     if(!fileHandle||!fileHandle.createWritable){setSaveMsg(t("saveFail"));alert(t("cantSave"));return;}
     try{
       const cur=await fileHandle.getFile();                                  // 外部変更（AI編集等）の検知
@@ -670,7 +671,12 @@
       const w=await fileHandle.createWritable(); await w.write(json); await w.close();
       fileMtime=(await fileHandle.getFile()).lastModified;
       setSaveMsg(t("savedAt")+new Date().toLocaleTimeString(t("locale")));
-    }catch(e){setSaveMsg(t("saveFail"));alert(t("saveErr")+e.message);}
+    }catch(e){
+      // InvalidStateError＝同期/AV等の横入りでブラウザのスナップショットが陳腐化。1拍おいて1回だけ再試行（再getFileで更新）。createWritableが弾く＝書込前なので原本は無傷
+      if(e&&e.name==="InvalidStateError"&&!retry){await new Promise(r=>setTimeout(r,SAVE_RETRY_DELAY_MS));return writeNow(true);}
+      dirty=true;                                                            // 失敗を抱え落ちさせない（次のqueueSave／離脱警告で再保存。alertループは避けるため自動再キューはしない）
+      setSaveMsg(t("saveFail"));alert(t("saveErr")+e.message);
+    }
   }
   function deferRender(){   // 入力にフォーカス中は再描画を遅らせ、フォーカス喪失を防ぐ
     clearTimeout(refreshTimer);

@@ -52,6 +52,11 @@ In addition to text / AI editing, `wbs.json` can be **edited directly on screen*
   Save status (Unsaved changes… / Saved HH:MM:SS / Save failed) is **always visible at the top right**.
 - **External-change detection**: before each write the file's mtime is checked; if it changed outside the tool (e.g., AI editing), an **overwrite confirmation** is shown.
   When asking an AI to edit, it is safest to turn edit mode OFF first.
+- **Auto-retry on interference**: when a sync client (OneDrive, etc.) or antivirus touches the file at the same instant as a save, the browser may reject the
+  write with `InvalidStateError` ("state had changed since it was read from disk"). In that case the tool **waits a beat and retries the save once**
+  (the retry's `getFile()` refreshes the browser's internal snapshot, which almost always recovers). The write is rejected *before* touching disk, so **the
+  original file stays intact**. If the retry also fails, it shows "Save failed" and **keeps the dirty flag** (re-saved on the next edit or on tab close;
+  it does not auto-retry in a loop, to avoid alert spam).
 - Prerequisites: saving requires **write permission**. Only files opened with a handle (Open file or D&D) are editable.
   **file:// pages cannot show write-permission prompts**, so when turning Edit ON you **re-select the same wbs.json in a save dialog** (the selection itself grants permission).
   ⚠ Chrome **truncates the file the moment it is picked**, so the current data is **written immediately after selection** (never left empty — #29).

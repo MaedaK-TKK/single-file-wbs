@@ -374,10 +374,10 @@
                 "end": "2026-06-24"
               },
               "actual": {
-                "start": null,
+                "start": "2026-06-19",
                 "end": null
               },
-              "note": "#63：https://github.com/piguo45/single-file-wbs/issues/63 左=4分割進捗入力(0/25/50/75/100量子化)・右=時間軸/進捗軸タブ・AI査定%(_progress カスタムキー)。v2マーキー機能＝AIネイティブの実証。CUD検証(2.1)の後に着手。進捗%は #71 のEVMヘッダサマリの前提"
+              "note": "#63：https://github.com/piguo45/single-file-wbs/issues/63 左=4分割進捗入力(0/25/50/75/100量子化)・右=時間軸/進捗軸タブ・AI査定%(_progress カスタムキー)。v2マーキー機能＝AIネイティブの実証。進捗%は #71 のEVMヘッダサマリの前提。【段階1完了(075ff64)】進捗4分割入力列＋_progress源泉をmerge。段階2-4(時間軸/進捗軸タブ・進捗バー・進捗スリップ線・AI査定ワークフロー)は残。回帰網Phase0(golden/pixel)で着手前に保護済み"
             },
             {
               "id": "2.3",

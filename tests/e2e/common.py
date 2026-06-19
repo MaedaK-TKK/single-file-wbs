@@ -30,6 +30,14 @@ def leaf(id, name, asg="", ps=None, pe=None, as_=None, ae=None, qty=1, hours=8):
             "plan": {"start": ps, "end": pe},
             "actual": {"start": as_, "end": ae}, "note": ""}
 
+# 本日を固定する init script。todayStr() は描画毎に new Date() を呼ぶので、これで
+# イナズマ線・進行中バー等「本日依存」の描画を決定論化＝コミット可能なゴールデン/ピクセル基準が作れる。
+PINNED_TODAY = "2026-06-15"
+CLOCK_PIN = """(()=>{const FIXED=Date.UTC(2026,5,15,0,0,0);const _D=Date;
+function F(...a){return a.length===0?new _D(FIXED):new _D(...a);}
+F.prototype=_D.prototype;F.now=()=>FIXED;F.UTC=_D.UTC;F.parse=_D.parse;window.Date=F;})();"""
+
+
 def granted_handle_init(data):
     """書込可のフェイクFSAハンドル（メモリ上のファイル）。window.__file に内容、__writes に書込回数"""
     return """

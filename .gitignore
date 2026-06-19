@@ -5,6 +5,10 @@ wbs-archive-*.json
 .claude/
 *Zone.Identifier
 
+# Python バイトコード（e2eテストの実行で生成・コミット不要）
+__pycache__/
+*.pyc
+
 # 実運用データはローカルのみ（公開サンプルは wbs.json）
 wbs-local*.json
 # 自分の実データ（慣用名）。サンプルは wbs_sample.json / 開発計画は wbs_roadmap.json

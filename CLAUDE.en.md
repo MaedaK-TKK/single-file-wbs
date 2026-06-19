@@ -45,6 +45,7 @@ To keep the file from growing forever, **move old completed tasks out of the cur
 In addition to text / AI editing, `wbs.json` can be **edited directly on screen** (optional feature).
 - The **Edit button** toggles ON/OFF (green = ON). When ON, the left table becomes inputs + action buttons.
 - Supported: **inline editing of every field** (No.=id / task name / qty / hours / assignee / plan & actual dates / notes),
+  **4-quarter progress input** (click a leaf's cell for 0/25/50/75/100% = `_progress`; setting ≥25% auto-sets `actual.start` to today / returning to 0% keeps the start date),
   **adding leaves** (row `＋` = sibling below; project row `+Task`; ids are minted collision-free; adding to a collapsed project auto-expands it),
   **deletion** (`✕`, with confirmation, including children), **reordering among siblings** (`▲▼`).
 - **Autosave**: changes are written back to `wbs.json` after a ~0.4 s debounce (File System Access API).
@@ -84,8 +85,11 @@ In addition to text / AI editing, `wbs.json` can be **edited directly on screen*
   _anyName                      "_"-prefixed = custom key (optional, ignored by viewer, preserved on save)
   ```
 - **Effort and progress are not stored in the data** (all derived; computed by the JS in the HTML).
-- **Keys starting with `_` may be added freely** (ignored by the viewer, preserved by edit-mode saves).
+- **Keys starting with `_` may be added freely** (ignored by the viewer by default, preserved by edit-mode saves).
   Use them for metadata (e.g., `_ai` in `wbs_roadmap.json` = recorded AI effort in tokens; entirely optional. `wbs_sample.json` is the minimal example without custom keys).
+- **Exception: `_progress` (0/25/50/75/100) is read by the viewer** as the progress value, alongside `_progressAt` (assessment time, ISO) and
+  `_progressBy` (`"manual"` or a model name). Asking an AI: "assess task X's progress to the nearest quarter from the deliverable and requirements"
+  → it writes `_progress`/`_progressAt`/`_progressBy` on the leaf. If unset, progress falls back to time-based (backward compatible).
 - `milestones: [{ date, label, color }]` is optional per project.
 
 ## Adding / updating data (how-to)
@@ -133,10 +137,14 @@ Append to the project's `milestones`:
 - Parent plan/actual period = min start – max end of descendant leaves.
 - Progress (reference date = today):
   - Not started (no actual.start) = 0% / Completed (actual.end set) = 100%
-  - Active = `clamp((today − actual.start) ÷ (plan.end − plan.start) × 100, 0, 100)`
+  - Active = **if `_progress` (0/25/50/75/100) is present, quantize it to the nearest quarter and use it**; otherwise fall back to the
+    time-based `clamp((today − actual.start) ÷ (plan.end − plan.start) × 100, 0, 100)` (backward compatible).
   - Parent = effort-weighted average of descendant leaves' (progress × effort).
 - Header shows "project count / total effort (person-days)".
-- Progress is computed internally and **used only for the inazuma line and parent aggregation** (time-based, so it is misleading as a number and never displayed).
+- Progress drives the **progress column (quarter bar), the inazuma line, and parent aggregation** (the time-based number itself is misleading, so it is never shown).
+- **Progress column = quarter bar** (0/25/50/75/100). Display fills the aggregate on every row. In edit mode, click a leaf's cell to set
+  `_progress` (click sets to that position / re-clicking the current tip returns to 0% = star-rating style). `_progress` is not a derived value but
+  "a person's/AI's judgment at a point in time", so it is stored as a `_` key (never recomputed) — consistent with the "no derived values in data" rule.
 
 ## Display
 - **UI is Japanese/English switchable** (the "EN / 日本語" toolbar button). Default Japanese; the choice is stored in localStorage.

@@ -35,7 +35,7 @@
   #stat{margin-left:auto;color:var(--muted);text-align:right;line-height:1.4}
   #stat b{color:var(--text)}
   #main{flex:1 1 auto;display:flex;min-height:0;background:#fff}
-  #left{flex:0 0 auto;overflow-y:auto;overflow-x:hidden;border-right:2px solid var(--border)}
+  #left{flex:0 0 auto;overflow-y:auto;overflow-x:hidden}   /* 左右の縦区切りはヘッダ＋行に引く（白帯=.htab-sp には引かない＝タブの上に線が突き出さない） */
   #left::-webkit-scrollbar{display:none} #left{scrollbar-width:none}
   #right{flex:1 1 auto;overflow:auto;position:relative}
   .head{height:var(--header-h);position:sticky;top:0;z-index:4;background:var(--head-bg);border-bottom:2px solid var(--border)}
@@ -116,7 +116,7 @@
   #rowHl{position:absolute;left:0;right:0;height:var(--row-h);pointer-events:none;display:none;z-index:3;
          background:rgba(37,99,235,.06);border-top:1px solid rgba(37,99,235,.30);border-bottom:1px solid rgba(37,99,235,.30)}
   #leftRows .lrow.hl{box-shadow:inset 0 0 0 999px rgba(37,99,235,.06)}  /* 十字の横：対象行を薄く塗る（inset影で階層色の上に重ねる・ガント帯と同トーン） */
-  #leftRows{position:relative}
+  #leftRows{position:relative;border-right:2px solid var(--border)}
   #leftColHl{position:absolute;top:0;bottom:0;pointer-events:none;display:none;z-index:3;  /* 十字の縦（左表側）：マウスがいるデータ列を薄く塗る */
              background:rgba(37,99,235,.06);border-left:1px solid rgba(37,99,235,.30);border-right:1px solid rgba(37,99,235,.30)}
   #rightBody{position:relative}
@@ -125,7 +125,7 @@
   #rtabs{position:sticky;top:0;left:0;z-index:6;height:var(--tab-h);display:flex;align-items:flex-end;gap:3px;padding-left:8px;background:#fff}
   .rtab{padding:2px 16px 3px;font-size:12px;color:#667;background:#eef1f6;border:1px solid #cdd5e1;border-bottom:none;border-radius:6px 6px 0 0;cursor:pointer;line-height:1.3}
   .rtab.on{background:var(--head-bg);color:var(--text);font-weight:600;box-shadow:inset 0 2px 0 var(--actual)}
-  #leftHead{top:var(--tab-h)}
+  #leftHead{top:var(--tab-h);border-right:2px solid var(--border)}
   #rightHead{top:var(--tab-h)}
   #rightHead.phead{height:var(--header-h)}
   #pctaxis{position:relative;height:100%}
@@ -135,7 +135,9 @@
   #pgrid{position:absolute;inset:0;pointer-events:none;z-index:0}
   #pgrid .pgl{position:absolute;top:0;bottom:0;width:1px;background:#eef1f6}
   .prw{height:var(--row-h);position:relative;border-bottom:1px solid var(--grid)}
-  .pbar{position:absolute;top:8px;height:14px}                                  /* 子=太く（時間ビューの実績バーと同寸） */
+  .ptrack{position:absolute;left:0;right:0;top:8px;height:14px;background:var(--head-bg);border-radius:3px}  /* 0→100%の下地（左ヘッダと同じ灰色）。右端＝100%(完了) */
+  .prw.thin .ptrack{top:11px;height:8px}
+  .pbar{position:absolute;top:8px;height:14px;z-index:1}                        /* 子=太く（時間ビューの実績バーと同寸）。トラックの上に乗せる */
   .pbar.act{left:0;background:var(--actual);border-radius:3px 0 0 3px}
   .pbar.short{background:#e11d48;border-radius:0 3px 3px 0}
   .prw.done .pbar.act{background:#8c98a6;border-radius:3px}                       /* 完了=グレー（ガント実績バーと統一） */
@@ -364,7 +366,8 @@
   const isOverdue=(c,today)=>!!(c.planEnd&&!c.allDone&&today>c.planEnd);   // 予定終了を過ぎても未完了＝締切超過（赤）
   function progBarRow(c,thin,done){   // 進捗軸の1行：青=実績(EV)／赤=予定への不足分(slip・右端がPV)。親=細いサマリー
     const ev=clamp(c.progress||0,0,100), pv=clamp(c.pv||0,0,100);
-    let inner=`<div class="pbar act${done?" done":""}" style="width:${ev.toFixed(2)}%"></div>`;
+    let inner=`<div class="ptrack"></div>`;                              // 0→100%の下地（灰色）＝完了(100%)の位置が見える
+    inner+=`<div class="pbar act${done?" done":""}" style="width:${ev.toFixed(2)}%"></div>`;
     if(pv>ev+0.5)inner+=`<div class="pbar short" style="left:${ev.toFixed(2)}%;width:${(pv-ev).toFixed(2)}%"></div>`;  // 不足分の右端＝あるべき(PV)。専用マーカーは置かない（重複回避）
     return `<div class="prw${thin?" thin":""}${done?" done":""}">${inner}</div>`;
   }

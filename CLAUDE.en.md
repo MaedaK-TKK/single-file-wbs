@@ -131,6 +131,16 @@ Append to the project's `milestones`:
 - "Component placement has **started**" → set `actual.start`
 - "**Add** a testing phase" → append a summary node + leaves
 - "**Archive** everything completed before May" → archiving procedure above (backup + delete)
+- "**Assess** the progress of task X" → see "AI progress assessment" below (deliverable + requirements → nearest 10% into `_progress`)
+
+### ⑥ AI progress-assessment workflow (this tool's core = AI-native)
+Hand the fuzzy "roughly what %" to an AI. The steps are deterministic:
+1. **Read the leaf's requirements** (issue URL / acceptance criteria in `note`, related commits/deliverables).
+2. **Compare deliverable vs. requirements** and estimate completion, **quantized to the nearest 10% (0/10/…/100)** (don't over-credit; don't count unverified work).
+3. Write three keys on the leaf: `_progress` (the value) / `_progressAt` (assessment time, ISO) / `_progressBy` (the assessing model's name, or `"manual"` for a human).
+4. **Done is separate**: when actually finished, set `actual.end` (= 100%) rather than `_progress`. `_progress` is only an in-progress earned-value estimate.
+- Example: "Assess #63's progress from the deliverable (impl/tests/docs) and acceptance criteria, to the nearest 10%."
+- Note: an assessment is a **recorded fact** (a person/AI judgment at that moment); it is not recomputed, hence a `_`-key — consistent with "no derived values in data."
 
 ## Computation (deterministic, in the HTML)
 - **Effort (person-days) = `qty × hours ÷ 8`**. Parent = sum of descendant leaves.

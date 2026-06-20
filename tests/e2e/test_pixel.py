@@ -61,23 +61,25 @@ def main():
         pg.add_init_script(CLOCK_PIN)
         pg.on("pageerror", lambda e: errors.append(str(e)))
         pg.goto(VIEWER)
-        for fx in FIXTURES:
+
+        def one(fx, tag):
             cur = shot(pg, fx)
-            bpath = BASE_DIR / (fx.replace(".json", "") + ".png")
+            bpath = BASE_DIR / (fx.replace(".json", "") + tag + ".png")
             if generate:
-                bpath.write_bytes(cur)
-                print(f"  baseline: {bpath.name} ({len(cur)} bytes)")
-                continue
+                bpath.write_bytes(cur); print(f"  baseline: {bpath.name} ({len(cur)} bytes)"); return
             if not bpath.exists():
-                check(False, f"{fx}: baseline 不在（--generate で生成を）")
-                continue
+                check(False, f"{fx}{tag}: baseline 不在（--generate で生成を）"); return
             r = pg.evaluate(DIFF_JS, [data_url(bpath.read_bytes()), data_url(cur), THRESH])
             if not r["dim"]:
-                check(False, f"{fx}: 画像サイズ不一致 base={r['aw']}x{r['ah']} cur={r['bw']}x{r['bh']}（レイアウト変化）")
-                continue
+                check(False, f"{fx}{tag}: 画像サイズ不一致 base={r['aw']}x{r['ah']} cur={r['bw']}x{r['bh']}（レイアウト変化）"); return
             ratio = r["mism"] / r["total"]
             check(ratio <= TOL_RATIO,
-                  f"{fx}: 不一致 {r['mism']}/{r['total']} 画素 = {ratio*100:.3f}% (許容 {TOL_RATIO*100:.2f}%・{r['w']}x{r['h']})")
+                  f"{fx}{tag}: 不一致 {r['mism']}/{r['total']} 画素 = {ratio*100:.3f}% (許容 {TOL_RATIO*100:.2f}%・{r['w']}x{r['h']})")
+
+        for fx in FIXTURES:              # 時間タブ（既定）
+            one(fx, "")
+        pg.click('.rtab[data-view="progress"]'); pg.wait_for_timeout(120)  # 進捗タブも代表1枚
+        one("正常_終了遅延.json", "_progress")
         b.close()
     if generate:
         print("baseline 生成完了")

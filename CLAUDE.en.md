@@ -45,7 +45,7 @@ To keep the file from growing forever, **move old completed tasks out of the cur
 In addition to text / AI editing, `wbs.json` can be **edited directly on screen** (optional feature).
 - The **Edit button** toggles ON/OFF (green = ON). When ON, the left table becomes inputs + action buttons.
 - Supported: **inline editing of every field** (No.=id / task name / qty / hours / assignee / plan & actual dates / notes),
-  **4-quarter progress input** (click a leaf's cell for 0/25/50/75/100% = `_progress`; setting ≥25% auto-sets `actual.start` to today / returning to 0% keeps the start date),
+  **progress input** (the leaf's `◀ N% ▶` stepper changes `_progress` by ±10%; setting ≥10% auto-sets `actual.start` to today / returning to 0% keeps the start date),
   **adding leaves** (row `＋` = sibling below; project row `+Task`; ids are minted collision-free; adding to a collapsed project auto-expands it),
   **deletion** (`✕`, with confirmation, including children), **reordering among siblings** (`▲▼`).
 - **Autosave**: changes are written back to `wbs.json` after a ~0.4 s debounce (File System Access API).
@@ -87,8 +87,8 @@ In addition to text / AI editing, `wbs.json` can be **edited directly on screen*
 - **Effort and progress are not stored in the data** (all derived; computed by the JS in the HTML).
 - **Keys starting with `_` may be added freely** (ignored by the viewer by default, preserved by edit-mode saves).
   Use them for metadata (e.g., `_ai` in `wbs_roadmap.json` = recorded AI effort in tokens; entirely optional. `wbs_sample.json` is the minimal example without custom keys).
-- **Exception: `_progress` (0/25/50/75/100) is read by the viewer** as the progress value, alongside `_progressAt` (assessment time, ISO) and
-  `_progressBy` (`"manual"` or a model name). Asking an AI: "assess task X's progress to the nearest quarter from the deliverable and requirements"
+- **Exception: `_progress` (0/10/…/100) is read by the viewer** as the progress value (EV), alongside `_progressAt` (assessment time, ISO) and
+  `_progressBy` (`"manual"` or a model name). Asking an AI: "assess task X's progress to the nearest 10% from the deliverable and requirements"
   → it writes `_progress`/`_progressAt`/`_progressBy` on the leaf. If unset, progress falls back to time-based (backward compatible).
 - `milestones: [{ date, label, color }]` is optional per project.
 
@@ -135,16 +135,20 @@ Append to the project's `milestones`:
 ## Computation (deterministic, in the HTML)
 - **Effort (person-days) = `qty × hours ÷ 8`**. Parent = sum of descendant leaves.
 - Parent plan/actual period = min start – max end of descendant leaves.
-- Progress (reference date = today):
+- Progress (EV = earned value / reference date = today):
   - Not started (no actual.start) = 0% / Completed (actual.end set) = 100%
-  - Active = **if `_progress` (0/25/50/75/100) is present, quantize it to the nearest quarter and use it**; otherwise fall back to the
+  - Active = **if `_progress` (0/10/…/100) is present, quantize to the nearest 10% and use it**; otherwise fall back to the
     time-based `clamp((today − actual.start) ÷ (plan.end − plan.start) × 100, 0, 100)` (backward compatible).
-  - Parent = effort-weighted average of descendant leaves' (progress × effort).
+  - Parent = effort-weighted average of descendant leaves' (progress × effort) (continuous; not snapped).
+- **EVM values**: EV = actual progress / **PV = planned** = what should be done by today `clamp((today−plan.start)/(plan.end−plan.start)×100,0,100)` (linear; parents weighted) /
+  **slip = behind = max(PV−EV,0)** (≈ EVM SV). S-curve, non-linear PV, and a cost axis are out of scope (not done).
 - Header shows "project count / total effort (person-days)".
-- Progress drives the **progress column (quarter bar), the inazuma line, and parent aggregation** (the time-based number itself is misleading, so it is never shown).
-- **Progress column = quarter bar** (0/25/50/75/100). Display fills the aggregate on every row. In edit mode, click a leaf's cell to set
-  `_progress` (click sets to that position / re-clicking the current tip returns to 0% = star-rating style). `_progress` is not a derived value but
+- **Progress column = `◀ N% ▶` stepper** (10% steps; editable on leaves only / parents show the auto-aggregate read-only, continuous). `_progress` is not a derived value but
   "a person's/AI's judgment at a point in time", so it is stored as a `_` key (never recomputed) — consistent with the "no derived values in data" rule.
+- **Status column = behind / actual / planned** (slip / EV / PV, %). Behind=red, actual=blue, planned=black. **On-track rows show actual only** (quiet). No mental math (the delay is pre-computed).
+- **Planned-end turns red** when today > plan end and not done (deadline overrun; done rows are not reddened). Same "red = behind" as the time tab's Gantt/inazuma.
+- **The right pane toggles between "Time / Progress" tabs** (default = Time). Time = the Gantt (unchanged) / Progress = horizontal completion bars (blue=actual / red=shortfall to plan / grey line=planned PV / thin=parent summary).
+  Only the active view is injected into the DOM (render cost = one view). The tab choice is remembered in localStorage.
 
 ## Display
 - **UI is Japanese/English switchable** (the "EN / 日本語" toolbar button). Default Japanese; the choice is stored in localStorage.

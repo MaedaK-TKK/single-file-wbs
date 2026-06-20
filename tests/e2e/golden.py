@@ -53,6 +53,16 @@ EDIT_CAPTURE = r"""()=>{
   return {inputs, btns};
 }"""
 
+# 進捗タブ：進捗バー（青実績/赤不足分）の幾何＋PV目盛り線を凍結
+PROG_CAPTURE = r"""()=>{
+  const rows = [...document.querySelectorAll('#progbody .prw')].map(r=>({
+    cls: [...r.classList].filter(c=>c!=='prw').join(' '),
+    bars: [...r.querySelectorAll('.pbar')].map(b=>({kind:b.className.replace('pbar','').trim(), left:b.style.left, width:b.style.width})),
+    pv: ((r.querySelector('.pv-mark')||{}).style||{}).left || null,
+  }));
+  return {rows};
+}"""
+
 
 def capture_all():
     out = {}
@@ -69,6 +79,13 @@ def capture_all():
             pg.evaluate("d => window.renderData(d)", data)
             pg.wait_for_timeout(120)
             out[fx.name] = pg.evaluate(CAPTURE)
+        # 進捗タブに切替えて、各fixtureの進捗バーを凍結
+        pg.click('.rtab[data-view="progress"]'); pg.wait_for_timeout(120)
+        for fx in FIXTURES:
+            data = json.loads(fx.read_text(encoding="utf-8"))
+            pg.evaluate("d => window.renderData(d)", data)
+            pg.wait_for_timeout(120)
+            out[fx.name + "::prog"] = pg.evaluate(PROG_CAPTURE)
         pg.close()
         # edit モード：fixtureごとに新ページ（granted handle の中身が init で決まるため）
         for name in EDIT_FIXTURES:

@@ -171,9 +171,9 @@ Hand the fuzzy "roughly what %" to an AI. The steps are deterministic:
 - **UI is Japanese/English switchable** (the "EN / 日本語" toolbar button). Default Japanese; the choice is stored in localStorage.
   All UI strings live in the `I18N` table inside the HTML (data = the contents of wbs.json is never translated). **When adding a UI string, add it to both ja and en.**
 - Column headers are centered. The left info table (No.–Notes) is fixed; **only the Gantt scrolls horizontally**.
-- **Column collapse (Excel-style, #64)**: a thin row above the column headers holds **+/−** toggles per **collapsible unit** —
+- **Column collapse (outline-style, #64)**: a thin row above the column headers holds **+/−** toggles per **collapsible unit** —
   `qty+hours` (the breakdown of effort), Effort, Progress, Status, Assignee, Plan, Actual, Notes (**No. and Task name are always shown**).
-  Collapsed columns are **removed at 0 width (like Excel — no leftover gap stub)**, the + sits at the boundary (absolute). State is
+  Collapsed columns are **removed at 0 width (no leftover gap stub)**, the + sits at the boundary (absolute). State is
   saved in localStorage; scroll/tree-collapse are preserved; collapsing widens the Gantt. Implemented via the `COL_CG` map + `effCols()` filter (draw cost = column count, not row-dependent).
 - **Plan/Actual date columns have a two-level header**: "Plan" / "Actual" on top, "Start / End" beneath (adjacent columns grouped by the `group` property in `COLS`).
 - Row layer colors: **◆project (with separators) > L1 > L2 > L3**.

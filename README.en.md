@@ -29,7 +29,7 @@ Updating the tool = overwriting `wbs_viewer.html`; your `wbs.json` data is never
 - **Plan-vs-actual Gantt overlay** — the actual bar sits inside a plan outline; **overrun = finish delay (red + N days), empty left = late start**. Done tasks are gray, parents (aggregates) are thin summary bars — state at a glance. Colors are **Color-Universal-Design (CVD) aware**
 - **Progress-axis view (EVM-style)** — besides the time-axis Gantt, a **progress view whose axis is completion (0–100%)**, switched via **tabs**. Shows **actual (EV) / planned (PV) / behind** as horizontal bars (the two views are never mixed)
 - **Header summary** — period, effort (person-months), and progress (EVM) always on screen; even when the overall figure is 0% (ahead-work offsets it), a **badge counts the tasks that are individually behind**
-- **Column collapse (Excel-style)** — **+/−** above the headers collapse/expand column groups (qty+hours, progress, status, owner, plan, actual, notes) to widen the Gantt
+- **Column collapse (outline-style)** — **+/−** above the headers collapse/expand column groups (qty+hours, progress, status, owner, plan, actual, notes) to widen the Gantt
 - **Data is one JSON of facts only** — it holds nothing but plan and actual dates. Effort (qty × hours ÷ 8, person-days), progress, and the inazuma line are all **computed automatically** — no numbers to maintain by hand
 - **Three ways to edit** — in-browser editing (autosave) / any text editor / **AI chat** (ships with `CLAUDE.md` so Claude Code already understands the data format)
 - Plus: multiple projects, collapsible tree, milestone lines, completed-task graying with ✓, auto-linked URLs in notes, Japanese/English UI

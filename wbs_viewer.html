@@ -365,12 +365,12 @@
      view:(c,n,x)=>x.leaf?linkify(n.note||""):"", field:"note",edit:"text",get:(c,n)=>n.note||""},
   ];
 
-  // Excel風の列折りたたみ：列→折りたたみ単位の対応（No.・作業項目は対応なし＝常時表示）。数量+時間は工数の内訳でまとめる／工数は個別
+  // アウトライン式の列折りたたみ：列→折りたたみ単位の対応（No.・作業項目は対応なし＝常時表示）。数量+時間は工数の内訳でまとめる／工数は個別
   const COL_CG={qty:"qh",hrs:"qh",work:"work",prog:"prog",stat:"stat",asg:"asg",ps:"plan",pe:"plan",as:"act",ae:"act",note:"note"};
   let colCollapsed=new Set();
   try{const s=JSON.parse(localStorage.getItem("wbsColCollapsed")||"[]");if(Array.isArray(s))colCollapsed=new Set(s);}catch(_){}
   function saveColCollapsed(){try{localStorage.setItem("wbsColCollapsed",JSON.stringify([...colCollapsed]));}catch(_){}}
-  function effCols(){return COLS.filter(c=>{const g=COL_CG[c.key];return !(g&&colCollapsed.has(g));});}  // 畳んだ列は完全に消す（Excel同様＝隙間を作らない）。+/−はタブ帯の上に絶対配置
+  function effCols(){return COLS.filter(c=>{const g=COL_CG[c.key];return !(g&&colCollapsed.has(g));});}  // 畳んだ列は完全に消す（隙間を作らない）。+/−はタブ帯の上に絶対配置
 
   const isColor=s=>typeof s==="string"&&/^#[0-9a-fA-F]{3,8}$/.test(s);
   function normalizeProjects(d){
@@ -631,7 +631,7 @@
     document.getElementById("leftHead").innerHTML=lh;
     document.getElementById("leftRows").innerHTML=lrows+`<div id="leftColHl"></div>`; leftColBounds=null;  // 列幅が変わりうるので境界キャッシュを無効化
     document.getElementById("left").style.width=eCols.reduce((s,c)=>s+cw(c),0)+"px";
-    let ctgl="",tx=0,lastCx=-99;                                               // 列折りたたみ +/−：畳んだ列は0幅＝隙間なし、+/−はタブ帯に絶対配置（Excel風）
+    let ctgl="",tx=0,lastCx=-99;                                               // 列折りたたみ +/−：畳んだ列は0幅＝隙間なし、+/−はタブ帯に絶対配置（アウトライン式）
     for(let ci=0;ci<COLS.length;ci++){const c=COLS[ci];const g=COL_CG[c.key];
       if(g){let j=ci;while(j<COLS.length&&COL_CG[COLS[j].key]===g)j++;
         if(colCollapsed.has(g)){let bx=tx;if(bx-lastCx<16)bx=lastCx+16;        // 隣接で畳んだ時に + が重ならないよう少しずらす
@@ -706,7 +706,7 @@
     if(lastData)render(lastData);
   });
   // 折りたたみ（イベント委譲）
-  document.querySelector(".htab-sp").addEventListener("click",e=>{           // 列折りたたみ +/−（Excel風）
+  document.querySelector(".htab-sp").addEventListener("click",e=>{           // 列折りたたみ +/−（アウトライン式）
     const b=e.target.closest("[data-colcol],[data-colexp]"); if(!b||!lastData)return;
     const col=b.getAttribute("data-colcol"),exp=b.getAttribute("data-colexp");
     if(col)colCollapsed.add(col); else colCollapsed.delete(exp);

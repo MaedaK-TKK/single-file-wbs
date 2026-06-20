@@ -256,7 +256,10 @@
                     "start": "2026-06-04",
                     "end": null
                   },
-                  "note": "進行中（ほぼ予定通り）"
+                  "note": "進行中（ほぼ予定通り）",
+                  "_progress": 90,
+                  "_progressAt": "2026-06-20T06:17:05.588Z",
+                  "_progressBy": "manual"
                 }
               ]
             }

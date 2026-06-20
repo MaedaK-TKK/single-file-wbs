@@ -377,7 +377,10 @@
                 "start": "2026-06-19",
                 "end": null
               },
-              "note": "#63：https://github.com/piguo45/single-file-wbs/issues/63 左=4分割進捗入力(0/25/50/75/100量子化)・右=時間軸/進捗軸タブ・AI査定%(_progress カスタムキー)。v2マーキー機能＝AIネイティブの実証。進捗%は #71 のEVMヘッダサマリの前提。【段階1完了(075ff64)】進捗4分割入力列＋_progress源泉をmerge。段階2-4(時間軸/進捗軸タブ・進捗バー・進捗スリップ線・AI査定ワークフロー)は残。回帰網Phase0(golden/pixel)で着手前に保護済み"
+              "note": "#63：https://github.com/piguo45/single-file-wbs/issues/63 左=4分割進捗入力(0/25/50/75/100量子化)・右=時間軸/進捗軸タブ・AI査定%(_progress カスタムキー)。v2マーキー機能＝AIネイティブの実証。進捗%は #71 のEVMヘッダサマリの前提。【段階1完了(075ff64)】進捗4分割入力列＋_progress源泉をmerge。段階2-4(時間軸/進捗軸タブ・進捗バー・進捗スリップ線・AI査定ワークフロー)は残。回帰網Phase0(golden/pixel)で着手前に保護済み",
+              "_progress": 80,
+              "_progressAt": "2026-06-20T07:30:00.000Z",
+              "_progressBy": "manual"
             },
             {
               "id": "2.3",
@@ -390,8 +393,8 @@
                 "end": "2026-06-26"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-20",
+                "end": "2026-06-20"
               },
               "note": "#71：https://github.com/piguo45/single-file-wbs/issues/71 プロジェクト数/全体期間/予定工数(人月)/実績工数=完了の出来高/遅延(日数件数)。本日・更新を簡素化。ファイル名表示(#69)を統合。進捗%(#63)が入ればEVMサマリ(人日の遅れ/SPI/予定%実績%)に格上げ"
             },
@@ -422,10 +425,13 @@
                 "end": "2026-06-25"
               },
               "actual": {
-                "start": null,
+                "start": "2026-06-20",
                 "end": null
               },
-              "note": "#68：https://github.com/piguo45/single-file-wbs/issues/68 仮題『WBSという至高ツールでこのAI時代をサバイブする』。#67の論考をZenn公開。v2リリースと同時。本人が執筆"
+              "note": "#68：https://github.com/piguo45/single-file-wbs/issues/68 仮題『WBSという至高ツールでこのAI時代をサバイブする』。#67の論考をZenn公開。v2リリースと同時。本人が執筆",
+              "_progress": 0,
+              "_progressAt": "2026-06-20T01:45:54.471Z",
+              "_progressBy": "manual"
             },
             {
               "id": "2.6",
@@ -438,8 +444,8 @@
                 "end": "2026-06-27"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-20",
+                "end": "2026-06-20"
               },
               "note": "#64：https://github.com/piguo45/single-file-wbs/issues/64 左の情報表(No.〜備考の列群)をトグルで畳んでガント領域を最大化。表示層(render/CSS)。スクロール左右同期(#62近接)に注意。たたみ状態の保持/復元も設計"
             },

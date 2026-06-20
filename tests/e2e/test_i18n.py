@@ -19,7 +19,7 @@ with sync_playwright() as p:
     check(pg.inner_text("#openBtn").startswith("Open file") and "drag" in pg.inner_text("#openBtn"), "EN: ボタン英語化")
     heads = pg.inner_text("#leftHead")
     check("Task" in heads and "Plan" in heads and "Actual" in heads, "EN: 列見出し英語化")
-    check("person-days" in pg.inner_text("#stat"), "EN: ヘッダ統計英語化")
+    check("Period" in pg.inner_text("#stat"), "EN: ヘッダ統計英語化")
     check("active" in pg.inner_text("#leftRows"), "EN: 進行中→active")
     check(pg.get_attribute("html", "lang") == "en", "html lang=en")
 

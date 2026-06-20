@@ -1,0 +1,15 @@
+# テストハーネス専用の依存定義（uv 管理）。
+# ⚠ 製品本体 `wbs_viewer.html` は依存ゼロ（ライブラリ/CDN/ビルド不要）。
+#    ここで宣言するのは tests/e2e の headless ブラウザ検証に使う開発ツールのみで、
+#    配布物（HTML）には一切影響しません。
+[project]
+name = "single-file-wbs-tests"
+version = "0"
+description = "Dev-only e2e test harness (headless browser) for single-file-wbs. The product (wbs_viewer.html) itself has zero dependencies."
+requires-python = ">=3.12"
+dependencies = [
+    "playwright>=1.40",
+]
+
+[tool.uv]
+package = false

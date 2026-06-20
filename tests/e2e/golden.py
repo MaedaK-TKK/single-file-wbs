@@ -58,7 +58,6 @@ PROG_CAPTURE = r"""()=>{
   const rows = [...document.querySelectorAll('#progbody .prw')].map(r=>({
     cls: [...r.classList].filter(c=>c!=='prw').join(' '),
     bars: [...r.querySelectorAll('.pbar')].map(b=>({kind:b.className.replace('pbar','').trim(), left:b.style.left, width:b.style.width})),
-    pv: ((r.querySelector('.pv-mark')||{}).style||{}).left || null,
   }));
   return {rows};
 }"""

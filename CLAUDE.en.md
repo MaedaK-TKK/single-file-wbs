@@ -147,7 +147,7 @@ Append to the project's `milestones`:
   "a person's/AI's judgment at a point in time", so it is stored as a `_` key (never recomputed) — consistent with the "no derived values in data" rule.
 - **Status column = behind / actual / planned** (slip / EV / PV, %). Behind=red, actual=blue, planned=black. **On-track rows show actual only** (quiet). No mental math (the delay is pre-computed).
 - **Planned-end turns red** when today > plan end and not done (deadline overrun; done rows are not reddened). Same "red = behind" as the time tab's Gantt/inazuma.
-- **The right pane toggles between "Time / Progress" tabs** (default = Time). Time = the Gantt (unchanged) / Progress = horizontal completion bars (blue=actual / red=shortfall to plan / grey line=planned PV / thin=parent summary).
+- **The right pane toggles between "Time / Progress" tabs** (default = Time). Time = the Gantt (unchanged) / Progress = horizontal completion bars (blue=actual / red=shortfall to plan, whose right edge = planned PV / thick=leaf, thin=parent summary, same sizes as the time view).
   Only the active view is injected into the DOM (render cost = one view). The tab choice is remembered in localStorage.
 
 ## Display

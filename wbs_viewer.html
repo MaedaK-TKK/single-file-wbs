@@ -25,9 +25,10 @@
   #topbar .tdiv{width:1px;align-self:stretch;margin:5px 2px;background:var(--border)} /* 呼称｜操作の区切り。上下を少し空けて柔らかく */
   #topbar .title .ver{font-size:9px;color:var(--muted);font-weight:400}
   #topbar button{font:inherit;padding:5px 10px;border:1px solid var(--btn-border);background:#fff;border-radius:6px;cursor:pointer;
-                 align-self:stretch} /* 行内で一番高いボタン（2行の「開く」）に高さを自動で揃える */
+                 align-self:center} /* 指標ブロックが高くてもボタンは伸びない。操作3ボタンの高さは下の規則で統一 */
   #topbar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-  #openBtn{display:flex;flex-direction:column;align-items:center;line-height:1.2;padding:3px 12px}
+  #openBtn{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2;padding:3px 12px}
+  #openBtn,#refreshBtn,#editBtn{height:40px} /* 操作3ボタンは同一高（2行の「開く」基準）。指標ブロックの高さに引きずられない */
   #openBtn .sub{font-size:9px;opacity:.8}
   #openBtn.over{background:#eef4ff!important;border:1px dashed var(--accent)!important;color:var(--accent)!important} /* ドラッグ中だけ「落とせる」点線合図 */
   #topbar #langBtn{border-color:transparent;background:transparent;color:var(--muted)} /* 表示設定＝データ操作より弱く・右端 */
@@ -39,7 +40,9 @@
   #stat .mrow .mk{color:var(--muted)} #stat .mrow .mv{display:inline-block;min-width:74px}
   #stat .mrow .mev{color:var(--actual)} #stat .mrow .mdl{color:#e11d48;font-weight:700}
   #stat .mrow .msub{color:var(--muted);font-size:11px}
-  #stat .mstat{font-size:11px;color:var(--muted);margin-top:1px;align-self:stretch;text-align:right}
+  #stat .mdrow .mv2{display:inline-block}  /* 遅延行：バッジ群は値列(.mv)と同じ開始位置に揃う（.mkが全行同幅） */
+  #stat .mdrow .dbadge{margin-right:6px;padding:1px 7px;border-radius:8px;background:#fdecea;color:#c01a2b;font-size:11px;font-weight:600;white-space:nowrap} /* 遅延件数バッジ（期限/進捗）。11pxの方が視認性が良い・件数0種別は非表示 */
+  #stat .mstat{font-size:11px;color:var(--muted);margin-top:1px;align-self:stretch;text-align:right;white-space:nowrap}
   #stat .mstat span{cursor:help}
   #main{flex:1 1 auto;display:flex;min-height:0;background:#fff}
   #left{flex:0 0 auto;overflow-y:auto;overflow-x:hidden}   /* 左右の縦区切りはヘッダ＋行に引く（白帯=.htab-sp には引かない＝タブの上に線が突き出さない） */
@@ -131,8 +134,8 @@
   /* タブは白帯の中に置き、グレーのヘッダ（年月/罫線）の上に突き出す。左には同高の白スペーサで行を揃える＝灰色の広がりを出さない */
   .htab-sp{height:var(--tab-h);position:sticky;top:0;z-index:5;background:#fff}
   #rtabs{position:sticky;top:0;left:0;z-index:6;height:var(--tab-h);display:flex;align-items:flex-end;gap:3px;padding-left:8px;background:#fff}
-  .rtab{padding:2px 16px 3px;font-size:12px;color:#667;background:#eef1f6;border:1px solid #cdd5e1;border-bottom:none;border-radius:6px 6px 0 0;cursor:pointer;line-height:1.3}
-  .rtab.on{background:var(--head-bg);color:var(--text);font-weight:600;box-shadow:inset 0 2px 0 var(--actual)}
+  .rtab{padding:2px 16px 3px;font-size:12px;color:#8b94a3;background:#eceef2;border:1px solid #d4dae3;border-bottom:none;border-radius:6px 6px 0 0;cursor:pointer;line-height:1.3} /* 非選択=灰で沈める */
+  .rtab.on{background:#fdf2cc;color:var(--text);font-weight:600;border-color:#ead9a0;box-shadow:inset 0 2px 0 #e0a82e} /* 選択=淡クリーム+アンバー上線（データの青/赤/灰と被らないUI専用色） */
   #leftHead{top:var(--tab-h);border-right:2px solid var(--border)}
   #rightHead{top:var(--tab-h)}
   #rightHead.phead{height:var(--header-h)}
@@ -148,10 +151,15 @@
   .prw{height:var(--row-h);position:relative;border-bottom:1px solid var(--grid)}
   .prw.prow{background:var(--proj)} .prw.lvl0{background:var(--lvl0)} .prw.lvl1{background:var(--lvl1)}
   .prw.done{background:var(--done-bg)}                                           /* 完了=灰色（左の行と同じ・後勝ちで階層色に優先） */
+  .ptrack{position:absolute;left:0;width:100%;top:8px;height:14px;background:#eef1f7;border:1px solid #cdd8ea;z-index:0} /* 0-100%の青グレー下地（無地）。直角＝角丸の時間ビューと形でも区別 */
+  .ptick{position:absolute;left:0;width:100%;top:8px;height:8px;z-index:2;pointer-events:none;
+         background:repeating-linear-gradient(to right,transparent 0,transparent calc(10% - 1px),#555 calc(10% - 1px),#555 10%,transparent 10%,transparent 20%)} /* 細目盛り＝主目盛り(20%点線)の中間 10/30/50/70/90% だけ（20%位置は点線と重ねない）。上端から6割の短い線・同色#555・バー前面 */
+  .prw.thin .ptick{top:11px;height:5px}
+  .prw.thin .ptrack{top:11px;height:8px}
   .pbar{position:absolute;top:8px;height:14px;z-index:1}                         /* 子=太く（時間ビューの実績バーと同寸） */
-  .pbar.act{left:0;background:var(--actual);border-radius:3px 0 0 3px}
-  .pbar.short{background:#e11d48;border-radius:0 3px 3px 0}
-  .prw.done .pbar.act{background:#8c98a6;border-radius:3px}                       /* 完了=グレー（ガント実績バーと統一） */
+  .pbar.act{left:0;background:var(--actual)}                                     /* 直角（進捗ビューは角丸にしない） */
+  .pbar.short{background:#e11d48}
+  .prw.done .pbar.act{background:#8c98a6}                                        /* 完了=グレー（ガント実績バーと統一） */
   .prw.thin .pbar{top:11px;height:8px}                                           /* 親=集計=細く（時間ビューの親サマリーバーと同寸） */
   #ganttBg{position:absolute;top:0;left:0;z-index:0}
   #ganttBg .we{position:absolute;top:0;bottom:0;background:var(--weekend)}
@@ -221,7 +229,7 @@
       startDelayTip:n=>`着手遅れ +${n}日`, endDelayTip:(n,act)=>`終了遅延 +${n}日${act?"・進行中":""}`,
       doneTip:"完了/未完了を切替（チェックで実績終了＝今日。未着手なら着手も今日）",
       ym:(y,m)=>`${y}年${m}月`,
-      stat:(d)=>`<div class="mrows">`+`<div class="mrow" title="最早開始 - 最遅終了 ／ 残り＝本日→終了の平日数（土日除外・祝日は除外していません #75）"><span class="mk">期間：</span><span class="mv">${esc(mdSlash(d.ps))} - ${esc(mdSlash(d.pe))}</span><span class="msub">（残り：${d.biz}日）</span></div>`+`<div class="mrow" title="予定合計(人月)＝Σ(数量×時間÷8)÷20 ／ 残り＝予定−実績(EV)"><span class="mk">工数：</span><span class="mv"><b>${d.planPM}</b>人月</span><span class="msub">（残り：${d.restPM}人月）</span></div>`+`<div class="mrow" title="実際%（出来高EV/総） ／ 予定%（あるべきPV/総）｜ 遅れ%（予定−実際）"><span class="mk">進捗：</span><span class="mv"><b class="mev">${d.prog}%</b></span><span class="msub">（予定：${d.plan}% ｜ 遅れ：<span class="mdl">${d.delay}%</span>）</span></div>`+`</div>`+`<div class="mstat"><span title="開いているファイル">📄 ${esc(d.fname)}</span> ・ <span title="プロジェクト数">${d.pc}P</span> ・ <span title="本日（進捗・イナズマ線の基準日）">📅 ${esc(mdSlash(d.today))}</span> ・ <span title="最後に更新（読込）した時刻">🔄 ${esc(d.upd)}</span><span id="saveMsg" title="最後に保存した時刻（自動保存）">${d.save}</span></div>`,
+      stat:(d)=>`<div class="mrows">`+`<div class="mrow" title="最早開始 - 最遅終了 ／ 残り＝本日→終了の平日数（土日除外・祝日は除外していません #75）"><span class="mk">期間：</span><span class="mv">${esc(mdSlash(d.ps))} - ${esc(mdSlash(d.pe))}</span><span class="msub">（残り：${d.biz}日）</span></div>`+`<div class="mrow" title="予定合計(人月)＝Σ(数量×時間÷8)÷20 ／ 残り＝予定−実績(EV)"><span class="mk">工数：</span><span class="mv">${d.planPM}人月</span><span class="msub">（残り：${d.restPM}人月）</span></div>`+`<div class="mrow" title="実際%（出来高EV/総） ／ 予定%（あるべきPV/総）｜ 遅れ%（予定−実際）"><span class="mk">進捗：</span><span class="mv"><b class="mev">${d.prog}%</b></span><span class="msub">（予定：${d.plan}% ｜ 遅れ：<span class="mdl">${d.delay}%</span>）</span></div>`+`${(d.due||d.slip)?`<div class="mrow mdrow" title="遅れているタスク数。全体の遅れ%は前倒し分で相殺され0%でも、個別に遅れている件数（状況列の赤で詳細）"><span class="mk">遅延：</span><span class="mv2">${d.due?`<span class="dbadge" title="締切超過＝本日>予定終了かつ未完了">⚠ 期限${d.due}件</span>`:""}${d.slip?`<span class="dbadge" title="出来高遅れ＝予定(PV)>実績(EV)">⚠ 進捗${d.slip}件</span>`:""}</span></div>`:""}`+`</div>`+`<div class="mstat"><span title="開いているファイル">📄 ${esc(d.fname)}</span> ・ <span title="プロジェクト数">${d.pc}P</span> ・ <span title="本日（進捗・イナズマ線の基準日）">📅 ${esc(mdSlash(d.today))}</span> ・ <span title="最後に更新（読込）した時刻">🔄 ${esc(d.upd)}</span><span id="saveMsg" title="最後に保存した時刻（自動保存）">${d.save}</span></div>`,
       confirmDel:name=>`「${name}」を削除します。よろしいですか？（配下も削除）`,
       fileLabel:(name,size)=>`${name}・${size} byte`,
       jsonFail:(label,msg)=>`JSON読み込み失敗${label?`（${label}）`:""}: ${msg}`,
@@ -254,7 +262,7 @@
       startDelayTip:n=>`Start delay +${n}d`, endDelayTip:(n,act)=>`Finish delay +${n}d${act?" (active)":""}`,
       doneTip:"Toggle done (check = actual end today; also start if not yet started)",
       ym:(y,m)=>`${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]} ${y}`,
-      stat:(d)=>`<div class="mrows">`+`<div class="mrow" title="Earliest start - latest end / Remaining = weekdays from today to end (excl. weekends; holidays not excluded #75)"><span class="mk">Period: </span><span class="mv">${esc(mdSlash(d.ps))} - ${esc(mdSlash(d.pe))}</span><span class="msub"> (left: ${d.biz}d)</span></div>`+`<div class="mrow" title="Planned total (person-months) / Remaining = planned - actual(EV)"><span class="mk">Effort: </span><span class="mv"><b>${d.planPM}</b>pm</span><span class="msub"> (left: ${d.restPM}pm)</span></div>`+`<div class="mrow" title="Actual% (EV/total) / Planned% (PV/total) | Behind% (plan-actual)"><span class="mk">Progress: </span><span class="mv"><b class="mev">${d.prog}%</b></span><span class="msub"> (plan: ${d.plan}% | behind: <span class="mdl">${d.delay}%</span>)</span></div>`+`</div>`+`<div class="mstat"><span title="Open file">📄 ${esc(d.fname)}</span> ・ <span title="Projects">${d.pc}P</span> ・ <span title="Today (reference date)">📅 ${esc(mdSlash(d.today))}</span> ・ <span title="Last refreshed">🔄 ${esc(d.upd)}</span><span id="saveMsg" title="Last saved (autosave)">${d.save}</span></div>`,
+      stat:(d)=>`<div class="mrows">`+`<div class="mrow" title="Earliest start - latest end / Remaining = weekdays from today to end (excl. weekends; holidays not excluded #75)"><span class="mk">Period: </span><span class="mv">${esc(mdSlash(d.ps))} - ${esc(mdSlash(d.pe))}</span><span class="msub"> (left: ${d.biz}d)</span></div>`+`<div class="mrow" title="Planned total (person-months) / Remaining = planned - actual(EV)"><span class="mk">Effort: </span><span class="mv">${d.planPM}pm</span><span class="msub"> (left: ${d.restPM}pm)</span></div>`+`<div class="mrow" title="Actual% (EV/total) / Planned% (PV/total) | Behind% (plan-actual)"><span class="mk">Progress: </span><span class="mv"><b class="mev">${d.prog}%</b></span><span class="msub"> (plan: ${d.plan}% | behind: <span class="mdl">${d.delay}%</span>)</span></div>`+`${(d.due||d.slip)?`<div class="mrow mdrow" title="Tasks behind schedule. Even when the overall behind% is 0% (ahead-work offsets it), this many items are individually behind (see the red Status column)"><span class="mk">Behind: </span><span class="mv2">${d.due?`<span class="dbadge" title="Overdue = past planned end & not done">⚠ ${d.due} late</span>`:""}${d.slip?`<span class="dbadge" title="Behind on value = plan(PV) > actual(EV)">⚠ ${d.slip} EV</span>`:""}</span></div>`:""}`+`</div>`+`<div class="mstat"><span title="Open file">📄 ${esc(d.fname)}</span> ・ <span title="Projects">${d.pc}P</span> ・ <span title="Today (reference date)">📅 ${esc(mdSlash(d.today))}</span> ・ <span title="Last refreshed">🔄 ${esc(d.upd)}</span><span id="saveMsg" title="Last saved (autosave)">${d.save}</span></div>`,
       confirmDel:name=>`Delete "${name}"? (children will also be deleted)`,
       fileLabel:(name,size)=>`${name}, ${size} bytes`,
       jsonFail:(label,msg)=>`Failed to load JSON${label?` (${label})`:""}: ${msg}`,
@@ -335,7 +343,7 @@
      view:(c,n,x)=>x.leaf?esc(n.hours):"", field:"hours",edit:"number",get:(c,n)=>n.hours},
     {key:"work",label:"colWork",sub:"colWorkUnit",tip:"colWorkTip",w:56,cls:"r",
      view:c=>c.load?esc(fmtLoad(c.load)):""},                                  // 派生（編集不可）
-    {key:"prog",label:"colProg",tip:"colProgTip",w:90,cls:"prog",             // 進捗ステッパー（編集=±10%／表示=集計%）。独自ウィジェット
+    {key:"prog",label:"colProg",tip:"colProgTip",w:80,cls:"prog",             // 進捗ステッパー（編集=±10%／表示=集計%）。独自ウィジェット（◀N%▶=最小80px）
      view:(c,n,x)=>progStep(c.progress, editMode&&x.leaf, x.path)},
     {key:"stat",label:"colStat",tip:"colStatTip",w:104,cls:"r stat",         // 状況=遅れ/実績/予定（工数と同じ作り：2段ヘッダ＋セル1行右寄せ）
      view:c=>statusCell(c)},
@@ -378,8 +386,9 @@
   const isOverdue=(c,today)=>!!(c.planEnd&&!c.allDone&&today>c.planEnd);   // 予定終了を過ぎても未完了＝締切超過（赤）
   function progBarRow(c,thin,done,cls){   // 進捗軸の1行：青=実績(EV)／赤=予定への不足分(slip・右端がPV)。親=細いサマリー。clsは行背景(prow/lvl0/lvl1)
     const ev=clamp(c.progress||0,0,100), pv=clamp(c.pv||0,0,100);
-    let inner=`<div class="pbar act${done?" done":""}" style="width:${ev.toFixed(2)}%"></div>`;
+    let inner=`<div class="ptrack"></div><div class="pbar act${done?" done":""}" style="width:${ev.toFixed(2)}%"></div>`;
     if(pv>ev+0.5)inner+=`<div class="pbar short" style="left:${ev.toFixed(2)}%;width:${(pv-ev).toFixed(2)}%"></div>`;  // 不足分の右端＝あるべき(PV)
+    inner+=`<div class="ptick"></div>`;                                           // 目盛りは最前面（青/赤バーの上）に重ねる
     return `<div class="prw ${cls}${thin?" thin":""}${done?" done":""}"><div class="prw-bars">${inner}</div></div>`;
   }
   function computeNode(n,TODAY){
@@ -617,9 +626,9 @@
     document.getElementById("right").classList.toggle("pview",activeView==="progress");  // 進捗ビューは横スクロール無し＝幅に収めて全表示（左の折りたたみで幅が変われば追従）
     if(activeView==="progress"){
       rh.className="head phead"; rh.style.width="";
-      rh.innerHTML=`<div id="pctaxis"><div class="pcta-in">`+[0,25,50,75,100].map(p=>`<span class="ptk${p===0?" e0":p===100?" e100":""}" style="left:${p}%">${p}%</span>`).join("")+`</div></div>`;
+      rh.innerHTML=`<div id="pctaxis"><div class="pcta-in">`+[0,20,40,60,80,100].map(p=>`<span class="ptk${p===0?" e0":p===100?" e100":""}" style="left:${p}%">${p}%</span>`).join("")+`</div></div>`;
       rb.style.width=""; rb.style.height=rowsH+"px";
-      rb.innerHTML=`<div id="pgrid">`+[25,50,75,100].map(p=>`<div class="pgl" style="left:${p}%"></div>`).join("")+`</div>`
+      rb.innerHTML=`<div id="pgrid">`+[20,40,60,80,100].map(p=>`<div class="pgl" style="left:${p}%"></div>`).join("")+`</div>`
         +`<div id="progbody">${progRows}</div><div id="colHl"></div><div id="rowHl"></div>`;
     }else{
       rh.className="head"; rh.style.width=ganttW+"px";
@@ -636,9 +645,11 @@
     const _ps=allLeaves.map(n=>n._calc.planStart),_pe=allLeaves.map(n=>n._calc.planEnd);
     const _ev=allLeaves.reduce((a,n)=>a+n._calc.load*((n._calc.progress||0)/100),0);
     const _pv=allLeaves.reduce((a,n)=>a+n._calc.load*((n._calc.pv||0)/100),0);
+    const _behind=allLeaves.filter(n=>Math.round(n._calc.slip||0)>=1).length;  // 出来高遅れ＝予定(PV)>実績(EV)の葉数（全体は前倒し相殺で0%でも個別の遅れを見落とさない）
+    const _overdue=allLeaves.filter(n=>isOverdue(n._calc,TODAY)).length;        // 締切超過＝本日>予定終了かつ未完了の葉数（赤い予定終了・イナズマと同義）
     const _pend=maxStr(_pe);
     document.getElementById("stat").innerHTML=t("stat")({
-      pc:projects.length,ps:minStr(_ps),pe:_pend,
+      pc:projects.length,ps:minStr(_ps),pe:_pend,due:_overdue,slip:_behind,
       biz:(_pend&&_pend>=TODAY)?bizDays(TODAY,_pend):0,
       planPM:(totalLoad/20).toFixed(1),restPM:(Math.max(totalLoad-_ev,0)/20).toFixed(1),
       prog:Math.round(totalLoad?_ev/totalLoad*100:0),plan:Math.round(totalLoad?_pv/totalLoad*100:0),

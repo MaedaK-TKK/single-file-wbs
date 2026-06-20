@@ -142,13 +142,20 @@ Append to the project's `milestones`:
   - Parent = effort-weighted average of descendant leaves' (progress × effort) (continuous; not snapped).
 - **EVM values**: EV = actual progress / **PV = planned** = what should be done by today `clamp((today−plan.start)/(plan.end−plan.start)×100,0,100)` (linear; parents weighted) /
   **slip = behind = max(PV−EV,0)** (≈ EVM SV). S-curve, non-linear PV, and a cost axis are out of scope (not done).
-- Header shows "project count / total effort (person-days)".
+- **Header summary (right, #71)**: **Period** (earliest start–latest end / weekdays left, excl. weekends) / **Effort**
+  (person-months = person-days ÷ 20 working days / remaining) / **Progress** (actual EV% / planned PV% / behind = max(PV−EV,0)%),
+  in three rows plus a meta line (📄 filename · N projects · 📅 today · 🔄 refreshed · 💾 saved). Each row has a hover tooltip.
+- **Delay badges (4th summary line "Behind:")**: the overall behind% is textbook EVM (ahead-work offsets it, so it can read 0%);
+  to avoid missing slippage, the **count of tasks behind** is shown as badges (**Due** = past planned end & not done / **EV** = PV>EV).
+  A badge whose count is 0 is hidden; if both are 0 the whole line is hidden.
 - **Progress column = `◀ N% ▶` stepper** (10% steps; editable on leaves only / parents show the auto-aggregate read-only, continuous). `_progress` is not a derived value but
   "a person's/AI's judgment at a point in time", so it is stored as a `_` key (never recomputed) — consistent with the "no derived values in data" rule.
 - **Status column = behind / actual / planned** (slip / EV / PV, %). Behind=red, actual=blue, planned=black. **On-track rows show actual only** (quiet). No mental math (the delay is pre-computed).
 - **Planned-end turns red** when today > plan end and not done (deadline overrun; done rows are not reddened). Same "red = behind" as the time tab's Gantt/inazuma.
 - **The right pane toggles between "Time / Progress" tabs** (default = Time). Time = the Gantt (unchanged) / Progress = horizontal completion bars (blue=actual / red=shortfall to plan, whose right edge = planned PV / thick=leaf, thin=parent summary, same sizes as the time view).
   Only the active view is injected into the DOM (render cost = one view). The tab choice is remembered in localStorage.
+- **Telling the Progress view apart from Time**: (1) **square-cornered bars** (Time = rounded; distinguished by shape, CUD-safe) (2) a **blue-grey unfilled track** (`#eef1f7`, 0–100%) (3) **ruler-style ticks** =
+  major (full-height dotted at 20/40/60/80%, `#555`) + minor (short solid from the top edge down ~60%, every 10%, same `#555`, drawn in front of the bars). Axis labels are 0/20/40/60/80/100%.
 
 ## Display
 - **UI is Japanese/English switchable** (the "EN / 日本語" toolbar button). Default Japanese; the choice is stored in localStorage.

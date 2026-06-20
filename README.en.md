@@ -1,11 +1,15 @@
 # <img src="docs/logo.svg" width="26"> single-file-wbs
 
-> A dependency-free, single-file WBS / Gantt viewer with a Japanese *inazuma* (slip / progress) line. Just open the HTML in Chrome — no server, no libraries, no build step.
+> A dependency-free, single-file WBS / Gantt viewer: a time-axis Gantt **plus an EVM-style progress-axis view** and a Japanese *inazuma* (slip / progress) line. Just open the HTML in Chrome — no server, no libraries, no build step.
 > The on-screen application name is **WBS Viewer** (`single-file-wbs` is the distribution name = this repository).
 
 **[日本語版 README はこちら / Japanese README](README.md)**
 
 ![screenshot](docs/screenshot.en.png)
+
+Switch with the **Time / Progress tabs** (top right). Progress view (EVM-style completion: actual / planned / behind):
+
+![progress view](docs/screenshot-progress.en.png)
 
 ## Start in 30 seconds
 
@@ -23,13 +27,18 @@ Updating the tool = overwriting `wbs_viewer.html`; your `wbs.json` data is never
 - **Single HTML file** — just open it in Chrome. No server, CDN, build, or dependencies
 - **Inazuma line (progress line)** — bulging **left of the today line = behind schedule**; start delays and deadline overruns at a glance
 - **Plan-vs-actual Gantt overlay** — the actual bar sits inside a plan outline; **overrun = finish delay (red + N days), empty left = late start**. Done tasks are gray, parents (aggregates) are thin summary bars — state at a glance. Colors are **Color-Universal-Design (CVD) aware**
+- **Progress-axis view (EVM-style)** — besides the time-axis Gantt, a **progress view whose axis is completion (0–100%)**, switched via **tabs**. Shows **actual (EV) / planned (PV) / behind** as horizontal bars (the two views are never mixed)
+- **Header summary** — period, effort (person-months), and progress (EVM) always on screen; even when the overall figure is 0% (ahead-work offsets it), a **badge counts the tasks that are individually behind**
+- **Column collapse (Excel-style)** — **+/−** above the headers collapse/expand column groups (qty+hours, progress, status, owner, plan, actual, notes) to widen the Gantt
 - **Data is one JSON of facts only** — it holds nothing but plan and actual dates. Effort (qty × hours ÷ 8, person-days), progress, and the inazuma line are all **computed automatically** — no numbers to maintain by hand
 - **Three ways to edit** — in-browser editing (autosave) / any text editor / **AI chat** (ships with `CLAUDE.md` so Claude Code already understands the data format)
 - Plus: multiple projects, collapsible tree, milestone lines, completed-task graying with ✓, auto-linked URLs in notes, Japanese/English UI
 
 ## Working the screen
 
-- **Collapse**: click a project / phase name or `▼/▶`. The **`▼/▶` in the Task column header** expands / collapses everything (**Ctrl+Z** restores the previous view after a slip)
+- **Switch views**: the **Time / Progress tabs** (top right) toggle between the Gantt (time axis) and the progress view (completion)
+- **Collapse rows**: click a project / phase name or `▼/▶`. The **`▼/▶` in the Task column header** expands / collapses everything (**Ctrl+Z** restores the previous view after a slip)
+- **Collapse columns**: the **+/−** above the headers fold/unfold column groups (qty+hours, progress, status, owner, plan, actual, notes)
 - **Gantt**: the day column under your mouse is **highlighted** with its date emphasized in the header; **hover a bar** to see the exact plan / actual dates
 
 ## In-browser editing (optional)

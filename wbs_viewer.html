@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI5LjYiIGZpbGw9IiMxZTJmNjMiLz48cmVjdCB4PSI0LjIiIHk9IjQuOCIgd2lkdGg9IjcuNSIgaGVpZ2h0PSIyLjciIHJ4PSIxIiBmaWxsPSIjN2RhNGY3Ii8+PHJlY3QgeD0iNiIgeT0iOC42IiB3aWR0aD0iOS4zIiBoZWlnaHQ9IjIuNyIgcng9IjEiIGZpbGw9IiNjZGQ5ZjUiLz48cmVjdCB4PSI0LjgiIHk9IjEyLjQiIHdpZHRoPSI1LjgiIGhlaWdodD0iMi43IiByeD0iMSIgZmlsbD0iIzdkYTRmNyIvPjxwb2x5bGluZSBwb2ludHM9IjEyLjgsMy4yIDkuOCw5LjYgMTMuOCwxMS4yIDEwLjgsMTYuOCIgc3Ryb2tlPSIjZTExZDQ4IiBzdHJva2Utd2lkdGg9IjEuOCIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==">
 <style>
   :root{
-    --day-w:22px; --row-h:30px; --header-h:48px; --tab-h:26px;
+    --day-w:22px; --row-h:30px; --header-h:48px; --tab-h:26px; --pv-pad:14px;
     --border:#d7dbe0; --btn-border:#9aa2ad; --grid:#eceef1; --line:#c5cad3; --weekend:#f4f5f7;  /* line=表の区切り（縦横共通・青帯と色相で区別できるグレー）。--grid はガント日グリッド用 */  /* btn-border=操作物の輪郭（罫線より濃く・WCAG非テキスト3:1寄り） */
     --text:#1f2430; --muted:#6b7280; --ym-fg:#11161f;  /* 年月ラベル: 日付の数字(--text)より一段濃い=月>日の階層 */
     --actual:#2f6fed;  /* 実績は全階層で同色（親もリーフも同じ＝何のバーか一目で分かる・#65）。階層は行背景＋左表で表現 */
@@ -130,12 +130,13 @@
   #rightHead{top:var(--tab-h)}
   #rightHead.phead{height:var(--header-h)}
   #pctaxis{position:relative;height:100%}
-  #pctaxis .ptk{position:absolute;bottom:5px;font-size:10px;color:var(--muted);transform:translateX(-50%)}
-  #pctaxis .ptk.e0{transform:none}                                              /* 0は左端寄せ（見切れ防止） */
+  #pctaxis .pcta-in,#progbody .prw-bars{position:absolute;left:var(--pv-pad);right:var(--pv-pad);top:0;bottom:0}  /* 0/100%の両脇に余白（軸ラベル・バーを内側にインセット） */
+  #pctaxis .ptk{position:absolute;bottom:5px;font-size:11px;color:var(--ym-fg);transform:translateX(-50%)}   /* 文字サイズ・濃さを時間ビューの年月と同じに */
+  #pctaxis .ptk.e0{transform:none}                                              /* 0%は左端寄せ（見切れ防止） */
   #pctaxis .ptk.e100{transform:translateX(-100%)}                               /* 100%は右端寄せ */
   /* 進捗ビュー：青=実績(EV)／赤=予定への不足分(slip)。行背景は左と同じ（完了=灰色・階層色）。黒点線=目盛り */
   #progbody{position:relative}
-  #pgrid{position:absolute;inset:0;pointer-events:none;z-index:3}                /* 目盛りはバーの上（ルーラー） */
+  #pgrid{position:absolute;inset:0 var(--pv-pad);pointer-events:none;z-index:3}  /* 目盛りはバーの上（ルーラー）。両脇は余白に合わせてインセット */
   #pgrid .pgl{position:absolute;top:0;bottom:0;width:0;border-left:1px dotted #555}  /* 黒点線の目盛り（25/50/75/100%） */
   .prw{height:var(--row-h);position:relative;border-bottom:1px solid var(--grid)}
   .prw.prow{background:var(--proj)} .prw.lvl0{background:var(--lvl0)} .prw.lvl1{background:var(--lvl1)}
@@ -371,7 +372,7 @@
     const ev=clamp(c.progress||0,0,100), pv=clamp(c.pv||0,0,100);
     let inner=`<div class="pbar act${done?" done":""}" style="width:${ev.toFixed(2)}%"></div>`;
     if(pv>ev+0.5)inner+=`<div class="pbar short" style="left:${ev.toFixed(2)}%;width:${(pv-ev).toFixed(2)}%"></div>`;  // 不足分の右端＝あるべき(PV)
-    return `<div class="prw ${cls}${thin?" thin":""}${done?" done":""}">${inner}</div>`;
+    return `<div class="prw ${cls}${thin?" thin":""}${done?" done":""}"><div class="prw-bars">${inner}</div></div>`;
   }
   function computeNode(n,TODAY){
     if(n.children&&n.children.length){
@@ -608,7 +609,7 @@
     document.getElementById("right").classList.toggle("pview",activeView==="progress");  // 進捗ビューは横スクロール無し＝幅に収めて全表示（左の折りたたみで幅が変われば追従）
     if(activeView==="progress"){
       rh.className="head phead"; rh.style.width="";
-      rh.innerHTML=`<div id="pctaxis">`+[0,25,50,75,100].map(p=>`<span class="ptk${p===0?" e0":p===100?" e100":""}" style="left:${p}%">${p}${p===100?"%":""}</span>`).join("")+`</div>`;
+      rh.innerHTML=`<div id="pctaxis"><div class="pcta-in">`+[0,25,50,75,100].map(p=>`<span class="ptk${p===0?" e0":p===100?" e100":""}" style="left:${p}%">${p}%</span>`).join("")+`</div></div>`;
       rb.style.width=""; rb.style.height=rowsH+"px";
       rb.innerHTML=`<div id="pgrid">`+[25,50,75,100].map(p=>`<div class="pgl" style="left:${p}%"></div>`).join("")+`</div>`
         +`<div id="progbody">${progRows}</div><div id="colHl"></div><div id="rowHl"></div>`;

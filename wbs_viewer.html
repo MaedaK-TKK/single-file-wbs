@@ -38,6 +38,7 @@
   #left{flex:0 0 auto;overflow-y:auto;overflow-x:hidden}   /* 左右の縦区切りはヘッダ＋行に引く（白帯=.htab-sp には引かない＝タブの上に線が突き出さない） */
   #left::-webkit-scrollbar{display:none} #left{scrollbar-width:none}
   #right{flex:1 1 auto;overflow:auto;position:relative}
+  #right.pview{overflow-x:hidden}   /* 進捗ビュー＝0-100%を幅に収めて全表示（横スクロール無し・左の折りたたみで幅が変われば追従） */
   .head{height:var(--header-h);position:sticky;top:0;z-index:4;background:var(--head-bg);border-bottom:2px solid var(--border)}
   #leftHead{display:flex}
   #leftHead .h{padding:4px 5px;border-right:1px solid var(--border);font-weight:600;
@@ -130,14 +131,16 @@
   #rightHead.phead{height:var(--header-h)}
   #pctaxis{position:relative;height:100%}
   #pctaxis .ptk{position:absolute;bottom:5px;font-size:10px;color:var(--muted);transform:translateX(-50%)}
-  /* 進捗ビュー：青=実績(EV)／赤=予定への不足分(slip)／グレー線=あるべき(PV) */
+  #pctaxis .ptk.e0{transform:none}                                              /* 0は左端寄せ（見切れ防止） */
+  #pctaxis .ptk.e100{transform:translateX(-100%)}                               /* 100%は右端寄せ */
+  /* 進捗ビュー：青=実績(EV)／赤=予定への不足分(slip)。行背景は左と同じ（完了=灰色・階層色）。黒点線=目盛り */
   #progbody{position:relative}
-  #pgrid{position:absolute;inset:0;pointer-events:none;z-index:0}
-  #pgrid .pgl{position:absolute;top:0;bottom:0;width:1px;background:#eef1f6}
+  #pgrid{position:absolute;inset:0;pointer-events:none;z-index:3}                /* 目盛りはバーの上（ルーラー） */
+  #pgrid .pgl{position:absolute;top:0;bottom:0;width:0;border-left:1px dotted #555}  /* 黒点線の目盛り（25/50/75/100%） */
   .prw{height:var(--row-h);position:relative;border-bottom:1px solid var(--grid)}
-  .ptrack{position:absolute;left:0;right:0;top:8px;height:14px;background:var(--head-bg);border-radius:3px}  /* 0→100%の下地（左ヘッダと同じ灰色）。右端＝100%(完了) */
-  .prw.thin .ptrack{top:11px;height:8px}
-  .pbar{position:absolute;top:8px;height:14px;z-index:1}                        /* 子=太く（時間ビューの実績バーと同寸）。トラックの上に乗せる */
+  .prw.prow{background:var(--proj)} .prw.lvl0{background:var(--lvl0)} .prw.lvl1{background:var(--lvl1)}
+  .prw.done{background:var(--done-bg)}                                           /* 完了=灰色（左の行と同じ・後勝ちで階層色に優先） */
+  .pbar{position:absolute;top:8px;height:14px;z-index:1}                         /* 子=太く（時間ビューの実績バーと同寸） */
   .pbar.act{left:0;background:var(--actual);border-radius:3px 0 0 3px}
   .pbar.short{background:#e11d48;border-radius:0 3px 3px 0}
   .prw.done .pbar.act{background:#8c98a6;border-radius:3px}                       /* 完了=グレー（ガント実績バーと統一） */
@@ -364,12 +367,11 @@
       : `<span class="s-a">${ev}</span>`;
   }
   const isOverdue=(c,today)=>!!(c.planEnd&&!c.allDone&&today>c.planEnd);   // 予定終了を過ぎても未完了＝締切超過（赤）
-  function progBarRow(c,thin,done){   // 進捗軸の1行：青=実績(EV)／赤=予定への不足分(slip・右端がPV)。親=細いサマリー
+  function progBarRow(c,thin,done,cls){   // 進捗軸の1行：青=実績(EV)／赤=予定への不足分(slip・右端がPV)。親=細いサマリー。clsは行背景(prow/lvl0/lvl1)
     const ev=clamp(c.progress||0,0,100), pv=clamp(c.pv||0,0,100);
-    let inner=`<div class="ptrack"></div>`;                              // 0→100%の下地（灰色）＝完了(100%)の位置が見える
-    inner+=`<div class="pbar act${done?" done":""}" style="width:${ev.toFixed(2)}%"></div>`;
-    if(pv>ev+0.5)inner+=`<div class="pbar short" style="left:${ev.toFixed(2)}%;width:${(pv-ev).toFixed(2)}%"></div>`;  // 不足分の右端＝あるべき(PV)。専用マーカーは置かない（重複回避）
-    return `<div class="prw${thin?" thin":""}${done?" done":""}">${inner}</div>`;
+    let inner=`<div class="pbar act${done?" done":""}" style="width:${ev.toFixed(2)}%"></div>`;
+    if(pv>ev+0.5)inner+=`<div class="pbar short" style="left:${ev.toFixed(2)}%;width:${(pv-ev).toFixed(2)}%"></div>`;  // 不足分の右端＝あるべき(PV)
+    return `<div class="prw ${cls}${thin?" thin":""}${done?" done":""}">${inner}</div>`;
   }
   function computeNode(n,TODAY){
     if(n.children&&n.children.length){
@@ -503,7 +505,7 @@
         lrows+=`<div class="lrow prow">${info}</div>`;
         const span=r.planStart&&r.planEnd?`<div class="pspan" style="left:${xOf(r.planStart)}px;width:${barW(r.planStart,r.planEnd)}px"></div>`:"";
         grows+=`<div class="grow prow">${span}</div>`;
-        progRows+=progBarRow(r,true,r.allDone);
+        progRows+=progBarRow(r,true,r.allDone,"prow");
       }else{
         const n=r.node,c=n._calc,leaf=n._leaf;
         const inProg=leaf&&c.actualStart&&!c.actualEnd, done=c.allDone;  // 完了=実績終了あり（集計は全子完了）
@@ -566,7 +568,7 @@
             bars+=`<div class="delay" style="left:${pxAEend+3}px">+${endDelay}</div>`;}
         }
         grows+=`<div class="grow ${leaf?"leaf":"parent"} ${lvl} ${done?"done":""}">${bars}</div>`;
-        progRows+=progBarRow(c,!leaf,done);
+        progRows+=progBarRow(c,!leaf,done,lvl);
       }
       // イナズマ点：terminal行（リーフ or 折りたたみ済ノード）。
       //   完了=本日線 / 未着手で予定開始超過=予定開始日(左,着手遅延) /
@@ -603,9 +605,10 @@
     const rh=document.getElementById("rightHead"); const rb=document.getElementById("rightBody");
     document.getElementById("rtabs").innerHTML=
       ["time","progress"].map(v=>`<button class="rtab${v===activeView?" on":""}" data-view="${v}">${esc(t(v==="time"?"viewTime":"viewProg"))}</button>`).join("");
+    document.getElementById("right").classList.toggle("pview",activeView==="progress");  // 進捗ビューは横スクロール無し＝幅に収めて全表示（左の折りたたみで幅が変われば追従）
     if(activeView==="progress"){
       rh.className="head phead"; rh.style.width="";
-      rh.innerHTML=`<div id="pctaxis">`+[0,25,50,75,100].map(p=>`<span class="ptk" style="left:${p}%">${p}${p===100?"%":""}</span>`).join("")+`</div>`;
+      rh.innerHTML=`<div id="pctaxis">`+[0,25,50,75,100].map(p=>`<span class="ptk${p===0?" e0":p===100?" e100":""}" style="left:${p}%">${p}${p===100?"%":""}</span>`).join("")+`</div>`;
       rb.style.width=""; rb.style.height=rowsH+"px";
       rb.innerHTML=`<div id="pgrid">`+[25,50,75,100].map(p=>`<div class="pgl" style="left:${p}%"></div>`).join("")+`</div>`
         +`<div id="progbody">${progRows}</div><div id="colHl"></div><div id="rowHl"></div>`;

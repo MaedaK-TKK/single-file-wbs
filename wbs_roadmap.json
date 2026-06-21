@@ -460,10 +460,13 @@
                 "end": "2026-06-29"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-20",
+                "end": "2026-06-20"
               },
-              "note": "リリースノート・スクショ・gitタグ・GitHub Releases。Zenn記事(#68)と同時公開でバズ窓を相互強化"
+              "note": "v1.2.0 リリース完了（2026-06-20）。版上げ・gitタグ・GitHub Release・アセット添付(wbs_viewer.html等)・Issue #71/#69/#64/#63 クローズ。Zenn記事(#68)と相互強化",
+              "_progress": 100,
+              "_progressAt": "2026-06-21T09:00:00Z",
+              "_progressBy": "manual"
             }
           ]
         },

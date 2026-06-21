@@ -11,6 +11,15 @@
 
 ![progress view](docs/screenshot-progress.png)
 
+## コンセプト
+
+**AI時代の管理者（PL／テックリード）が、AIを含む少数精鋭チームを率いるためのローカルWBS。**
+人間は GUI で、AI は素の JSON と [`CLAUDE.md`](CLAUDE.md) で、**同じ計画を編集する**。
+
+- **対象**：巨大プロジェクトのエンタープライズPMではなく、**AIを含む少数精鋭を率いる管理者**（作者自身がこのペルソナ＝ドッグフーディング）
+- **核の差別化＝2つの第一級インターフェース**：大半のPMツールは人間（GUI）前提。本ツールは **AIも第一級ユーザー**として、素のJSON＋AI可読な `CLAUDE.md` で計画を保守できる
+- 背景の論考 → [WBSという至高ツールで、このAI時代をサバイブする](https://zenn.dev/piguolabo/articles/99b5b30a028f80)
+
 ## 30秒で始める
 
 1. [Releases](https://github.com/piguo45/single-file-wbs/releases/latest) から `wbs_viewer.html` をダウンロード

@@ -8,6 +8,20 @@ A text (JSON) driven WBS / Gantt + inazuma-line tool.
 
 ---
 
+## Product vision & design principles (#67)
+
+> **A local WBS for the AI-era manager (PL / tech lead) leading a small, elite team that includes AI. Humans edit via the GUI; AI edits via raw JSON and `CLAUDE.md` — the same plan.**
+
+- **Target user**: not the enterprise PM of huge projects, but a **manager (PL / tech lead) leading a ~10-person elite team that includes AI**. The author is this persona (dogfooding).
+- **Vision (a bet, owned as such)**: as AI rises, small elite teams wielding AI become the norm, and **everyone becomes a PL/TL**. This tool is for that lead (human **and** PL/TL agent) to manage the plan. It is a bet on the future, but hedged — even if it misses, it already helps today's leads.
+- **Core differentiator = two first-class interfaces**: human = GUI / AI = raw JSON + the AI-readable `CLAUDE.md`. **Both are first-class.** Every feature works via both the GUI path and the AI/JSON path (custom keys preserved, round-trip).
+- **`CLAUDE.md` is not "documentation" but "the AI's API spec"**: because AI depends on the format, **the schema is kept almost frozen**.
+- **Build**: AI-native (progress assessment, dependency inference) / honest views (true state, not vanity) / load by assignee (human vs AI) / cost (`_ai` tokens, `_money`).
+- **Don't build**: enterprise PM (portfolios, complex permissions) / large-scale real-time collaboration / heavy workflow engines / approval flows.
+- Background essay (Japanese) → [WBSという至高ツールで、このAI時代をサバイブする](https://zenn.dev/piguolabo/articles/99b5b30a028f80)
+
+---
+
 ## Handling principles (important)
 
 - **Do not touch `wbs_viewer.html` (the viewer) as a rule.** The view logic is complete.

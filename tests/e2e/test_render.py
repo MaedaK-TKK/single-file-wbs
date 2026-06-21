@@ -1,7 +1,7 @@
 """描画回帰: 2段見出し・イナズマ線座標・NaN無し（tests/正常_終了遅延.json 前提・日付独立の計算式で検証）"""
 from datetime import date
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, load_test_json
+from common import VIEWER, CLOCK_PIN, check, finish, load_test_json
 
 DAY_W, HALF = 22, 11
 def x(d, range_start):
@@ -15,6 +15,7 @@ with sync_playwright() as p:
     pg = b.new_page(viewport={"width": 1500, "height": 820})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+    pg.add_init_script(CLOCK_PIN)   # 本日を 2026-06-15 に固定（実日付依存で将来赤くなるのを防ぐ・golden/pixelと統一）
     pg.goto(VIEWER)
     pg.evaluate("d => window.renderData(d)", load_test_json("正常_終了遅延.json"))
     pg.wait_for_timeout(200)

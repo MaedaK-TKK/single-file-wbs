@@ -409,10 +409,13 @@
                 "end": "2026-06-27"
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-21",
+                "end": "2026-06-21"
               },
-              "note": "#67：https://github.com/piguo45/single-file-wbs/issues/67 ★v2の最後。機能が揃ってから、それを指してREADME/CLAUDE.mdに製品の核を書く（知る→作る→書く）。応用情報PM手法を枠に＋AIメンバー時代の新理論を北極星に。Zenn記事の論題基盤"
+              "note": "#67：https://github.com/piguo45/single-file-wbs/issues/67 完了（2026-06-21）。README/CLAUDE.md(ja/en)に製品の核を明文化＝対象ユーザー(AIを率いる管理者/PL/TL)・2つの第一級インターフェース・作る/作らない。Zenn論考(#68)の論題基盤",
+              "_progress": 100,
+              "_progressAt": "2026-06-21T09:00:00Z",
+              "_progressBy": "manual"
             },
             {
               "id": "2.5",

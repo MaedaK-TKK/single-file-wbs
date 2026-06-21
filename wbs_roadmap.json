@@ -426,11 +426,11 @@
               },
               "actual": {
                 "start": "2026-06-20",
-                "end": null
+                "end": "2026-06-21"
               },
-              "note": "#68：https://github.com/piguo45/single-file-wbs/issues/68 仮題『WBSという至高ツールでこのAI時代をサバイブする』。#67の論考をZenn公開。v2リリースと同時。本人が執筆",
-              "_progress": 0,
-              "_progressAt": "2026-06-20T01:45:54.471Z",
+              "note": "#68：https://github.com/piguo45/single-file-wbs/issues/68 『WBSという至高ツールで、このAI時代をサバイブする』をZennで公開（2026-06-21）。AI保守の実績・X反響・チャット並走デモ付き。本人が執筆",
+              "_progress": 100,
+              "_progressAt": "2026-06-21T09:00:00Z",
               "_progressBy": "manual"
             },
             {

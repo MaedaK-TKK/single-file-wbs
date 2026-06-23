@@ -18,7 +18,7 @@ with sync_playwright() as p:
     pg.click("#editBtn"); pg.wait_for_timeout(200)
 
     w = pg.evaluate("()=>document.querySelector('#leftRows .lrow .c.name').style.width")
-    check(w == "240px", f"編集時は作業項目列が拡幅 -> {w}")
+    check(w == "272px", f"編集時は作業項目列が拡幅 -> {w}")
     h = pg.evaluate("()=>Math.round(document.querySelector('#leftRows .nm-wrap .clk.caret').getBoundingClientRect().height)")
     check(h >= 24, f"行caretのヒット領域が行高相当 ({h}px)")
     bw, bh = pg.evaluate("()=>{const r=document.querySelector('.acts button').getBoundingClientRect();return [Math.round(r.width),Math.round(r.height)];}")

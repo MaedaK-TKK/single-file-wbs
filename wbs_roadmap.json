@@ -825,10 +825,10 @@
                 "end": null
               },
               "actual": {
-                "start": null,
+                "start": "2026-06-23",
                 "end": null
               },
-              "note": "#70：https://github.com/piguo45/single-file-wbs/issues/70 ★外部要望(X・初)／会社のAI利用が申請制化→GUIのみで構造編集が必須＝v1.3優先候補。リーフ→集計への変換。＋子ボタン・3階層上限ガード・保存パス聖域"
+              "note": "#70：https://github.com/piguo45/single-file-wbs/issues/70 ★外部要望(X・初)。テスト先行→実装→PR #82（案Y対称モデル）。実機スモーク＋マージ待ち。リーフ↔集計の変換・＋子・3階層ガード・降格は保存パス聖域"
             },
             {
               "id": "4.18",

@@ -513,6 +513,54 @@
                 "end": null
               },
               "note": "ゴールドラットのTOC2冊。『The Goal』=制約理論／『クリティカルチェーン』=TOCのプロジェクト管理(クリティカルチェーン法・バッファ管理)。#66(依存/クリティカルパス・ビュー)の設計の下地として読む"
+            },
+            {
+              "id": "M.3",
+              "name": "ドキュメント整備（docs/ADR/index）",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": "2026-06-21",
+                "end": "2026-06-22"
+              },
+              "actual": {
+                "start": "2026-06-21",
+                "end": "2026-06-22"
+              },
+              "note": "PR #77（マージ済 https://github.com/piguo45/single-file-wbs/pull/77 ）documentation-guideの必要最低限に整備：docs/design/system-overview・ADR0001-0007・index自動生成。why未記録は #76 へ集約"
+            },
+            {
+              "id": "M.4",
+              "name": "数量/時間の3桁表示（編集）",
+              "qty": 1,
+              "hours": 2,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": "2026-06-22",
+                "end": "2026-06-22"
+              },
+              "actual": {
+                "start": "2026-06-22",
+                "end": "2026-06-22"
+              },
+              "note": "PR #78（マージ済 https://github.com/piguo45/single-file-wbs/pull/78 ）編集モードで数量/時間が1桁しか見えない→列を52pxに（スピナー据え置き・編集時のみ）"
+            },
+            {
+              "id": "M.5",
+              "name": "設計理由(why)の要確認",
+              "qty": 1,
+              "hours": 4,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#76：https://github.com/piguo45/single-file-wbs/issues/76 ドキュメント整備で判明した『how有り/why未記録』4件（3階層上限・進捗10%刻み・工数の固定除数・保存0.4s）の確認チェックリスト"
             }
           ]
         },

@@ -682,9 +682,9 @@
               },
               "actual": {
                 "start": "2026-06-12",
-                "end": null
+                "end": "2026-06-23"
               },
-              "note": "#46：https://github.com/piguo45/single-file-wbs/issues/46 全ボタン・バー・…慣習 バーの予定/実績titleは先行実装済み。残り=ボタンの動詞title・…慣習"
+              "note": "#46：https://github.com/piguo45/single-file-wbs/issues/46 完了クローズ。全ボタンtitle・バーの予定/実績ホバー・カーソル統一(#83)で核は達成。残りの些末(MS線ホバー/…慣習)は追わない"
             },
             {
               "id": "4.3",

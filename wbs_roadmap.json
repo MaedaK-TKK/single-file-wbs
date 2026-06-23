@@ -605,10 +605,10 @@
                 "end": null
               },
               "actual": {
-                "start": null,
-                "end": null
+                "start": "2026-06-23",
+                "end": "2026-06-23"
               },
-              "note": "#79：https://github.com/piguo45/single-file-wbs/issues/79 ★外部要望(X)。セキュリティ厳格環境で製品感を消す＝ロゴ+verをトグル非表示・localStorage記憶。#70と同テーマ"
+              "note": "#79：https://github.com/piguo45/single-file-wbs/issues/79 ★外部要望(X)。完了 PR #86。タイトルクリックで簡素表示（ロゴ/版/Viewer/タブ名を隠し「WBS」だけ）・localStorage記憶・ツールチップ無し。現場で自作と言える逃げ道"
             }
           ]
         },

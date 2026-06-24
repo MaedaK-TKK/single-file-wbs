@@ -1,0 +1,78 @@
+{
+  "projects": [
+    {
+      "name": "全機能デモ（回帰の総覧）",
+      "milestones": [
+        { "date": "2026-06-20", "label": "中間レビュー", "color": "#ef4444" },
+        { "date": "2026-07-10", "label": "リリース" }
+      ],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "設計フェーズ",
+          "children": [
+            {
+              "id": "1.1", "name": "要件定義", "qty": 1, "hours": 16, "assignee": "佐藤",
+              "plan": { "start": "2026-06-01", "end": "2026-06-05" },
+              "actual": { "start": "2026-06-01", "end": "2026-06-05" },
+              "note": "完了済みタスク（グレー＋取り消し線）"
+            },
+            {
+              "id": "1.2",
+              "name": "基本設計",
+              "children": [
+                {
+                  "id": "1.2.1", "name": "画面設計", "qty": 2, "hours": 8, "assignee": "田中",
+                  "plan": { "start": "2026-06-08", "end": "2026-06-16" },
+                  "actual": { "start": "2026-06-10", "end": null },
+                  "_progress": 60, "_progressAt": "2026-06-15T09:00:00Z", "_progressBy": "fable-5",
+                  "note": "進行中＋進捗査定60%。仕様 https://example.com/spec.md"
+                },
+                {
+                  "id": "1.2.2", "name": "DB設計", "qty": 1, "hours": 24, "assignee": "鈴木",
+                  "plan": { "start": "2026-06-05", "end": "2026-06-12" },
+                  "actual": { "start": "2026-06-06", "end": null },
+                  "note": "終了遅延（本日6/15＞予定終了6/12・未完了）",
+                  "_ai": { "tokens": 120000, "model": "fable-5", "minutes": 40 },
+                  "_money": { "outsource": 50000, "currency": "JPY" },
+                  "_links": ["https://example.com/er.drawio"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "name": "実装フェーズ",
+          "children": [
+            {
+              "id": "2.1", "name": "API実装", "qty": 3, "hours": 16, "assignee": "ぴぐお",
+              "plan": { "start": "2026-06-09", "end": "2026-06-20" },
+              "actual": { "start": null, "end": null },
+              "note": "着手遅延（予定開始6/9＜本日・未着手）"
+            },
+            {
+              "id": "2.2", "name": "総合テスト", "qty": 1, "hours": 40, "assignee": "佐藤",
+              "plan": { "start": "2026-06-25", "end": "2026-07-05" },
+              "actual": { "start": null, "end": null },
+              "note": "未着手・未到来"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "サブ案件",
+      "milestones": [],
+      "tasks": [
+        {
+          "id": "1", "name": "技術調査", "qty": 1, "hours": 8, "assignee": "AI",
+          "plan": { "start": "2026-06-12", "end": "2026-06-18" },
+          "actual": { "start": "2026-06-13", "end": null },
+          "_progress": 30, "_progressAt": "2026-06-15T10:00:00Z", "_progressBy": "manual",
+          "note": "2つ目のプロジェクト＋手動査定30%"
+        }
+      ]
+    }
+  ]
+}

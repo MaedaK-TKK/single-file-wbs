@@ -11,12 +11,13 @@
 import base64
 import pathlib
 import sys
-from common import VIEWER, CLOCK_PIN, check, finish, load_test_json
+from common import VIEWER, CLOCK_PIN, check, finish, load_test_json, granted_handle_init
 from playwright.sync_api import sync_playwright
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent / "baseline"
 FIXTURES = ["正常_終了遅延.json", "正常_4階層ネスト.json",
-            "正常_複数4プロジェクト.json", "正常_カスタムキー.json"]
+            "正常_複数4プロジェクト.json", "正常_カスタムキー.json",
+            "正常_全機能.json"]   # 全機能の総覧（_progress/ネスト/MS/各状態/カスタムキー）
 VIEWPORT = {"width": 1500, "height": 900}
 THRESH = 16          # per-channel 差の許容（サブピクセルのにじみ）
 TOL_RATIO = 0.001    # 不一致画素が全体の 0.1% を超えたら回帰とみなす
@@ -62,24 +63,40 @@ def main():
         pg.on("pageerror", lambda e: errors.append(str(e)))
         pg.goto(VIEWER)
 
-        def one(fx, tag):
-            cur = shot(pg, fx)
-            bpath = BASE_DIR / (fx.replace(".json", "") + tag + ".png")
+        def cmp(cur, bname, epage):
+            bpath = BASE_DIR / (bname + ".png")
             if generate:
                 bpath.write_bytes(cur); print(f"  baseline: {bpath.name} ({len(cur)} bytes)"); return
             if not bpath.exists():
-                check(False, f"{fx}{tag}: baseline 不在（--generate で生成を）"); return
-            r = pg.evaluate(DIFF_JS, [data_url(bpath.read_bytes()), data_url(cur), THRESH])
+                check(False, f"{bname}: baseline 不在（--generate で生成を）"); return
+            r = epage.evaluate(DIFF_JS, [data_url(bpath.read_bytes()), data_url(cur), THRESH])
             if not r["dim"]:
-                check(False, f"{fx}{tag}: 画像サイズ不一致 base={r['aw']}x{r['ah']} cur={r['bw']}x{r['bh']}（レイアウト変化）"); return
+                check(False, f"{bname}: 画像サイズ不一致 base={r['aw']}x{r['ah']} cur={r['bw']}x{r['bh']}（レイアウト変化）"); return
             ratio = r["mism"] / r["total"]
             check(ratio <= TOL_RATIO,
-                  f"{fx}{tag}: 不一致 {r['mism']}/{r['total']} 画素 = {ratio*100:.3f}% (許容 {TOL_RATIO*100:.2f}%・{r['w']}x{r['h']})")
+                  f"{bname}: 不一致 {r['mism']}/{r['total']} 画素 = {ratio*100:.3f}% (許容 {TOL_RATIO*100:.2f}%・{r['w']}x{r['h']})")
+
+        def one(fx, tag):
+            cmp(shot(pg, fx), fx.replace(".json", "") + tag, pg)
 
         for fx in FIXTURES:              # 時間タブ（既定）
             one(fx, "")
-        pg.click('.rtab[data-view="progress"]'); pg.wait_for_timeout(120)  # 進捗タブも代表1枚
+        pg.click('.rtab[data-view="progress"]'); pg.wait_for_timeout(120)  # 進捗タブ（_progress 含む2枚）
         one("正常_終了遅延.json", "_progress")
+        one("正常_全機能.json", "_progress")
+
+        # 編集モードの画素（新アイコン/＋子葉/編集領域の視覚ロック）。renderDataは閲覧専用なので
+        # 書込可ハンドルを与えて編集ONにし、全機能fixtureの編集画面を撮る。
+        ep = b.new_page(viewport=VIEWPORT, device_scale_factor=1)
+        ep.add_init_script(granted_handle_init(load_test_json("正常_全機能.json")))
+        ep.add_init_script(CLOCK_PIN)
+        ep.on("dialog", lambda d: d.accept())
+        ep.on("pageerror", lambda e: errors.append(str(e)))
+        ep.goto(VIEWER)
+        ep.click("#openBtn"); ep.wait_for_timeout(150)
+        ep.click("#editBtn"); ep.wait_for_timeout(300)
+        cmp(ep.screenshot(full_page=True), "正常_全機能_edit", ep)
+        ep.close()
         b.close()
     if generate:
         print("baseline 生成完了")

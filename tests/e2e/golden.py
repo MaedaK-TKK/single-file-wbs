@@ -18,7 +18,7 @@ from common import ROOT, VIEWER, CLOCK_PIN, granted_handle_init
 GOLDEN = pathlib.Path(__file__).resolve().parent / "golden.json"
 FIXTURES = sorted((ROOT / "tests").glob("正常_*.json")) + sorted((ROOT / "tests").glob("異常_*.json"))
 # 編集モードを凍結する fixture（新フォーマット・編集可能なもの）。編集UIの崩れを #63 着手前に保護
-EDIT_FIXTURES = ["正常_4階層ネスト.json", "正常_カスタムキー.json"]
+EDIT_FIXTURES = ["正常_4階層ネスト.json", "正常_カスタムキー.json", "正常_全機能.json"]
 
 # view モード：画面が表現する値（innerHTML全体ではなく意味のある中間表現）
 CAPTURE = r"""()=>{

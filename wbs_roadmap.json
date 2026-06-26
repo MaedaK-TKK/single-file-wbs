@@ -625,6 +625,22 @@
                 "end": "2026-06-27"
               },
               "note": "#87：https://github.com/piguo45/single-file-wbs/issues/87 完了 PR #88。Zenn外部要望。＋MS/インライン編集（日付・名前・色5プリセット・削除）。ライブ検証で 現在色表示/見切れ/ラベル重なり段組み/右端寄せ も対応"
+            },
+            {
+              "id": "M.10",
+              "name": "ツールチップ整備",
+              "qty": 1,
+              "hours": 3,
+              "assignee": "Claude",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": "2026-06-12",
+                "end": "2026-06-23"
+              },
+              "note": "#46：https://github.com/piguo45/single-file-wbs/issues/46 完了クローズ。全ボタンtitle・バーの予定/実績ホバー・カーソル統一(#83)で核は達成。残りの些末(MS線ホバー/…慣習)は追わない"
             }
           ]
         },
@@ -685,22 +701,6 @@
                 "end": null
               },
               "note": "#45：https://github.com/piguo45/single-file-wbs/issues/45"
-            },
-            {
-              "id": "4.2",
-              "name": "ツールチップ整備",
-              "qty": 1,
-              "hours": 3,
-              "assignee": "Claude",
-              "plan": {
-                "start": null,
-                "end": null
-              },
-              "actual": {
-                "start": "2026-06-12",
-                "end": "2026-06-23"
-              },
-              "note": "#46：https://github.com/piguo45/single-file-wbs/issues/46 完了クローズ。全ボタンtitle・バーの予定/実績ホバー・カーソル統一(#83)で核は達成。残りの些末(MS線ホバー/…慣習)は追わない"
             },
             {
               "id": "4.3",

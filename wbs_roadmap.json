@@ -574,9 +574,9 @@
               },
               "actual": {
                 "start": "2026-06-23",
-                "end": null
+                "end": "2026-06-23"
               },
-              "note": "#70：https://github.com/piguo45/single-file-wbs/issues/70 ★外部要望(X・初)。テスト先行→実装→PR #82（案Y対称モデル）。実機スモーク＋マージ待ち。リーフ↔集計の変換・＋子・3階層ガード・降格は保存パス聖域"
+              "note": "#70：https://github.com/piguo45/single-file-wbs/issues/70 ★外部要望(X・初)。完了 PR #82（テスト先行・案Y対称モデル）。リーフ↔集計の変換・＋子・3階層ガード・降格＝保存パス聖域"
             },
             {
               "id": "M.7",
@@ -590,9 +590,9 @@
               },
               "actual": {
                 "start": "2026-06-23",
-                "end": null
+                "end": "2026-06-23"
               },
-              "note": "#80：https://github.com/piguo45/single-file-wbs/issues/80 ヘッダ(操作バー/列見出し)と表の縦余白を詰める。表示層・着手済み"
+              "note": "#80：https://github.com/piguo45/single-file-wbs/issues/80 完了 PR #81。ヘッダ(操作バー/列見出し)と表の縦余白を詰める。表示層"
             },
             {
               "id": "M.8",

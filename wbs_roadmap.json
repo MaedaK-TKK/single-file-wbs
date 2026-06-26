@@ -609,6 +609,22 @@
                 "end": "2026-06-23"
               },
               "note": "#79：https://github.com/piguo45/single-file-wbs/issues/79 ★外部要望(X)。完了 PR #86。タイトルクリックで簡素表示（ロゴ/版/Viewer/タブ名を隠し「WBS」だけ）・localStorage記憶・ツールチップ無し。現場で自作と言える逃げ道"
+            },
+            {
+              "id": "M.9",
+              "name": "マイルストーンGUI編集",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": "2026-06-27",
+                "end": "2026-06-27"
+              },
+              "note": "#87：https://github.com/piguo45/single-file-wbs/issues/87 完了 PR #88。Zenn外部要望。＋MS/インライン編集（日付・名前・色5プリセット・削除）。ライブ検証で 現在色表示/見切れ/ラベル重なり段組み/右端寄せ も対応"
             }
           ]
         },

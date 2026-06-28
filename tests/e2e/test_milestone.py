@@ -3,13 +3,22 @@ import json
 from playwright.sync_api import sync_playwright
 from common import VIEWER, granted_handle_init, check, finish
 
-DATA = {"projects": [{
-    "name": "P",
-    "milestones": [{"date": "2026-06-20", "label": "レビュー", "color": "#ef4444", "_keep": "meta"}],
-    "tasks": [{"id": "1", "name": "作業", "qty": 1, "hours": 8, "assignee": "佐藤",
-               "plan": {"start": "2026-06-01", "end": "2026-06-10"},
-               "actual": {"start": None, "end": None}, "note": ""}]
-}]}
+DATA = {"projects": [
+    {
+        "name": "P",
+        "milestones": [{"date": "2026-06-20", "label": "レビュー", "color": "#ef4444", "_keep": "meta"}],
+        "tasks": [{"id": "1", "name": "作業", "qty": 1, "hours": 8, "assignee": "佐藤",
+                   "plan": {"start": "2026-06-01", "end": "2026-06-10"},
+                   "actual": {"start": None, "end": None}, "note": ""}]
+    },
+    {
+        "name": "Q",
+        "milestones": [{"date": "2026-06-15", "label": "Q-MS", "color": "#009e73"}],
+        "tasks": [{"id": "1", "name": "Q作業", "qty": 1, "hours": 8, "assignee": "田中",
+                   "plan": {"start": "2026-06-01", "end": "2026-06-10"},
+                   "actual": {"start": None, "end": None}, "note": ""}]
+    }
+]}
 
 errors = []
 with sync_playwright() as p:
@@ -25,7 +34,8 @@ with sync_playwright() as p:
     def saved():
         pg.wait_for_timeout(550)
         return json.loads(pg.evaluate("()=>window.__file"))
-    msrows = lambda: pg.eval_on_selector_all(".msrow .ms-edit", "els=>els.length")
+    # proj0 のMS編集行だけ数える（複数プロジェクトfixtureなので全体カウントは使わない）
+    msrows = lambda: pg.eval_on_selector_all('input[data-mpath^="0/"][data-mfield="date"]', "els=>els.length")
 
     check("on" in (pg.get_attribute("#editBtn", "class") or ""), "編集ON")
     check(msrows() == 1, "既存MSが1件、編集行で表示される")
@@ -83,6 +93,14 @@ with sync_playwright() as p:
     d = saved()
     labels = [m["label"] for m in d["projects"][0]["milestones"]]
     check(labels == ["中間レビュー", "後"], f"中間削除で index がずれず正しく残る 実={labels}")
+
+    # 複数プロジェクト: proj0 への一連の編集が proj1(Q) に波及していない（data-proj/pi の分離）
+    q = d["projects"][1]["milestones"]
+    check(len(q) == 1 and q[0]["label"] == "Q-MS", f"proj1(Q)のMSは proj0編集の影響を受けない 実={[m['label'] for m in q]}")
+    pg.click('button[data-act="addms"][data-proj="1"]'); pg.wait_for_timeout(250)   # proj1へ追加
+    d = saved()
+    check(len(d["projects"][1]["milestones"]) == 2, "proj1へのaddmsはproj1だけ増やす")
+    check(len(d["projects"][0]["milestones"]) == 2, "proj1編集でproj0のMS件数は変わらない")
     b.close()
 
 finish(errors)

@@ -61,6 +61,14 @@ with sync_playwright() as p:
     stat = pg.eval_on_selector("#stat", "e=>e.innerText")
     m = re.search(r"残り：(\d+)日", stat)
     check(m is not None and m.group(1) == "7", f"残り営業日が土日+祝日除外で7日 実={m and m.group(1)} / {stat[:60]}")
+
+    # 異常系（CLAUDE.md異常系表）: holidays が非配列 → 無視・クラッシュしない（pageerrorは末尾finishで検出）
+    pg.evaluate("(p)=>window.renderData({holidays:'not-an-array',projects:p})", DATA["projects"]); pg.wait_for_timeout(150)
+    check(pg.eval_on_selector_all("#dates .d.hol", "e=>e.length") == 0, "非配列holidaysは無視＝祝日赤字なし")
+    check(pg.eval_on_selector_all("#overlay rect.we", "e=>e.length") > 0, "非配列でも土日の列ピンクは従来どおり出る")
+    # 壊れた要素（null/数値/dateなし）は要素ごとに無視し、有効な祝日(6/22)だけ採用
+    pg.evaluate("(p)=>window.renderData({holidays:['2026-06-22',null,123,{date:null}],projects:p})", DATA["projects"]); pg.wait_for_timeout(150)
+    check(pg.eval_on_selector_all("#dates .d.hol", "e=>e.length") == 1, "壊れた要素は無視・有効な祝日(6/22)だけ赤字")
     b.close()
 
 finish(errors)

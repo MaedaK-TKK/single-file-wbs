@@ -4,7 +4,7 @@
    （px幾何は撮らない＝DAY_W/原点に依存しない・本日に依存しないケースを主軸に）。"""
 import datetime
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf
+from common import VIEWER, check, finish, leaf, new_page
 
 TODAY = datetime.date.today()
 def rel(days):
@@ -33,7 +33,7 @@ def kinds(bars):
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 900})
+    pg = new_page(b, clock=None, viewport={"width": 1500, "height": 900})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.goto(VIEWER)
     pg.evaluate("d=>window.renderData(d)", DATA); pg.wait_for_timeout(150)

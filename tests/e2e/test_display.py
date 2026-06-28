@@ -2,7 +2,7 @@
    列=No.,名前,数量,時間,工数,担当,予定開始,予定終了,実績開始,実績終了,備考（COLS順）。
    #16でセル生成（表示switch）を書き換える時、出力が1文字でも変わればここが赤くなる。"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish
+from common import VIEWER, check, finish, new_page
 
 # 既知の値の固定データ（期待値を確定するための基準）
 FX = {"projects": [{"name": "表示マトリクス", "milestones": [], "tasks": [
@@ -35,7 +35,7 @@ EXPECT = {
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 600})
+    pg = new_page(b, viewport={"width": 1500, "height": 600})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.goto(VIEWER)
     pg.evaluate("d => window.renderData(d)", FX)

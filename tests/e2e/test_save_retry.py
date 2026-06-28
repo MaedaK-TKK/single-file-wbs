@@ -3,7 +3,7 @@
    writeNow の retry 分岐（#保存パス聖域）を壊す変更はここで捕まる。"""
 import json
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish
+from common import VIEWER, check, finish, new_page
 
 DATA = {"projects": [{"name": "P1", "milestones": [], "tasks": [
     {"id": "1", "name": "元の名前", "qty": 1, "hours": 8, "assignee": "元担当",
@@ -29,7 +29,7 @@ window.showOpenFilePicker = async()=>[fh];
 errors, dialogs = [], []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page()
+    pg = new_page(b)
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: (dialogs.append(d.message), d.accept()))
     pg.add_init_script(INIT)

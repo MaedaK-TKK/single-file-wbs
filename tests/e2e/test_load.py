@@ -1,7 +1,7 @@
 """D&D読込: 正常JSON・空ファイルのエラー表示（名前+サイズ）・ハンドル空読み時のフォールバック"""
 import json
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf
+from common import VIEWER, check, finish, leaf, new_page
 
 DATA = json.dumps({"projects": [{"name": "P", "milestones": [],
         "tasks": [leaf("1", "A", ps="2026-06-01", pe="2026-06-05")]}]}, ensure_ascii=False)
@@ -9,7 +9,7 @@ DATA = json.dumps({"projects": [{"name": "P", "milestones": [],
 errors, dialogs = [], []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page()
+    pg = new_page(b)
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: (dialogs.append(d.message), d.accept()))
     pg.goto(VIEWER)

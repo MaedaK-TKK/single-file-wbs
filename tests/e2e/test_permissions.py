@@ -1,7 +1,7 @@
 """file://権限フロー: 保存ピッカーfallback・ジェスチャー失効→再クリック・選択時切り詰めへの即書込・案内バー遷移"""
 import json
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf
+from common import VIEWER, check, finish, leaf, new_page
 
 DATA = {"projects": [{"name": "P1", "milestones": [],
         "tasks": [leaf("1", "作業", ps="2026-06-01", pe="2026-06-05")]}]}
@@ -35,7 +35,7 @@ window.showSaveFilePicker = async()=>{
 errors, dialogs = [], []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page()
+    pg = new_page(b)
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: (dialogs.append(d.message), d.accept()))
     pg.add_init_script(INIT)

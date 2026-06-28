@@ -2,7 +2,7 @@
    #16でapplyFieldを書き換える時、pe↔ps の入れ替わり等はここでしか捕まらない。"""
 import json
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, granted_handle_init
+from common import VIEWER, check, finish, granted_handle_init, new_page
 
 # 全フィールドに異なる初期値を置き、編集後の混線（別パスへの保存）を検出
 DATA = {"projects": [{"name": "P1", "milestones": [], "tasks": [
@@ -25,7 +25,7 @@ CASES = [
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page()
+    pg = new_page(b)
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: d.accept())
     pg.add_init_script(granted_handle_init(DATA))

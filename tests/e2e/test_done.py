@@ -3,7 +3,7 @@
 import json
 import datetime
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, granted_handle_init
+from common import VIEWER, check, finish, granted_handle_init, new_page
 
 TODAY = datetime.date.today().isoformat()
 DATA = {"projects": [{"name": "P1", "milestones": [], "tasks": [
@@ -18,7 +18,7 @@ DATA = {"projects": [{"name": "P1", "milestones": [], "tasks": [
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1400, "height": 500})
+    pg = new_page(b, clock=None, viewport={"width": 1400, "height": 500})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: d.accept())
     pg.add_init_script(granted_handle_init(DATA))

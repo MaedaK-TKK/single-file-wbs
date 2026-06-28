@@ -1,0 +1,27 @@
+{
+  "holidays": ["2026-06-12", null, 123, { "date": "not-a-date" }, { "name": "名前だけ" }, "2026-13-99"],
+  "projects": [
+    {
+      "name": "祝日の壊れ入力",
+      "milestones": [],
+      "tasks": [
+        {
+          "id": "1",
+          "name": "工程",
+          "children": [
+            {
+              "id": "1.1",
+              "name": "作業A",
+              "qty": 1,
+              "hours": 8,
+              "assignee": "佐藤",
+              "plan": { "start": "2026-06-08", "end": "2026-06-19" },
+              "actual": { "start": "2026-06-08", "end": null },
+              "note": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

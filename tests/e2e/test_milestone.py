@@ -1,7 +1,7 @@
 """マイルストーンのGUI編集（追加/ラベル編集/削除）。従来はAI/JSONのみだった経路をGUIに追加。"""
 import json
 from playwright.sync_api import sync_playwright
-from common import VIEWER, granted_handle_init, check, finish
+from common import VIEWER, granted_handle_init, check, finish, new_page
 
 DATA = {"projects": [
     {
@@ -23,7 +23,7 @@ DATA = {"projects": [
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1400, "height": 600})
+    pg = new_page(b, viewport={"width": 1400, "height": 600})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: d.accept())
     pg.add_init_script(granted_handle_init(DATA))

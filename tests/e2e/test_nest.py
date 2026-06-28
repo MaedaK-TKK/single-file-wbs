@@ -14,7 +14,7 @@
 """
 import json
 from playwright.sync_api import sync_playwright
-from common import VIEWER, granted_handle_init, check, finish
+from common import VIEWER, granted_handle_init, check, finish, new_page
 
 
 def effort(node):
@@ -50,7 +50,7 @@ DATA = {"projects": [{"name": "P", "milestones": [], "tasks": [
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 700})
+    pg = new_page(b, viewport={"width": 1500, "height": 700})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
     pg.on("dialog", lambda d: d.accept())            # 削除確認は OK

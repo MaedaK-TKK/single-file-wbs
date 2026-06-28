@@ -1,7 +1,7 @@
 """日付欄: ISOテキスト固定・📅プロキシ連携・スラッシュ正規化・範囲外拒否"""
 import json
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf, granted_handle_init
+from common import VIEWER, check, finish, leaf, granted_handle_init, new_page
 
 DATA = {"projects": [{"name": "P1", "milestones": [],
         "tasks": [leaf("1", "作業", ps="2026-06-01", pe="2026-06-05")]}]}
@@ -9,7 +9,7 @@ DATA = {"projects": [{"name": "P1", "milestones": [],
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page()
+    pg = new_page(b)
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: d.accept())
     pg.add_init_script(granted_handle_init(DATA))

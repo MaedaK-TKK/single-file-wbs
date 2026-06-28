@@ -1,7 +1,7 @@
 """列折りたたみ（アウトライン式 +/−）：トグルが折りたたみ単位ぶん出る／畳むと列が消えて左が縮む（隙間なし）／+で復元。
 常時表示列（No.・作業項目・工数）はトグルを持たない。"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf, granted_handle_init
+from common import VIEWER, check, finish, leaf, granted_handle_init, new_page
 
 DATA = {"projects": [{"name": "P1", "milestones": [],
         "tasks": [{"id": "1", "name": "工程", "children": [
@@ -10,7 +10,7 @@ DATA = {"projects": [{"name": "P1", "milestones": [],
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 400})
+    pg = new_page(b, viewport={"width": 1500, "height": 400})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.add_init_script(granted_handle_init(DATA))
     pg.goto(VIEWER)

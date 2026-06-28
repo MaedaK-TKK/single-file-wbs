@@ -1,12 +1,12 @@
 """セキュリティ回帰: XSSエスケープ（esc）と color属性インジェクション（isColor）。
    #16でセル生成を書き換える時、1列でもesc()を忘れたらここが赤くなる。"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, load_test_json
+from common import VIEWER, check, finish, load_test_json, new_page
 
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 700})
+    pg = new_page(b, viewport={"width": 1500, "height": 700})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.goto(VIEWER)
 

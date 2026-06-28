@@ -1,6 +1,6 @@
 """編集UI: 保存状態の遷移（未保存→保存済→再描画後も維持）・列拡幅・クリックターゲット寸法"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf, granted_handle_init
+from common import VIEWER, check, finish, leaf, granted_handle_init, new_page
 
 DATA = {"projects": [{"name": "P1", "milestones": [],
         "tasks": [{"id": "1", "name": "工程", "children":
@@ -9,7 +9,7 @@ DATA = {"projects": [{"name": "P1", "milestones": [],
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 400})
+    pg = new_page(b, viewport={"width": 1500, "height": 400})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: d.accept())
     pg.add_init_script(granted_handle_init(DATA))

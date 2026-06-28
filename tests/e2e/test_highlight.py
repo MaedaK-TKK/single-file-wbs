@@ -3,7 +3,7 @@
    ・ガント側 mousemove → 日付列(#colHl + #dates .d.hl)＋行(#rowHl + .lrow.hl)
    ・左表側 mousemove → データ列(#leftColHl)＋行(#rowHl)。縦は『今いるペインの列』に切替わる。"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf
+from common import VIEWER, check, finish, leaf, new_page
 
 DATA = {"projects": [{"name": "P", "milestones": [], "tasks": [
     leaf("1", "作業A", ps="2026-06-01", pe="2026-06-08", as_="2026-06-01", ae="2026-06-05"),
@@ -14,7 +14,7 @@ DATA = {"projects": [{"name": "P", "milestones": [], "tasks": [
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 900})
+    pg = new_page(b, viewport={"width": 1500, "height": 900})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.goto(VIEWER)
     pg.evaluate("d=>window.renderData(d)", DATA); pg.wait_for_timeout(150)

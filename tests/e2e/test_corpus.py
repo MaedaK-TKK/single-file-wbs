@@ -3,7 +3,7 @@
 import json
 import pathlib
 from playwright.sync_api import sync_playwright
-from common import ROOT, VIEWER, check, finish
+from common import ROOT, VIEWER, check, finish, new_page
 
 FIXTURES = sorted((ROOT / "tests").glob("正常_*.json")) + sorted((ROOT / "tests").glob("異常_*.json"))
 INLINE = [("null", None), ("空配列", []), ("数値", 7), ("文字列", "x"), ("空オブジェクト", {})]
@@ -11,7 +11,7 @@ INLINE = [("null", None), ("空配列", []), ("数値", 7), ("文字列", "x"), 
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 820})
+    pg = new_page(b, viewport={"width": 1500, "height": 820})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("console", lambda m: errors.append("console:" + m.text) if m.type == "error" else None)
     pg.goto(VIEWER)

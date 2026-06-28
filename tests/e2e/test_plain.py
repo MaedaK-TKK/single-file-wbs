@@ -1,12 +1,12 @@
 """#79 簡素表示トグル：ロゴ/版/"Viewer"/タブ名を隠し「WBS」だけにする
 （現場で“自作”と言える逃げ道）。クリックで切替・localStorage記憶・再読込で保持。"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish
+from common import VIEWER, check, finish, new_page
 
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page()
+    pg = new_page(b)
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.goto(VIEWER)
 

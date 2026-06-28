@@ -38,6 +38,19 @@ function F(...a){return a.length===0?new _D(FIXED):new _D(...a);}
 F.prototype=_D.prototype;F.now=()=>FIXED;F.UTC=_D.UTC;F.parse=_D.parse;window.Date=F;})();"""
 
 
+def new_page(browser, clock=CLOCK_PIN, **kwargs):
+    """本日固定(CLOCK_PIN)を既定で注入したページを返す。
+
+    テストの本日をビルド時刻に依存させない＝既定でドリフト不能にするための入口。
+    本日依存の値（残り営業日・slip・イナズマ座標・進捗%）を断言しても、固定本日で安定する。
+    実日（実行日）が必要なテスト（done/gantt_bars/date_shorthand）だけ clock=None で opt-out する。
+    """
+    pg = browser.new_page(**kwargs)
+    if clock:
+        pg.add_init_script(clock)
+    return pg
+
+
 def granted_handle_init(data):
     """書込可のフェイクFSAハンドル（メモリ上のファイル）。window.__file に内容、__writes に書込回数"""
     return """

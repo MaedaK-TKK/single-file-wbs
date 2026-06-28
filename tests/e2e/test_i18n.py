@@ -1,6 +1,6 @@
 """言語切替: 既定ja・ENトグルで全UI英語化・localStorage記憶・ja復帰"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf
+from common import VIEWER, check, finish, leaf, new_page
 
 DATA = {"projects": [{"name": "P1", "milestones": [],
         "tasks": [{"id": "1", "name": "工程", "children":
@@ -9,7 +9,7 @@ DATA = {"projects": [{"name": "P1", "milestones": [],
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_context().new_page()
+    pg = new_page(b.new_context())
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.goto(VIEWER)
     check(pg.inner_text("#openBtn").startswith("ファイルを開く") and "ドラッグ" in pg.inner_text("#openBtn"), "既定は日本語")

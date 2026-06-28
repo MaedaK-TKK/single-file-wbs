@@ -1,6 +1,6 @@
 """全体caret: 状態記号・状態依存tooltip・全展開/全たたみ・Ctrl+Z復旧・個別操作後の無効化"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf
+from common import VIEWER, check, finish, leaf, new_page
 
 DATA = {"projects": [
     {"name": "P1", "milestones": [], "tasks": [{"id": "1", "name": "工程A",
@@ -12,7 +12,7 @@ DATA = {"projects": [
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page()
+    pg = new_page(b)
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.goto(VIEWER)
     pg.evaluate("d=>window.renderData(d)", DATA); pg.wait_for_timeout(150)

@@ -1,6 +1,6 @@
 """備考のURL自動リンク: URLそのまま表示・クエリ付きURL・javascript:不リンク・HTML注入エスケープ維持"""
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf
+from common import VIEWER, check, finish, leaf, new_page
 
 def L(id, note):
     return leaf(id, "t"+id, ps="2026-06-01", pe="2026-06-05") | {"note": note}
@@ -17,7 +17,7 @@ DATA = {"projects": [{"name": "P", "milestones": [], "tasks": [
 errors = []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page()
+    pg = new_page(b)
     pg.on("pageerror", lambda e: errors.append(str(e)))
     dlg = []
     pg.on("dialog", lambda d: (dlg.append(1), d.dismiss()))

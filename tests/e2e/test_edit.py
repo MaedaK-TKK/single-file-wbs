@@ -1,7 +1,7 @@
 """編集モード回帰: 保存・_キー保持・id採番・自動展開・同期render・旧形式変換・誤上書き防止・外部変更検知"""
 import json
 from playwright.sync_api import sync_playwright
-from common import VIEWER, check, finish, leaf
+from common import VIEWER, check, finish, leaf, new_page
 
 NEW_FMT = {"_meta": {"owner": "tester"},
            "projects": [{"name": "P1", "milestones": [],
@@ -31,7 +31,7 @@ window.showOpenFilePicker = async () => [mkHandle(window.__pick)];
 errors, dialogs = [], []
 with sync_playwright() as p:
     b = p.chromium.launch()
-    pg = b.new_page(viewport={"width": 1500, "height": 600})
+    pg = new_page(b, viewport={"width": 1500, "height": 600})
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.on("dialog", lambda d: (dialogs.append(d.message), d.accept()))
     pg.add_init_script(INIT)

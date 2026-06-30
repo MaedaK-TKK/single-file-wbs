@@ -1047,6 +1047,22 @@
                 "end": null
               },
               "note": "#90：https://github.com/piguo45/single-file-wbs/issues/90 oyatdsさんのZenn提案の未実装分（タスク追加ボタン集約・上下/親またぎ移動・インデント・No.自動採番）。CLAUDE.md『やらないこと』該当でGUI代替あり＝保留。マイルストーン編集(#87)/入れ子(#70)は実装済"
+            },
+            {
+              "id": "6.20",
+              "name": "予定変更の履歴（_planLog）",
+              "qty": 1,
+              "hours": 6,
+              "assignee": "ぴぐお",
+              "plan": {
+                "start": null,
+                "end": null
+              },
+              "actual": {
+                "start": null,
+                "end": null
+              },
+              "note": "#96：https://github.com/piguo45/single-file-wbs/issues/96 遅延で後続を後ろ倒した経緯を残す。_planLog（at/from/to/reason・先頭=当初）を_キーで記録（事実記録＝_progress/_aiと同思想・round-trip保持）。まずデータ規約のみ＝ビューア改修ゼロで運用可、後で表示(ホバー履歴/当初ゴーストバー)。#66依存の下地"
             }
           ]
         }

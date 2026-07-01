@@ -957,6 +957,61 @@
                   "note": "e2e(範囲重なり・週境界・AND結合)＋pixel撮り直し＋CLAUDE.md/en更新。実装済(PRマージで完了)"
                 }
               ]
+            },
+            {
+              "id": "4.8",
+              "name": "リファクタ：render分割＋反復統一(#97)",
+              "note": "#97：https://github.com/piguo45/single-file-wbs/issues/97 116KB/JS992行=警報線超過対応。振る舞い不変の純リファクタ(golden/pixel無再生成一致が証明)。聖域(保存パス)不可侵。#16残項目を統合。実装=Sonnet・レビュー=Fable5の分業",
+              "children": [
+                {
+                  "id": "4.8.1",
+                  "name": "P1: 反復パターン統一",
+                  "qty": 1,
+                  "hours": 4,
+                  "assignee": "Claude",
+                  "plan": {
+                    "start": "2026-07-02",
+                    "end": "2026-07-02"
+                  },
+                  "actual": {
+                    "start": "2026-07-02",
+                    "end": null
+                  },
+                  "note": "lsGet/lsSet(18箇所)・$()ヘルパー(50箇所)・caret/sym統一(#16)・フィルタ軸のテーブル駆動統合"
+                },
+                {
+                  "id": "4.8.2",
+                  "name": "P2: render()分割(294行)",
+                  "qty": 1,
+                  "hours": 6,
+                  "assignee": "Claude",
+                  "plan": {
+                    "start": "2026-07-02",
+                    "end": "2026-07-03"
+                  },
+                  "actual": {
+                    "start": "2026-07-02",
+                    "end": null
+                  },
+                  "note": "実測の縫い目で分割(行モデル→レンジ→ヘッダ→行本体→SVG→DOM注入→サマリ→スクロール)。ローカル関数分割基本・シグネチャ最小"
+                },
+                {
+                  "id": "4.8.3",
+                  "name": "P3: レビュー・検証",
+                  "qty": 1,
+                  "hours": 3,
+                  "assignee": "Claude",
+                  "plan": {
+                    "start": "2026-07-03",
+                    "end": "2026-07-03"
+                  },
+                  "actual": {
+                    "start": "2026-07-02",
+                    "end": null
+                  },
+                  "note": "golden/pixel無再生成一致・全スイートGREEN・聖域diffゼロ・サイズbefore/after計測。Fable5レビュー→Sonnet修正→再レビュー"
+                }
+              ]
             }
           ]
         },

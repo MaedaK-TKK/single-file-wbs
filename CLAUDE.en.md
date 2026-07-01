@@ -110,6 +110,19 @@ In addition to text / AI editing, `wbs.json` can be **edited directly on screen*
 - **Exception: `_progress` (0/10/…/100) is read by the viewer** as the progress value (EV), alongside `_progressAt` (assessment time, ISO) and
   `_progressBy` (`"manual"` or a model name). Asking an AI: "assess task X's progress to the nearest 10% from the deliverable and requirements"
   → it writes `_progress`/`_progressAt`/`_progressBy` on the leaf. If unset, progress falls back to time-based (backward compatible).
+- **`_planLog` (schedule-change history, #96)**: a `_` key that records **as fact** why a successor was pushed back by a delay (same idea as `_progress`/`_ai` — not derived; the viewer preserves it by default).
+  Append one entry per reschedule (append-only). **The first entry's `from` is effectively the baseline (the original plan)**:
+  ```json
+  "_planLog": [
+    { "at": "2026-06-10T09:00:00Z",
+      "from": { "start": "2026-06-01", "end": "2026-06-05" },
+      "to":   { "start": "2026-06-15", "end": "2026-06-19" },
+      "by": "manual", "reason": "pushed back by the delay in #504" }
+  ]
+  ```
+  - `at` = change timestamp (ISO) / `from`·`to` = `plan` before·after / `by` = `"manual"` or a model name / `reason` = why (e.g. the upstream `#N`).
+  - **AI-native**: "push B back by a week and record the reason = delay in #504" → the AI updates `plan` and appends one line to `_planLog`.
+  - Scope: recording is **limited to changes of `plan`** (no full-field audit log). Display (hover history, baseline ghost bar) is a separate viewer feature.
 - `milestones: [{ date, label, color }]` is optional per project.
 
 ## Adding / updating data (how-to)

@@ -1030,7 +1030,7 @@
                   },
                   "actual": {
                     "start": "2026-07-02",
-                    "end": null
+                    "end": "2026-07-03"
                   },
                   "note": "_planLog末尾=直近のみ描画・レーンで種別・esc必須(XSS)・壊れ入力graceful・進捗ビュー対象外・新fixture追加"
                 },
@@ -1046,7 +1046,7 @@
                   },
                   "actual": {
                     "start": "2026-07-02",
-                    "end": null
+                    "end": "2026-07-03"
                   },
                   "note": "編集モード行の↷→吹き出しフォーム(新開始/新終了/理由任意)→確定でplan更新+_planLog追記+queueSave。変更なしは記録しない。日付ガード流用"
                 },
@@ -1062,7 +1062,7 @@
                   },
                   "actual": {
                     "start": "2026-07-02",
-                    "end": null
+                    "end": "2026-07-03"
                   },
                   "note": "e2e(表示/記録/訂正は履歴なし/XSS/graceful)＋golden差分目視＋CLAUDE.md/en＋書込系のため実機スモーク"
                 }

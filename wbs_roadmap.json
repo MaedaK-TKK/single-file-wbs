@@ -1012,6 +1012,61 @@
                   "note": "golden/pixel無再生成一致・全スイートGREEN・聖域diffゼロ・サイズbefore/after計測。Fable5レビュー→Sonnet修正→再レビュー"
                 }
               ]
+            },
+            {
+              "id": "4.9",
+              "name": "予定変更の履歴：表示＋GUI記録(#96)",
+              "note": "#96：https://github.com/piguo45/single-file-wbs/issues/96 設計確定版。表示=直近トレイル1本(下=開始/上=終了)＋↷N＋クリック吹き出しで全履歴。記録=編集モードの↷ボタン→フォーム→確定でplan自動更新＋_planLog追記＋自動保存。訂正(直接編集)とリスケを分離",
+              "children": [
+                {
+                  "id": "4.9.1",
+                  "name": "表示：トレイル＋↷N＋吹き出し",
+                  "qty": 1,
+                  "hours": 8,
+                  "assignee": "Claude",
+                  "plan": {
+                    "start": "2026-07-02",
+                    "end": "2026-07-03"
+                  },
+                  "actual": {
+                    "start": "2026-07-02",
+                    "end": null
+                  },
+                  "note": "_planLog末尾=直近のみ描画・レーンで種別・esc必須(XSS)・壊れ入力graceful・進捗ビュー対象外・新fixture追加"
+                },
+                {
+                  "id": "4.9.2",
+                  "name": "記録：↷リスケフォーム",
+                  "qty": 1,
+                  "hours": 6,
+                  "assignee": "Claude",
+                  "plan": {
+                    "start": "2026-07-03",
+                    "end": "2026-07-04"
+                  },
+                  "actual": {
+                    "start": "2026-07-02",
+                    "end": null
+                  },
+                  "note": "編集モード行の↷→吹き出しフォーム(新開始/新終了/理由任意)→確定でplan更新+_planLog追記+queueSave。変更なしは記録しない。日付ガード流用"
+                },
+                {
+                  "id": "4.9.3",
+                  "name": "テスト＋doc＋実機スモーク",
+                  "qty": 1,
+                  "hours": 4,
+                  "assignee": "Claude",
+                  "plan": {
+                    "start": "2026-07-04",
+                    "end": "2026-07-05"
+                  },
+                  "actual": {
+                    "start": "2026-07-02",
+                    "end": null
+                  },
+                  "note": "e2e(表示/記録/訂正は履歴なし/XSS/graceful)＋golden差分目視＋CLAUDE.md/en＋書込系のため実機スモーク"
+                }
+              ]
             }
           ]
         },

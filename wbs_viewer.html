@@ -143,7 +143,15 @@
   #leftRows .date-wrap input[type="text"]{flex:1 1 auto;width:auto}  /* #leftRows input{width:100%} に勝つ詳細度（.nm-in と同じ理由） */
   .cal-proxy{position:absolute;width:0;height:0;opacity:0;border:0;padding:0;margin:0;pointer-events:none}
   .cal-btn{flex:0 0 auto;font-size:11px;line-height:1.2;padding:2px 3px;border:1px solid var(--btn-border);
-           background:#fff;border-radius:3px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:#445}
+           background:#fff;border-radius:3px;cursor:pointer;display:none;align-items:center;justify-content:center;color:#445}
+  .c.cell-editing .cal-btn,.ms-edit.cell-editing .cal-btn{display:inline-flex} /* Excel風: 日付ピッカーは入力中だけ出す。通常時はセル面を優先 */
+  .c[data-cell]{outline-offset:-2px}
+  .c.cell-selected{outline:2px solid var(--accent);background:#dbeafe;box-shadow:inset 0 0 0 1px rgba(37,99,235,.42)}
+  .c.cell-range{background:#bfdbfe;box-shadow:inset 0 0 0 999px rgba(37,99,235,.22),inset 0 0 0 1px rgba(37,99,235,.38)}
+  .c.cell-selected.cell-range{background:#93c5fd;box-shadow:inset 0 0 0 1px rgba(37,99,235,.55)}
+  .c.cell-editing{outline:2px solid var(--edit-on);background:#fff}
+  .c.cell-error{outline:2px solid #e11d48;background:#fff1f2}
+  .c[data-cell]:focus{outline:2px solid var(--accent)}
   .clk{cursor:pointer}
   #leftHead .h[title]{cursor:help}   /* 押せない説明ツールチップは ?（押せるボタンは pointer のまま）・#46 */
   .msrow{height:var(--row-h);background:#fbfcfe}                              /* 編集モードのマイルストーン編集行 */
@@ -340,6 +348,8 @@
       legacyConvert:"旧フォーマットのファイルです。編集を有効にすると新フォーマット（projects 配列）に変換して保存されます。続行しますか？",
       reloadErr:"更新失敗: ",loadFirst:"先に「ファイルを開く」または D&D で読み込んでください。",
       dropFail:"ドロップされたファイルを読み取れませんでした。「ファイルを開く」をお試しください。",
+      badDateInput:v=>`日付として解釈できません: ${v}（曖昧な入力は拒否します）`,
+      badPaste:(r,c,v)=>`貼り付けを中止しました。${r}行${c}列目の値を解釈できません: ${v}`,
     },
     en:{
       open:"Open file",openSub:"(drag & drop)",reload:"Reload",edit:"Edit",langBtn:"日本語",
@@ -383,6 +393,8 @@
       legacyConvert:"This file uses the legacy format. Enabling edit will convert it to the projects[] format on save. Continue?",
       reloadErr:"Reload failed: ",loadFirst:'Load a file first via "Open file" or drag & drop.',
       dropFail:'Could not read the dropped file. Try "Open file" instead.',
+      badDateInput:v=>`Cannot parse as a date: ${v} (ambiguous input is rejected)`,
+      badPaste:(r,c,v)=>`Paste cancelled. Cannot parse row ${r}, column ${c}: ${v}`,
     },
   };
   let lang="ja";if(lsGet("wbsLang")==="en")lang="en";   // 既定は日本語・明示切替のみ記憶
@@ -412,7 +424,7 @@
 
   const parse=s=>new Date(s+"T00:00:00Z");
   const diff=(a,b)=>Math.round((parse(b)-parse(a))/DAY_MS);
-  const isDate=s=>typeof s==="string"&&/^(19|20)\d{2}-\d{2}-\d{2}$/.test(s)&&!isNaN(parse(s).getTime());  // 年は1900-2099（範囲外はゴミ入力扱い・ガント爆発防止）
+  const isDate=s=>typeof s==="string"&&/^(19|20)\d{2}-\d{2}-\d{2}$/.test(s)&&!isNaN(parse(s).getTime())&&parse(s).toISOString().slice(0,10)===s;  // 年は1900-2099・実在日付のみ（JS Dateの月末丸めを拒否）
   const addStr=(s,d)=>new Date(parse(s).getTime()+d*DAY_MS).toISOString().slice(0,10);
   const minStr=a=>{a=a.filter(Boolean);return a.length?a.slice().sort()[0]:null;};
   const maxStr=a=>{a=a.filter(Boolean);return a.length?a.slice().sort()[a.length-1]:null;};
@@ -430,25 +442,46 @@
   const todayStr=()=>{const n=new Date();return new Date(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())).toISOString().slice(0,10);};
   // 編集欄の短縮表示：今年は MM-DD、他年は full ISO（年が"意外"な時だけ年を見せる・#59）
   const shortDate=iso=>(iso&&isDate(iso)&&iso.slice(0,4)===todayStr().slice(0,4))?iso.slice(5):(iso||"");
-  // ショートハンド入力→full ISO。月日も年も緩く受ける（#59）：
-  //   611/0611/6-11/6/11=今年(or既存年)のMD ／ 270611/20270611=YY(YY)MMDD ／ 27-6-11/2027-6-11=年-月-日(2桁年は20YY)
-  //   年未指定は既存値→空なら今年で補完。無効はnull。
-  const expandDate=(val,curISO)=>{
-    val=String(val).trim().replace(/\//g,"-");
+  // ショートハンド入力→full ISO。Excel風に M/D, M-D, MDD, MMDD を受ける。
+  // 3桁数字は MDD と MMD の両候補を評価し、両方validなら曖昧入力として拒否（例:121=1/21 or 12/1）。
+  const dateISO=(yr,m,d)=>{const iso=`${String(yr).padStart(4,"0")}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;return isDate(iso)?iso:null;};
+  const uniq=a=>[...new Set(a.filter(Boolean))];
+  const expandDate=(val,curISO,baseYear)=>{
+    val=String(val??"").trim().replace(/[\u3000\s]+/g,"");
     if(val==="")return "";                                                    // 空＝クリア
     if(isDate(val))return val;                                                // 既に full ISO
-    const defYr=(curISO&&isDate(curISO))?curISO.slice(0,4):todayStr().slice(0,4);
+    const defYr=String(baseYear||((curISO&&isDate(curISO))?curISO.slice(0,4):todayStr().slice(0,4)));
     const yr4=y=>y.length===2?"20"+y:y;                                       // 2桁年→20YY
-    let yr,m,d, parts=val.split("-"), g=val.replace(/\D/g,"");
-    if(parts.length===2&&/^\d{1,2}$/.test(parts[0])&&/^\d{1,2}$/.test(parts[1])){yr=defYr;[m,d]=parts;}            // M-D
-    else if(parts.length===3&&/^\d{2}(\d{2})?$/.test(parts[0])&&/^\d{1,2}$/.test(parts[1])&&/^\d{1,2}$/.test(parts[2])){yr=yr4(parts[0]);[,m,d]=parts;}  // Y-M-D
-    else if(g.length===3){yr=defYr;m=g.slice(0,1);d=g.slice(1);}              // MDD
-    else if(g.length===4){yr=defYr;m=g.slice(0,2);d=g.slice(2);}             // MMDD
-    else if(g.length===6){yr=yr4(g.slice(0,2));m=g.slice(2,4);d=g.slice(4);} // YYMMDD
-    else if(g.length===8){yr=g.slice(0,4);m=g.slice(4,6);d=g.slice(6);}      // YYYYMMDD
-    else return null;                                                        // 解釈不能
-    const iso=`${yr}-${m.padStart(2,"0")}-${d.padStart(2,"0")}`;
-    return isDate(iso)?iso:null;                                              // 範囲・妥当性チェック
+    let yr,m,d, parts=val.replace(/\//g,"-").split("-"), g=val.replace(/\D/g,"");
+
+    if(parts.length===2&&/^\d{1,2}$/.test(parts[0])&&/^\d{1,2}$/.test(parts[1])){ // M-D / M/D
+      return dateISO(defYr,parts[0],parts[1]);
+    }
+    if(parts.length===3&&/^\d{2}(\d{2})?$/.test(parts[0])&&/^\d{1,2}$/.test(parts[1])&&/^\d{1,2}$/.test(parts[2])){ // Y-M-D
+      return dateISO(yr4(parts[0]),parts[1],parts[2]);
+    }
+    if(!/^\d+$/.test(g))return null;
+    if(g.length===3){                                                        // MDD or MMD。validが複数なら曖昧として拒否
+      const candidates=uniq([
+        dateISO(defYr,g.slice(0,1),g.slice(1)),
+        dateISO(defYr,g.slice(0,2),g.slice(2))
+      ]);
+      return candidates.length===1?candidates[0]:null;
+    }
+    if(g.length===4)return dateISO(defYr,g.slice(0,2),g.slice(2));            // MMDD固定（0000〜9999全件をこの規則で評価可能）
+    if(g.length===6)return dateISO(yr4(g.slice(0,2)),g.slice(2,4),g.slice(4)); // YYMMDD
+    if(g.length===8)return dateISO(g.slice(0,4),g.slice(4,6),g.slice(6));      // YYYYMMDD
+    return null;                                                             // 解釈不能
+  };
+  window.__wbsDateShorthandAudit=(baseYear=2026)=>{                          // 手動/コンソール用: 0000〜9999を固定年で全件確認
+    const out={baseYear,valid:0,invalid:0,examples:[]};
+    for(let i=0;i<=9999;i++){
+      const raw=String(i).padStart(4,"0"), iso=expandDate(raw,null,baseYear);
+      if(iso&&isDate(iso)&&expandDate(iso,null,baseYear)===iso)out.valid++;
+      else out.invalid++;
+      if(out.examples.length<12&&iso)out.examples.push([raw,iso]);
+    }
+    return out;
   };
 
   // 列メタデータ（表示=view・編集=field/edit/get を1エントリに集約）。view(c,n,x) x={leaf,inProg}・get(c,n)。
@@ -749,7 +782,9 @@
             if(col.key==="name"&&!editMode)tip=` title="${esc(n.name)}"`;
             else if(col.key==="note"&&leaf&&n.note&&!editMode)tip=` title="${esc(n.note)}"`;
             const xc=(col.key==="pe"&&isOverdue(c,TODAY))?" overdue":"";        // 予定終了:本日超過かつ未完了=赤
-            info+=`<div class="c ${col.cls}${xc}" style="width:${cw(col)}px"${tip}>${v}</div>`;});
+            const cf=editMode&&leaf?(col.key==="no"?"id":col.key==="name"?"name":(col.field||"")):"";
+            const ca=cf?` data-cell="1" data-cell-path="${P}" data-cell-field="${esc(cf)}" tabindex="0"`:"";
+            info+=`<div class="c ${col.cls}${xc}" style="width:${cw(col)}px"${tip}${ca}>${v}</div>`;});
           const lvl=`lvl${Math.min(r.depth,2)}`;
           lrows+=`<div class="lrow ${leaf?"leaf":"parent"} ${lvl} ${done?"done":""}">${info}</div>`;
           let bars="";
@@ -910,6 +945,8 @@
     const svg = buildSvgOverlay();
     injectDOM();
     updateSummaryAndScroll();
+    applyCellVisuals();
+    refocusActiveCell(true);
   }
   function applyData(data,isNew){
     lastData=data;
@@ -986,6 +1023,195 @@
     if(lastData)render(lastData);
   });
 
+
+  // ===== Excel風セル操作（selected/editing・矢印/Tab/Enter・TSV copy/paste） =====
+  let activeCell=null, anchorCell=null, editingCell=null;  // {path,field}
+  const sameCell=(a,b)=>!!a&&!!b&&a.path===b.path&&a.field===b.field;
+  const cellOfEl=el=>{const c=el&&el.closest&&el.closest('[data-cell="1"]');return c?{path:c.getAttribute("data-cell-path"),field:c.getAttribute("data-cell-field")}:null;};
+  const cellKey=c=>c?c.path+"|"+c.field:"";
+  function cellGrid(){
+    const rows=[];
+    [...$("leftRows").querySelectorAll(".lrow")].forEach(r=>{
+      const cells=[...r.querySelectorAll('.c[data-cell="1"]')];
+      if(cells.length)rows.push(cells);
+    });
+    return rows;
+  }
+  function findCell(c){
+    const g=cellGrid(), key=cellKey(c);
+    for(let ri=0;ri<g.length;ri++)for(let ci=0;ci<g[ri].length;ci++)
+      if(cellKey(cellOfEl(g[ri][ci]))===key)return {g,ri,ci,el:g[ri][ci]};
+    return {g,ri:-1,ci:-1,el:null};
+  }
+  function applyCellVisuals(){
+    const cells=[...$("leftRows").querySelectorAll('.c[data-cell="1"]')];
+    cells.forEach(c=>{c.classList.remove("cell-selected","cell-range","cell-editing","cell-error");c.tabIndex=0;
+      const inp=c.querySelector("input[data-field]"); if(inp)inp.tabIndex=-1;});
+    if(!editMode||!activeCell)return;
+    const a=findCell(anchorCell||activeCell), b=findCell(activeCell);
+    if(!b.el){activeCell=anchorCell=editingCell=null;return;}
+    if(a.el){
+      const r1=Math.min(a.ri,b.ri),r2=Math.max(a.ri,b.ri),c1=Math.min(a.ci,b.ci),c2=Math.max(a.ci,b.ci);
+      for(let ri=r1;ri<=r2;ri++)for(let ci=c1;ci<=c2;ci++)if(b.g[ri]&&b.g[ri][ci])b.g[ri][ci].classList.add("cell-range");
+    }
+    b.el.classList.add("cell-selected");
+    if(editingCell&&sameCell(editingCell,activeCell))b.el.classList.add("cell-editing");
+  }
+  function scrollCellIntoView(c){
+    const f=findCell(c); if(!f.el)return;
+    const row=f.el.closest(".lrow"), lEl=$("left"), rEl=$("right"); if(!row||!lEl)return;
+    const root=getComputedStyle(document.documentElement);
+    const tabH=parseFloat(root.getPropertyValue("--tab-h"))||22, headH=parseFloat(root.getPropertyValue("--header-h"))||48;
+    const box=lEl.getBoundingClientRect(), rb=row.getBoundingClientRect();
+    const topLimit=box.top+tabH+headH, bottomLimit=box.bottom;
+    if(rb.top<topLimit)lEl.scrollTop+=rb.top-topLimit;
+    else if(rb.bottom>bottomLimit)lEl.scrollTop+=rb.bottom-bottomLimit;
+    if(rEl)rEl.scrollTop=lEl.scrollTop;
+  }
+  function refocusActiveCell(allowScroll){
+    if(!editMode||!activeCell||editingCell)return;
+    const f=findCell(activeCell); if(!f.el)return;
+    const a=document.activeElement;
+    if(a&&a.tagName==="INPUT"&&a.closest("#leftRows"))return;
+    if(a&&a!==document.body&&!a.closest("#leftRows"))return;
+    f.el.focus({preventScroll:true});
+    if(allowScroll)scrollCellIntoView(activeCell);
+  }
+  function focusCell(c,extend){
+    if(!editMode||!c)return;
+    const f=findCell(c); if(!f.el)return;
+    activeCell=c; if(!extend||!anchorCell)anchorCell=c; editingCell=null;
+    applyCellVisuals(); f.el.focus({preventScroll:true}); scrollCellIntoView(c);
+  }
+  function moveCell(dr,dc,extend){
+    if(!activeCell)return;
+    const f=findCell(activeCell); if(!f.el)return;
+    let ri=f.ri+dr, ci=f.ci+dc;
+    ri=clamp(ri,0,f.g.length-1);
+    ci=clamp(ci,0,(f.g[ri]||[]).length-1);
+    focusCell(cellOfEl(f.g[ri][ci]),extend);
+  }
+  function startCellEdit(c,replaceWith){
+    const f=findCell(c); if(!f.el)return;
+    activeCell=c; if(!anchorCell)anchorCell=c; editingCell=c; applyCellVisuals();
+    const inp=f.el.querySelector("input[data-field]");
+    if(!inp)return;
+    inp.focus({preventScroll:true});
+    if(replaceWith!==undefined){inp.value=replaceWith; inp.setSelectionRange&&inp.setSelectionRange(String(replaceWith).length,String(replaceWith).length);}
+    else{const end=String(inp.value||"").length; inp.setSelectionRange&&inp.setSelectionRange(end,end);}
+  }
+  function commitInput(inp){
+    if(!inp||!inp.hasAttribute("data-field"))return true;
+    inp.dispatchEvent(new Event("change",{bubbles:true}));
+    return !inp.closest(".cell-error");
+  }
+  function markCellError(inp){
+    const c=inp&&inp.closest&&inp.closest('.c[data-cell="1"],.ms-edit');
+    if(c){c.classList.add("cell-error");setTimeout(()=>c.classList.remove("cell-error"),1400);}
+  }
+  function clearActiveCell(){
+    if(!activeCell)return;
+    const f=findCell(activeCell); if(!f.el)return;
+    const inp=f.el.querySelector("input[data-field]"); if(!inp)return;
+    inp.value="";
+    if(commitInput(inp)){editingCell=null;applyCellVisuals();}
+  }
+  function cellRawValue(c){
+    const r=resolvePath(c.path); if(!r.node)return "";
+    if(DATE_FIELDS[c.field]){const[grp,key]=DATE_FIELDS[c.field];return (r.node[grp]&&r.node[grp][key])||"";}
+    const map={id:"id",name:"name",qty:"qty",hours:"hours",assignee:"assignee",note:"note"};
+    return r.node[map[c.field]]??"";
+  }
+  function selectedCellsTSV(){
+    if(!activeCell)return "";
+    const a=findCell(anchorCell||activeCell), b=findCell(activeCell); if(!a.el||!b.el)return "";
+    const r1=Math.min(a.ri,b.ri),r2=Math.max(a.ri,b.ri),c1=Math.min(a.ci,b.ci),c2=Math.max(a.ci,b.ci);
+    const rows=[];
+    for(let ri=r1;ri<=r2;ri++){
+      const vals=[];
+      for(let ci=c1;ci<=c2;ci++)vals.push(String(cellRawValue(cellOfEl(b.g[ri][ci]))).replace(/\t/g," ").replace(/\r?\n/g," "));
+      rows.push(vals.join("\t"));
+    }
+    return rows.join("\n");
+  }
+  function pasteTSV(text){
+    if(!activeCell||!text)return false;
+    text=String(text).replace(/\r\n/g,"\n").replace(/\r/g,"\n");
+    if(text.endsWith("\n"))text=text.slice(0,-1);
+    const vals=text.split("\n").map(r=>r.split("\t"));
+    const s=findCell(activeCell); if(!s.el)return false;
+    const ops=[];
+    for(let r=0;r<vals.length;r++)for(let c=0;c<vals[r].length;c++){
+      const row=s.g[s.ri+r], el=row&&row[s.ci+c];
+      if(!el){notice(t("badPaste")(r+1,c+1,vals[r][c]));return true;}
+      const cell=cellOfEl(el), rr=resolvePath(cell.path); if(!rr.node)return true;
+      const nv=normalizeFieldValue(rr.node,cell.field,vals[r][c]);
+      if(!nv.ok){notice(t("badPaste")(r+1,c+1,vals[r][c]));markCellError(el.querySelector("input[data-field]"));return true;}
+      ops.push({node:rr.node,field:cell.field,value:nv.value,cell});
+    }
+    ops.forEach(o=>assignField(o.node,o.field,o.value));
+    anchorCell=activeCell;
+    activeCell=ops.length?ops[ops.length-1].cell:activeCell; editingCell=null;
+    queueSave(); render(lastData);
+    return true;
+  }
+  $("leftRows").addEventListener("mousedown",e=>{
+    if(!editMode)return;
+    if(e.target.closest("button,[data-collapse],.cal-btn,.cal-proxy"))return;
+    const cell=e.target.closest('.c[data-cell="1"]'); if(!cell)return;
+    e.preventDefault();
+    focusCell(cellOfEl(cell),e.shiftKey);
+  });
+  $("leftRows").addEventListener("dblclick",e=>{
+    if(!editMode)return;
+    const cell=e.target.closest('.c[data-cell="1"]'); if(!cell||e.target.closest("button,[data-collapse]"))return;
+    e.preventDefault(); startCellEdit(cellOfEl(cell));
+  });
+  $("leftRows").addEventListener("keydown",e=>{
+    if(!editMode||!activeCell)return;
+    const a=document.activeElement;
+    if(a&&a.tagName==="INPUT"&&a.closest("#leftRows")){
+      if(e.key==="Enter"||e.key==="Tab"){
+        e.preventDefault();
+        if(!commitInput(a))return;
+        editingCell=null;
+        if(e.key==="Enter")moveCell(1,0,false); else moveCell(0,e.shiftKey?-1:1,false);
+        return;
+      }
+      if(e.key==="Escape"){e.preventDefault();editingCell=null;focusCell(activeCell,false);return;}
+      return; // editing中の左右キーはセル内カーソル移動に任せる
+    }
+    handleSelectedCellKey(e);
+  });
+  function handleSelectedCellKey(e){
+    const nav={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
+    if(nav[e.key]){e.preventDefault();moveCell(nav[e.key][0],nav[e.key][1],e.shiftKey);return true;}
+    if(e.key==="Tab"){e.preventDefault();moveCell(0,e.shiftKey?-1:1,false);return true;}
+    if(e.key==="F2"){e.preventDefault();startCellEdit(activeCell);return true;}
+    if(e.key==="Delete"||e.key==="Backspace"){e.preventDefault();clearActiveCell();return true;}
+    if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();startCellEdit(activeCell,e.key);return true;}
+    return false;
+  }
+  document.addEventListener("keydown",e=>{
+    if(e.defaultPrevented||!editMode||!activeCell)return;
+    const a=document.activeElement;
+    if(a&&a.tagName==="INPUT"&&a.closest("#leftRows"))return;
+    if(a&&a!==document.body&&!a.closest("#leftRows"))return;
+    handleSelectedCellKey(e);
+  });
+  document.addEventListener("copy",e=>{
+    const a=document.activeElement;
+    if(!editMode||!activeCell||(a&&a.tagName==="INPUT"&&a.closest("#leftRows")))return;
+    const tsv=selectedCellsTSV(); if(!tsv)return;
+    e.clipboardData.setData("text/plain",tsv); e.preventDefault();
+  });
+  document.addEventListener("paste",e=>{
+    const a=document.activeElement;
+    if(!editMode||!activeCell||(a&&a.tagName==="INPUT"&&a.closest("#leftRows")))return;
+    const text=e.clipboardData&&e.clipboardData.getData("text/plain");
+    if(pasteTSV(text))e.preventDefault();
+  });
+
   // ===== 編集モード（インライン編集・追加/削除/上下移動・自動保存） =====
   // 設計：変異は同期で行い即 render（DOMのdata-pathを常に最新に保つ）。保存はデバウンス＋単一チェーンで直列化。
   const DATE_FIELDS={ps:["plan","start"],pe:["plan","end"],as:["actual","start"],ae:["actual","end"]};
@@ -997,15 +1223,26 @@
     for(let k=1;k<parts.length;k++){node=arr[parts[k]]; if(!node)return {proj}; if(k<parts.length-1)arr=node.children||[];}
     return {proj,parentArray:arr,index:parts[parts.length-1],node};
   }
-  function applyField(n,f,val){
-    if(f==="qty"||f==="hours")n[f]=val===""?0:(Number(val)||0);
-    else if(DATE_FIELDS[f]){
+  function normalizeFieldValue(n,f,val){
+    if(f==="qty"||f==="hours")return {ok:true,value:val===""?0:(Number(val)||0)};
+    if(DATE_FIELDS[f]){
       const[grp,key]=DATE_FIELDS[f];
       const cur=(n[grp]&&typeof n[grp]==="object")?n[grp][key]:null;          // 既存値（年補完に使う）
-      const iso=expandDate(val,cur);                                          // 611/6-11/full等→full ISO・無効はnull
-      if(iso===null)return;                                                   // 解釈不能・範囲外は無視（ゴミを保存しない）
-      if(!n[grp]||typeof n[grp]!=="object")n[grp]={}; n[grp][key]=iso===""?null:iso;
-    }else n[f]=val;   // id, name, assignee, note
+      const iso=expandDate(val,cur);                                          // 7/1,701,0701等→full ISO・曖昧/無効はnull
+      if(iso===null)return {ok:false};
+      return {ok:true,value:iso===""?null:iso};
+    }
+    return {ok:true,value:val};                                                // id, name, assignee, note
+  }
+  function assignField(n,f,val){
+    if(DATE_FIELDS[f]){const[grp,key]=DATE_FIELDS[f]; if(!n[grp]||typeof n[grp]!=="object")n[grp]={}; n[grp][key]=val;}
+    else n[f]=val;
+  }
+  function applyField(n,f,val){
+    const r=normalizeFieldValue(n,f,val);
+    if(!r.ok)return false;                                                     // 解釈不能・曖昧・範囲外は保存しない
+    assignField(n,f,r.value);
+    return true;
   }
   async function ensureWritable(){   // file:// では権限プロンプトが出せないため段階的にフォールバック（#17/#18/#19）
     try{
@@ -1119,7 +1356,7 @@
     }
     if(t.hasAttribute("data-field")){
       const r=resolvePath(t.getAttribute("data-path")); if(!r.node)return;
-      applyField(r.node,t.getAttribute("data-field"),t.value);
+      if(!applyField(r.node,t.getAttribute("data-field"),t.value)){markCellError(t);notice(t("badDateInput")(t.value));return;}
     }else if(t.hasAttribute("data-pname")){
       const pi=+t.getAttribute("data-pname"); if(!curProjects||!curProjects[pi])return;
       curProjects[pi].name=t.value;
@@ -1127,7 +1364,7 @@
       const[pi,mi]=t.getAttribute("data-mpath").split("/").map(Number);
       const m=curProjects&&curProjects[pi]&&curProjects[pi].milestones&&curProjects[pi].milestones[mi]; if(!m)return;
       const f=t.getAttribute("data-mfield");
-      if(f==="date"){const iso=expandDate(t.value,m.date); if(iso===null)return; m.date=iso;}
+      if(f==="date"){const iso=expandDate(t.value,m.date); if(iso===null){markCellError(t);notice(t("badDateInput")(t.value));return;} m.date=iso;}
       else if(f==="label")m.label=t.value;
     }else return;
     queueSave(); deferRender();
